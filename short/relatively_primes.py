@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from math import gcd
+import sys
 
 
 def relatively_primes(n):
@@ -9,11 +10,11 @@ def relatively_primes(n):
             yield i
 
 
-def main():
-    for n in [26, 27, 29]:
-        p = list(relatively_primes(n))
-        print('p ({}, {}): {}'.format(len(p), len(p) * n, p))
+def main(nums):
+    for n in nums:
+        coprimes = list(relatively_primes(n))
+        print('coprimes ({}, {}): {}'.format(len(coprimes), len(coprimes) * n, coprimes))
 
 
 if __name__ == '__main__':
-    main()
+    main(map(int, sys.argv[1:]))
