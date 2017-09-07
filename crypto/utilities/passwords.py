@@ -10,6 +10,11 @@ class Passwords(object):
     """Utility class for generating secure passwords"""
 
     @classmethod
+    def gen_alpha(cls, n):
+        '''Generates an alphabetic password of length n'''
+        return ''.join(choice(string.ascii_uppercase) for i in range(n))
+
+    @classmethod
     def gen_alnum(cls, n):
         '''Generates an alphanumeric password of length n'''
         return ''.join(choice(ALPHABET) for i in range(n))
