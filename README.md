@@ -2,4 +2,15 @@
 
 My work for CSC 512 -- Cryptography.
 
-The unit tests for `crypto` may be ran with `python3 runtests.py`
+* `crypto/`
+
+    A Python module implementing various classical ciphers, number theory/linear algebra functions, etc.
+* `homework/`
+
+    Class homework.
+* `short/`
+
+    Short snippets that don't really belong in the `crypto` library.
+* `tests/`
+
+    Unit tests for the `crypto` library. Ran with `python3 runtests.py`. Note that the `runtests.py` script temporarily adds the `crypto` library to the system path.
