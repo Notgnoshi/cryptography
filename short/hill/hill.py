@@ -11,10 +11,10 @@ BLOCK_SIZE = 5
 def gen_key(n, N):
     """Generate the Hill cipher matrix key"""
     # Create a random matrix from 0 to N that is nxn
-    M = np.random.randint(0, N+1, (n, n))
+    M = np.random.randint(0, N + 1, (n, n))
     # The determinant of an integer matrix is an integer
     while gcd(np.linalg.det(M).astype(int), N) != 1:
-        M = np.random.randint(0, N+1, (n, n))
+        M = np.random.randint(0, N + 1, (n, n))
     return M
 
 
