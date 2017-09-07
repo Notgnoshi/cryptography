@@ -1,4 +1,4 @@
-from crypto import Math
+from crypto.utilities import Math
 import gmpy2
 import math
 import numpy
