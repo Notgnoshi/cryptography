@@ -1,6 +1,7 @@
 import gmpy2
 import math
 import random
+import itertools
 
 
 class NumberTheory(object):
@@ -28,3 +29,19 @@ class NumberTheory(object):
     def is_prime(cls, x):
         """Returns True if x is probably prime, False otherwise. Runs 25 Miller-Rabin tests."""
         return gmpy2.is_prime(x, 25)
+
+    @classmethod
+    def _primes(cls):
+        """An infinite prime generator."""
+        start = 1
+        while True:
+            start = gmpy2.next_prime(start)
+            yield start
+
+    @classmethod
+    def primes(cls, n=None):
+        """A generator that yields the first n primes. Defaults to infinite primes."""
+        if n is None:
+            return cls._primes()
+        else:
+            return itertools.islice(cls._primes(), n)
