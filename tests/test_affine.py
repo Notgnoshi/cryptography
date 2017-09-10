@@ -1,4 +1,4 @@
-from crypto import AffineCipher
+from crypto.classical import AffineCipher
 import math
 import random
 import unittest

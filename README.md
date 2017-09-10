@@ -1,6 +1,6 @@
 # Cryptography
 
-My work for CSC 512 -- Cryptography.
+Coursework for CSC 512, Cryptography.
 
 * `crypto/`
 
@@ -10,13 +10,17 @@ My work for CSC 512 -- Cryptography.
     - `gmpy2`
     - `numpy`
     - Tentatively `sympy`.
-    - *Strong* preference for Python 3
+
+    Example usage may be found in the course homework and in the unit tests.
+
 * `homework/`
 
     Class homework.
+
 * `short/`
 
     Short snippets that don't really belong in the `crypto` library.
+
 * `tests/`
 
-    Unit tests for the `crypto` library. Ran with `python3 runtests.py`. Note that the `runtests.py` script temporarily adds the `crypto` library to the system path.
+    Unit tests for the `crypto` library. Run with `python3 runtests.py`.

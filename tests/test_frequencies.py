@@ -1,4 +1,4 @@
-from crypto import SymbolFrequencies as sf
+from crypto.math import SymbolFrequencies as sf
 import unittest
 
 

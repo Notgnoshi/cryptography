@@ -1,4 +1,4 @@
-from crypto import BlumBlumShub as bbs
+from crypto.random import bbsn
 import gmpy2 as mp
 import unittest
 
@@ -19,5 +19,5 @@ class BlumBlumShubTest(unittest.TestCase):
                      4289914828771740133546190658266515171326,
                      4431066711454378260890386385593817521668,
                      7336876124195046397414235333675005372436]
-        for actual, expected in zip(bbs.bbsn(p, q, x0, 9), expecteds):
+        for actual, expected in zip(bbsn(p, q, x0, 9), expecteds):
             self.assertEqual(actual, expected)

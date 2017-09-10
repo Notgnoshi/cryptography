@@ -1,6 +1,8 @@
 \documentclass[12pt]{article}
 \usepackage{amsmath, amssymb, amsthm, minted}
 \usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
 
 \renewcommand{\mod}[1]{\mathrm{mod}\ #1}
 \renewcommand{\pmod}[1]{\ (\mod{#1})}
@@ -12,6 +14,7 @@
 \begin{document}
 \maketitle
 
+Note. My \texttt{crypto} Python library used below can be found at \url{https://github.com/Notgnoshi/cryptography}, as can several Matlab snippets.
 \section*{(1)} \textit{Suppose you encrypt a text using an affine cipher, then encrypt the encryption using another affine cipher (both are working $\mod{26}$). Is there any advantage to doing this, rather than using a single affine cipher? Why or why not?}
 
 \begin{defn}
@@ -107,7 +110,7 @@ The following Python script verifies that the encryptions do not differ for $n <
 
 \begin{minted}{python}
 #!/usr/bin/python3
-from affine import AffineCipher
+from crypto.classical import AffineCipher
 import math
 import random
 
@@ -162,7 +165,7 @@ for size = 2:45
 end
 \end{minted}
 
-which uses the following two functions
+which uses the following function to generate each matrix
 
 \begin{minted}{matlab}
 function A = gen_matrix(seq, size)
@@ -170,14 +173,6 @@ function A = gen_matrix(seq, size)
     for i = 1:size
         A = [A; seq(i:i + size - 1)];
     end
-end
-
-function seq = recurrence(x, c, seq_length)
-    n = length(c);
-    for i = 1:seq_length
-        x(i + n) = mod(dot(c, x(i : i + n - 1)), 2);
-    end
-    seq = x;
 end
 \end{minted}
 
@@ -212,7 +207,7 @@ $$\begin{cases}
 Yielding the solution $a = 9$ and $b = 10$. The following Python snippet confirms
 
 \begin{minted}{matlab}
->>> from crypto import AffineCipher
+>>> from crypto.classical import AffineCipher
 >>> cipher = 'edsgickxhuklzveqzvkxwkzukcvuh'
 >>> affine = AffineCipher(a=9, b=10)
 >>> affine.encrypt('if')

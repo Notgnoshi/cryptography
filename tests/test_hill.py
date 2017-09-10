@@ -1,4 +1,5 @@
-from crypto import HillCipher, Passwords
+from crypto.classical import HillCipher
+from crypto.random import generate_alpha
 import numpy
 from string import ascii_uppercase
 import unittest
@@ -48,7 +49,17 @@ class HillCipherTest(unittest.TestCase):
         block_size = 7
         key = HillCipher.generate_key(block_size)
         # Generate random 49 character string
-        message = Passwords.gen_alpha(49)
+        message = generate_alpha(49)
+        hill = HillCipher(key)
+        cipher = hill.encrypt(message)
+        self.assertEqual(message, hill.decrypt(cipher))
+
+    @unittest.skip('Generating the matrix key hangs on large block sizes, and fails to decrypt on smaller ones')
+    def test_random_key_large(self):
+        block_size = 11
+        key = HillCipher.generate_key(block_size)
+        # Generate random block_size**2 character string
+        message = generate_alpha(block_size**2)
         hill = HillCipher(key)
         cipher = hill.encrypt(message)
         self.assertEqual(message, hill.decrypt(cipher))

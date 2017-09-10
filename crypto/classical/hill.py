@@ -1,4 +1,5 @@
-from crypto.utilities import Math
+from crypto.utilities import nslice
+from crypto.math import modular_matrix_inverse
 import gmpy2
 import math
 import numpy
@@ -44,16 +45,6 @@ class HillCipher(object):
         return ''.join(cls._characterize(n) for n in nums).upper()
 
     @classmethod
-    def _nslice(cls, seq, n, truncate=False):
-        """Yield slices of seq, n elements at a time"""
-        assert n > 0
-        while len(seq) >= n:
-            yield seq[:n]
-            seq = seq[n:]
-        if len(seq) and not truncate:
-            yield seq
-
-    @classmethod
     def pad_message(cls, message, block_size):
         """Pads a message with enough 'X's to produce full blocks."""
         # If the message length is evenly divisible by the block size, don't pad.
@@ -68,7 +59,7 @@ class HillCipher(object):
 
         # Produce the coded blocks
         coded_blocks = []
-        for block in self._nslice(message, self.block_size):
+        for block in nslice(message, self.block_size):
             nums = numpy.matrix(self.encode(block))
             coded_blocks.append(numpy.mod(numpy.matmul(nums, self.key), self.alphabet_size))
 
@@ -80,10 +71,10 @@ class HillCipher(object):
 
     def decrypt(self, ciphertext):
         """Decrypts the given ciphertext using the Hill Cipher."""
-        m_inv = Math.modular_matrix_inverse(self.key, self.alphabet_size)
+        m_inv = modular_matrix_inverse(self.key, self.alphabet_size)
 
         decoded_blocks = []
-        for block in self._nslice(ciphertext, self.block_size):
+        for block in nslice(ciphertext, self.block_size):
             nums = numpy.matrix(self.encode(block))
             decoded_blocks.append(numpy.mod(numpy.matmul(nums, m_inv), self.alphabet_size))
 

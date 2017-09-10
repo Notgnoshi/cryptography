@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import sys
 sys.path.append('../../')
-from crypto import SymbolFrequencies
+from crypto.math import SymbolFrequencies
 
 
 def main(texts):
