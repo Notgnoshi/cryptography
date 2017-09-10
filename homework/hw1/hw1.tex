@@ -146,10 +146,79 @@ In particular, we have that
 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1,
 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0]}
 
+Using the following Matlab code
+
+\begin{minted}{matlab}
+for size = 2:45
+    A = gen_matrix(x, size);
+    d = mod(round(det(A)), 2);
+    b = x(size + 1 : 2 * size);
+    c = mod(A \ b', 2)';
+
+    rec = recurrence(x, c, length(x) - size);
+    if isequal(x, rec)
+       fprintf('sequences equal. size: %d\n', size);
+    end
+end
+\end{minted}
+
+which uses the following two functions
+
+\begin{minted}{matlab}
+function A = gen_matrix(seq, size)
+    A = [];
+    for i = 1:size
+        A = [A; seq(i:i + size - 1)];
+    end
+end
+
+function seq = recurrence(x, c, seq_length)
+    n = length(c);
+    for i = 1:seq_length
+        x(i + n) = mod(dot(c, x(i : i + n - 1)), 2);
+    end
+    seq = x;
+end
+\end{minted}
+
+the matrix size was determined to be $7$, and the vector $\vec{c} = \begin{pmatrix}1 & 0 & 1 & 1 & 0 & 1 & 1\end{pmatrix}$ yielding the recurrence relation
+
+$$x_{n + 7} = x_n + x_{n + 2} + x_{n + 3} + x_{n + 5} + x_{n + 6}$$
+
+However, the determinant $\pmod{2}$ is $0$ for the $7\times 7$ matrix given by the \texttt{gen\textunderscore{}matrix()} function above. However, the \texttt{recurrence()} function correctly generates the given bit sequence. This is interesting, because the above code works as expected for the examples in the book, including those on page 45 and page 47.
+
 \section*{(7)} \textit{You have caught the following ciphertext, and you believe it was encrypted by an affine cipher:}
 
-    \centering{\texttt{edsgickxhuklzveqzvkxwkzukcvuh}}
+\begin{center}
+\texttt{edsgickxhuklzveqzvkxwkzukcvuh}
+\end{center}
 
-\textit{You also believe that the first two letters of the plaintext are $if$. Decrypt.}
+\noindent\textit{You also believe that the first two letters of the plaintext are} \texttt{if}. \textit{Decrypt.}
+
+That is,
+
+$$\begin{cases}
+a \cdot ``i" + b = ``e" \pmod{26}\\
+a \cdot ``f" + b = ``d" \pmod{26}\\
+\end{cases}$$
+
+or rather,
+
+$$\begin{cases}
+8a + b = 4 \pmod{26}\\
+5a + b = 3 \pmod{26}\\
+\end{cases}$$
+
+Yielding the solution $a = 9$ and $b = 10$. The following Python snippet confirms
+
+\begin{minted}{matlab}
+>>> from crypto import AffineCipher
+>>> cipher = 'edsgickxhuklzveqzvkxwkzukcvuh'
+>>> affine = AffineCipher(a=9, b=10)
+>>> affine.encrypt('if')
+'ed'
+>>> affine.decrypt(cipher)
+'ifyoucanreadthisthankateacher'
+\end{minted}
 
 \end{document}

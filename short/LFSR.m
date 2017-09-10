@@ -1,15 +1,23 @@
-x = [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1,1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0,0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1,1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0];
-for size = 2:45
+x = [1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0];
+% The following sequence is from the textbook, page 47.
+% x = [1 0 0 1 1 0 0 1 0 0 1 1 1 0 0 0 1 1 0 0 0 1 0 1 0 0 0 1 1 1 1 0 1 1 0 0 1 1 1 1 1 0 1 0 1 0 1 0 0 1 0 1 1 0 1 1 0 1 0 1 1 0 0 0 0 1 1 0 1 1 1 0 0 1 0 1 0 1 1 1 1 0 0 0 0 0 0 0 1 0 0 0 1 0 0 1 0 0 0 0];
+% The following sequence is from the textbook, page 45.
+% x = [0 1 1 0 1 0 1 1 1 1 0 0];
+for size = 2:length(x)/2
     A = gen_matrix(x, size);
-    fprintf('size: %d det: %d\n', size, mod(round(det(A)), 26));
-    if round(det(A)) ~= 0
-        b = x(size + 1 : 2 * size);
-        c = mod(A \ b', 2)';
-        if isequal(x, recurrence(x, c, 90 - size))
-           fprintf('sequences equal');
-        end
+    d = mod(round(det(A)), 2);
+
+    fprintf('size: %d det: %d (mod 2)\n', size, d);
+
+    b = x(size + 1 : 2 * size);
+    c = mod(A \ b', 2)';
+
+    if isequal(x, recurrence(x, c, length(x) - size))
+       fprintf('sequences equal\n');
+       disp(A);
+       disp(b);
+       disp(c);
     end
-    
 end
 
 
