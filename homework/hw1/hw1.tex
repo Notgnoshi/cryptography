@@ -152,20 +152,26 @@ In particular, we have that
 Using the following Matlab code
 
 \begin{minted}{matlab}
-for size = 2:45
+for size = 1:(length(x) / 2)
     A = gen_matrix(x, size);
     d = mod(round(det(A)), 2);
-    b = x(size + 1 : 2 * size);
-    c = mod(A \ b', 2)';
 
-    rec = recurrence(x, c, length(x) - size);
-    if isequal(x, rec)
-       fprintf('sequences equal. size: %d\n', size);
+    fprintf('size: %d det: %d (mod 2)\n', size, d);
+
+    if d ~= 0
+        b = x(size + 1 : 2 * size)';
+        A_inv = matmodinverse(A, 2);
+        c = mod(A_inv * b, 2)';
+
+        if isequal(x, recurrence(x, c, length(x) - size))
+           fprintf('sequences equal\n');
+           disp(c);
+        end
     end
 end
 \end{minted}
 
-which uses the following function to generate each matrix
+Which uses the following two functions
 
 \begin{minted}{matlab}
 function A = gen_matrix(seq, size)
@@ -174,13 +180,18 @@ function A = gen_matrix(seq, size)
         A = [A; seq(i:i + size - 1)];
     end
 end
+
+function Ainv = matmodinverse(A, m)
+    a = round(det(A));
+    res = mod(a * (1:m), m);
+    b = find(res == 1);
+    Ainv = mod(b * round(a * inv(A)), m);
+end
 \end{minted}
 
-the matrix size was determined to be $7$, and the vector $\vec{c} = \begin{pmatrix}1 & 0 & 1 & 1 & 0 & 1 & 1\end{pmatrix}$ yielding the recurrence relation
+the matrix size was determined to be $6$, and the vector $\vec{c} = \begin{pmatrix}1 & 1 & 0 & 1 & 1 & 0\end{pmatrix}$ yielding the recurrence relation
 
-$$x_{n + 7} = x_n + x_{n + 2} + x_{n + 3} + x_{n + 5} + x_{n + 6}$$
-
-However, the determinant $\pmod{2}$ is $0$ for the $7\times 7$ matrix given by the \texttt{gen\textunderscore{}matrix()} function above. However, the \texttt{recurrence()} function correctly generates the given bit sequence. This is interesting, because the above code works as expected for the examples in the book, including those on page 45 and page 47.
+$$ x_{n + 6} = x_n + x_{n + 1} + x_{n + 3} + x_{n + 4}$$
 
 \section*{(7)} \textit{You have caught the following ciphertext, and you believe it was encrypted by an affine cipher:}
 

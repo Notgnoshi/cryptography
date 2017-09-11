@@ -1,7 +1,7 @@
 % recurrence.m
 % Given a vector of recurrence coefficients and a vector of initial conditions,
 % generate a sequence of bits.
-
+% BUG: Does not generate a sequence of exactly `seq_length` length. Generates a sequence of of length `length(x) + seq_length`.
 function seq = recurrence(x, c, seq_length)
     narginchk(3, 3);
     if length(x) < length(c)
