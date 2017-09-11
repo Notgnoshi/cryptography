@@ -1,5 +1,7 @@
 from crypto.math import *
+import math
 import numpy as np
+import random
 import unittest
 
 
@@ -50,3 +52,19 @@ class MathTest(unittest.TestCase):
     def test_is_prime(self):
         n = 396736894567834589803
         self.assertTrue(is_prime(n))
+
+    def test_extended_gcd(self):
+        a, b = 297, 140
+        g, x, y = extended_gcd(a, b)
+        self.assertEqual(g, math.gcd(a, b))
+        self.assertEqual(g, a * x + b * y)
+
+        a, b = 270, 192
+        g, x, y = extended_gcd(a, b)
+        self.assertEqual(g, math.gcd(a, b))
+        self.assertEqual(g, a * x + b * y)
+
+        a, b = random.randint(100000, 100000000), random.randint(100000, 100000000)
+        g, x, y = extended_gcd(a, b)
+        self.assertEqual(g, math.gcd(a, b))
+        self.assertEqual(g, a * x + b * y)

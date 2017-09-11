@@ -59,3 +59,18 @@ def primes(n=None):
         return _primes()
     else:
         return itertools.islice(_primes(), n)
+
+
+def extended_gcd(a, b):
+    """Uses the Extended Euclidean Algorithm to return a triple (g, x, y) such that
+       ax + by = g = gcd(a, b)"""
+    prevx, x = 1, 0
+    prevy, y = 0, 1
+
+    while b:
+        q = a // b
+        x, prevx = prevx - q * x, x
+        y, prevy = prevy - q * y, y
+        a, b = b, a % b
+
+    return a, prevx, prevy
