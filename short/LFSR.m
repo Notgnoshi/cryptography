@@ -29,10 +29,3 @@ function A = gen_matrix(seq, size)
         A = [A; seq(i:i + size - 1)];
     end
 end
-
-% function Ainv = matmodinverse(A, m)
-%     a = round(det(A));
-%     res = mod(a * (1:m), m);
-%     b = find(res == 1);
-%     Ainv = mod(b * round(a * inv(A)), m);
-% end
