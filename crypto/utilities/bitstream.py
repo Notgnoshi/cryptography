@@ -34,9 +34,19 @@ class Bitfield(object):
         """Returns the binary representation of a string, lsbf"""
         return ''.join('{0:08b}'.format(ord(x), 'b')[::-1] for x in string)
 
+    @classmethod
+    def bits_to_integer(cls, seq):
+        """Converts a sequence of bits into a integer"""
+        integer = 0
+        for i, bit in enumerate(seq):
+            integer = cls.set_ith_bit(integer, i, bit)
+
+        return integer
+
 
 class Bitstream(object):
     """Turns an ascii string into a bit-by-bit bitstream of its lsbf binary representation."""
+
     def __init__(self, string):
         self.bitstream = self._bits(bytes(string, 'ascii'))
 

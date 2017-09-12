@@ -1,5 +1,6 @@
 from crypto.utilities import Bitfield, Bitstream
 from crypto.random import generate_alpha
+import random
 import unittest
 
 
@@ -45,6 +46,18 @@ class BitfieldTest(unittest.TestCase):
         new_val = Bitfield.clear_bit(new_val, 3)
 
         self.assertEqual(new_val, 0b10100000)
+
+    def test_bits_to_integer_1(self):
+        bits = [1, 0, 0, 0, 0, 1, 1, 0]
+        actual = Bitfield.bits_to_integer(bits)
+        expected = 97
+        self.assertEqual(actual, expected)
+
+    def test_bits_to_integer_2(self):
+        num = random.randint(1, 1000000)
+        bits = (int(b) for b in Bitfield.bits(num))
+        actual = Bitfield.bits_to_integer(bits)
+        self.assertEqual(actual, num)
 
 
 class BitstreamTest(unittest.TestCase):
