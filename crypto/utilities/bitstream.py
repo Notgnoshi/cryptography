@@ -48,7 +48,7 @@ class Bitstream(object):
     """Turns an ascii string into a bit-by-bit bitstream of its lsbf binary representation."""
 
     def __init__(self, string):
-        self.bitstream = self._bits(bytes(string, 'ascii'))
+        self.bitstream = self._bits(bytes(string, 'utf-8'))
 
     def _bits(self, bytes):
         """A generator to yield bit after bit of the bitstream"""

@@ -1,5 +1,6 @@
 from collections import deque
-from crypto.utilities import Bitstream
+from crypto.utilities import Bitstream, Bitfield
+from crypto.utilities import nslice
 import numpy
 
 
@@ -35,22 +36,25 @@ class LfsrCipher(object):
     """Implements a classical Linear Feedback Shift Register Cipher."""
 
     def __init__(self, initial_values, coeffs):
-        self.key_stream = Lfsr(initial_values, coeffs)
+        # Need two identical key streams because you cannot retrieve values after
+        # the stream has been consumed.
+        self.encode_key_stream = Lfsr(initial_values, coeffs)
+        self.decode_key_stream = Lfsr(initial_values, coeffs)
 
-    def xor_key(self, bits):
-        """Returns an XORd bitstream of the inputted bit sequence and the key stream."""
-        return (k ^ int(b) for k, b in zip(self.key_stream, bits))
+    def xor_key(self, bits, key_stream):
+        """Returns an XORd bitstream of the inputted bit sequence and key stream."""
+        return (k ^ int(b) for k, b in zip(key_stream, bits))
 
     def encrypt(self, message):
         """Encrypts the given message with a LFSR Cipher."""
         message_stream = Bitstream(message)
-        cipher_bits = [m ^ k for m, k in zip(self.key_stream, message_stream)]
+        cipher_bits = self.xor_key(message_stream, self.encode_key_stream)
 
-    def decrypt(self, cipher):
+        return ''.join(chr(Bitfield.bits_to_integer(byte)) for byte in nslice(cipher_bits, 8))
+
+    def decrypt(self, ciphertext):
         """Decrypts the given ciphertext with a LFSR Cipher."""
-        pass
+        cipher_stream = Bitstream(ciphertext)
+        cipher_bits = self.xor_key(cipher_stream, self.decode_key_stream)
 
-    # @classmethod
-    # def bytes_xor(cls, a, b):
-    #     """Returns a bitwise XOR of two inputed bytes() objects"""
-    #     return bytes(x ^ y for x, y in zip(a, b))
+        return ''.join(chr(Bitfield.bits_to_integer(byte)) for byte in nslice(cipher_bits, 8))
