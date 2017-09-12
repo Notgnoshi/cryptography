@@ -11,8 +11,8 @@ if __name__ == '__main__':
     # sys.path.insert(0, os.path.abspath(os.path.join(test_dir, src_dir)))
 
     loader = unittest.TestLoader()
-    # Discover tests in the `tests/` directory that are prefixed with `test`
-    tests = loader.discover('tests/', pattern='test*.py')
+    # Discover all tests in the `crypto/tests/` directory that are prefixed with `test`
+    tests = loader.discover('.', pattern='test*.py')
     runner = unittest.runner.TextTestRunner()
     runner.run(tests)
     unittest.main()

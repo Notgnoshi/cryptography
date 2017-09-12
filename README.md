@@ -24,16 +24,15 @@ Coursework for CSC 512, Cryptography.
 
 * `tests/`
 
-    Unit tests for the `crypto` library. Run with `python3 runtests.py`.
+    Unit tests for the `crypto` library. Run with `python3 tests/runtests.py`.
 
 
 ---
 
 ## Portfolio
 * Library: `crypto/`
-* Library unit tests: `tests/` -- move `runtests.py` to `tests/`.
+* Library unit tests: `tests/`
 * Library examples: `examples/`
 * Documentation/writeup LaTeX source: `doc/`
 * Rename `short/` to `snippets/`
 * Move homework code (`short/`) to `homework/snippets/`?
-* Force `runtests.py` to use python3?
