@@ -44,6 +44,6 @@ class LfsrCipherTest(unittest.TestCase):
         self.assertListEqual(actual, expected)
 
         # Test the actual bitwise XOR of the key and the given plaintext.
-        actual = cipher.xor_key('1011001110001111')
-        expected = '1111000111010110'
+        actual = list(cipher.xor_key('1011001110001111'))
+        expected = list(int(b) for b in '1111000111010110')
         self.assertSequenceEqual(actual, expected)

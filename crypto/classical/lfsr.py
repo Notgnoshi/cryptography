@@ -5,6 +5,7 @@ import numpy
 
 class Lfsr(object):
     """A Linear Feedback Shift Register."""
+
     def __init__(self, initial_values, coeffs):
         self.initial_values = deque(initial_values)
         self.current_values = initial_values
@@ -32,12 +33,13 @@ class Lfsr(object):
 
 class LfsrCipher(object):
     """Implements a classical Linear Feedback Shift Register Cipher."""
+
     def __init__(self, initial_values, coeffs):
         self.key_stream = Lfsr(initial_values, coeffs)
 
     def xor_key(self, bits):
-        """Returns a binary string of the inputted binary string XORd with the key stream."""
-        return ''.join(str(k ^ int(b)) for k, b in zip(self.key_stream, bits))
+        """Returns an XORd bitstream of the inputted bit sequence and the key stream."""
+        return (k ^ int(b) for k, b in zip(self.key_stream, bits))
 
     def encrypt(self, message):
         """Encrypts the given message with a LFSR Cipher."""
