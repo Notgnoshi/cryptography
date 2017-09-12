@@ -1,5 +1,6 @@
-import operator
+import itertools
 import functools
+import operator
 
 
 def product(iterable):
@@ -7,11 +8,10 @@ def product(iterable):
     return functools.reduce(operator.mul, iterable)
 
 
-def nslice(seq, n, truncate=False):
-    """Yield slices of seq, n elements at a time"""
-    assert n > 0
-    while len(seq) >= n:
-        yield seq[:n]
-        seq = seq[n:]
-    if len(seq) and not truncate:
-        yield seq
+def nslice(iterable, n, fill_value=None):
+    """
+        Yield n-tuple slices of iterable, using fill_value once iterable has
+        been exhausted.
+    """
+    args = [iter(iterable)] * n
+    return itertools.zip_longest(*args, fillvalue=fill_value)

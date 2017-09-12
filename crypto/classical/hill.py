@@ -12,6 +12,7 @@ class HillCipher(object):
         self.key = key if key is not None else self.generate_key(block_size, alphabet_size)
         self.block_size, _ = key.shape
         self.alphabet_size = alphabet_size
+        self.fill_value = 'X'
 
     @classmethod
     def generate_key(cls, block_size, alphabet_size=26):
@@ -37,7 +38,7 @@ class HillCipher(object):
     @classmethod
     def encode(cls, string):
         """Encodes an alphabetic string such that A:0, B:1, C:2, ..."""
-        return [cls._numberize(c) for c in string.upper()]
+        return [cls._numberize(c.upper()) for c in string]
 
     @classmethod
     def decode(cls, nums):
@@ -55,11 +56,9 @@ class HillCipher(object):
 
     def encrypt(self, message):
         """Encrypts a the given message using the Hill Cipher."""
-        message = self.pad_message(message, self.block_size)
 
-        # Produce the coded blocks
         coded_blocks = []
-        for block in nslice(message, self.block_size):
+        for block in nslice(message, self.block_size, self.fill_value):
             nums = numpy.matrix(self.encode(block))
             coded_blocks.append(numpy.mod(numpy.matmul(nums, self.key), self.alphabet_size))
 
@@ -74,7 +73,7 @@ class HillCipher(object):
         m_inv = modular_matrix_inverse(self.key, self.alphabet_size)
 
         decoded_blocks = []
-        for block in nslice(ciphertext, self.block_size):
+        for block in nslice(ciphertext, self.block_size, self.fill_value):
             nums = numpy.matrix(self.encode(block))
             decoded_blocks.append(numpy.mod(numpy.matmul(nums, m_inv), self.alphabet_size))
 
