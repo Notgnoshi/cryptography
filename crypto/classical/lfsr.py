@@ -1,35 +1,6 @@
-from collections import deque
+from crypto.random import LinearFeedbackShiftRegister
 from crypto.utilities import Bitstream, Bitfield
 from crypto.utilities import nslice
-import numpy
-
-
-class Lfsr(object):
-    """A Linear Feedback Shift Register."""
-
-    def __init__(self, initial_values, coeffs):
-        self.initial_values = deque(initial_values)
-        self.current_values = initial_values
-        self.coeffs = coeffs
-
-    def __iter__(self):
-        """Returns an infinite sequence generator"""
-        return self
-
-    def __next__(self):
-        """
-            Returns the next item in the sequence. Starts yielding values beginning
-            with the first given initial value.
-        """
-
-        # Consume the initial values before moving on to generating new ones.
-        if self.initial_values:
-            return self.initial_values.popleft()
-
-        next_element = numpy.mod(numpy.dot(self.coeffs, self.current_values), 2)
-        self.current_values = numpy.append(self.current_values[1:], next_element)
-
-        return next_element
 
 
 class LfsrCipher(object):
@@ -38,8 +9,8 @@ class LfsrCipher(object):
     def __init__(self, initial_values, coeffs):
         # Need two identical key streams because you cannot retrieve values after
         # the stream has been consumed.
-        self.encode_key_stream = Lfsr(initial_values, coeffs)
-        self.decode_key_stream = Lfsr(initial_values, coeffs)
+        self.encode_key_stream = LinearFeedbackShiftRegister(initial_values, coeffs)
+        self.decode_key_stream = LinearFeedbackShiftRegister(initial_values, coeffs)
 
     def xor_key(self, bits, key_stream):
         """Returns an XORd bitstream of the inputted bit sequence and key stream."""

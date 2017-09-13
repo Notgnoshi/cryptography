@@ -1,4 +1,5 @@
-from crypto.classical import Lfsr, LfsrCipher
+from crypto.classical import LfsrCipher
+from crypto.random import LinearFeedbackShiftRegister
 from crypto.utilities import Bitfield
 import itertools
 import numpy
@@ -11,7 +12,7 @@ class LsfrTest(unittest.TestCase):
         # Values taken from textbook, pages 45-46.
         initial_values = numpy.array([0, 1, 1, 0])
         coeffs = numpy.array([1, 1, 0, 0])
-        lfsr = Lfsr(initial_values, coeffs)
+        lfsr = LinearFeedbackShiftRegister(initial_values, coeffs)
 
         expected = [0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1]
         actual = list(itertools.islice(lfsr, len(expected)))
@@ -25,7 +26,7 @@ class LsfrTest(unittest.TestCase):
                                       1, 0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1,
                                       0, 0, 0, 0, 1, 1, 1, 0, 0, 0])
         coeffs = numpy.array([1, 1, 0, 1, 1, 0])
-        lfsr = Lfsr(initial_values[:6], coeffs)
+        lfsr = LinearFeedbackShiftRegister(initial_values[:6], coeffs)
 
         expected = initial_values.tolist()
         actual = list(itertools.islice(lfsr, len(expected)))
@@ -40,7 +41,7 @@ class LfsrCipherTest(unittest.TestCase):
         cipher = LfsrCipher(initial_values, coeffs)
 
         # Make sure the generated key is the same as in the book.
-        lfsr = Lfsr(initial_values, coeffs)
+        lfsr = LinearFeedbackShiftRegister(initial_values, coeffs)
         expected = list(int(b) for b in '01000010010110011111000110111010100001001011001111')
         actual = list(itertools.islice(lfsr, len(expected)))
         self.assertListEqual(actual, expected)

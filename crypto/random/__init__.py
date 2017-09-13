@@ -5,3 +5,4 @@ text.
 
 from .bbs import *
 from .passwords import *
+from .LFSR import *
