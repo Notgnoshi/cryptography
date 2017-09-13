@@ -26,7 +26,6 @@ Coursework for CSC 512, Cryptography.
 
     Unit tests for the `crypto` library. Run with `python3 tests/runtests.py`.
 
-
 ---
 
 ## Portfolio
@@ -36,3 +35,8 @@ Coursework for CSC 512, Cryptography.
 * Documentation/writeup LaTeX source: `doc/`
 * Rename `short/` to `snippets/`
 * Move homework code (`short/`) to `homework/snippets/`?
+
+---
+
+## TODO
+* **Enigma simulator**
