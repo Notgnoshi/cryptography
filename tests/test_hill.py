@@ -1,5 +1,6 @@
 from crypto.classical import HillCipher
 from crypto.random import generate_alpha
+import math
 import numpy
 from string import ascii_uppercase
 import unittest
@@ -23,13 +24,18 @@ class HillCipherTest(unittest.TestCase):
         message = 'testxxxtest'
         self.assertEqual('testxxxtestXXX', HillCipher.pad_message(message, block_size))
 
-    def test_generate_key(self):
+    def test_generate_key_1(self):
         block_size = 7
-        key = HillCipher.generate_key(block_size)
-        cipher = HillCipher(key)
-        self.assertListEqual(key.tolist(), cipher.key.tolist())
-        self.assertEqual(block_size, key.shape[0])
-        self.assertEqual(block_size, cipher.block_size)
+        alphabet_size = 26
+        key = HillCipher.generate_key(block_size, alphabet_size)
+        self.assertEqual(math.gcd(int(round(numpy.linalg.det(key))), alphabet_size), 1)
+
+    def test_generate_key_2(self):
+        # Block sizes larger than 16 seem to not work, test smaller size for faster tests
+        block_size = 13
+        alphabet_size = 26
+        key = HillCipher.generate_key(block_size, alphabet_size)
+        self.assertEqual(math.gcd(int(round(numpy.linalg.det(key))), alphabet_size), 1)
 
     def test_encrypt(self):
         key = numpy.matrix([[15, 12], [11, 3]])
@@ -46,20 +52,28 @@ class HillCipherTest(unittest.TestCase):
         self.assertEqual(expected, hill.decrypt(cipher))
 
     def test_random_key(self):
-        block_size = 7
+        block_size = 5
         key = HillCipher.generate_key(block_size)
-        # Generate random 49 character string
-        message = generate_alpha(49)
+        message = generate_alpha(50)
         hill = HillCipher(key)
         cipher = hill.encrypt(message)
         self.assertEqual(message, hill.decrypt(cipher))
 
-    @unittest.skip('Generating the matrix key hangs on large block sizes, and fails to decrypt on smaller ones')
     def test_random_key_large(self):
-        block_size = 11
+        block_size = 9
         key = HillCipher.generate_key(block_size)
-        # Generate random block_size**2 character string
-        message = generate_alpha(block_size**2)
+        # Generate a *large* random message
+        message = generate_alpha(500 * block_size)
+        hill = HillCipher(key)
+        cipher = hill.encrypt(message)
+        self.assertEqual(message, hill.decrypt(cipher))
+
+    @unittest.expectedFailure
+    def test_random_key_larger(self):
+        # Decrypt fails on larger block_sizes
+        block_size = 13
+        key = HillCipher.generate_key(block_size)
+        message = generate_alpha(5 * block_size)
         hill = HillCipher(key)
         cipher = hill.encrypt(message)
         self.assertEqual(message, hill.decrypt(cipher))

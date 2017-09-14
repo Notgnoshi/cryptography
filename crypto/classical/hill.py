@@ -20,6 +20,7 @@ class HillCipher(object):
         # Create a random matrix from 0 to N that is nxn
         M = numpy.random.randint(0, alphabet_size + 1, (block_size, block_size))
         # The determinant of an integer matrix is an integer
+        # This loop seems not to terminate if the block size is large
         while math.gcd(int(round(numpy.linalg.det(M))), alphabet_size) != 1:
             M = numpy.random.randint(0, alphabet_size + 1, (block_size, block_size))
         return M
