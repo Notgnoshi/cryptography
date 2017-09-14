@@ -45,10 +45,10 @@ class Bitfield(object):
 
 
 class Bitstream(object):
-    """Turns an ascii string into a bit-by-bit bitstream of its lsbf binary representation."""
+    """Turns a sequence of bytes into a bit-by-bit bitstream of its lsbf binary representation."""
 
-    def __init__(self, string):
-        self.bitstream = self._bits(bytes(string, 'utf-8'))
+    def __init__(self, byte_seq):
+        self.bitstream = self._bits(byte_seq)
 
     def _bits(self, bytes):
         """A generator to yield bit after bit of the bitstream"""

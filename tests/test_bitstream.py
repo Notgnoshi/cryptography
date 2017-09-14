@@ -63,7 +63,7 @@ class BitfieldTest(unittest.TestCase):
 class BitstreamTest(unittest.TestCase):
     def test_bitstream_1(self):
         string = 'abcd'
-        bitstream = Bitstream(string)
+        bitstream = Bitstream(bytes(string, 'ascii'))
         # abcd in binary lsbf format
         expected = [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0,
                     0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0]
@@ -73,7 +73,7 @@ class BitstreamTest(unittest.TestCase):
 
     def test_bitstream_2(self):
         string = generate_alpha(1000)
-        bitstream = Bitstream(string)
+        bitstream = Bitstream(bytes(string, 'ascii'))
         actual = ''.join(str(bit) for bit in bitstream)
         expected = Bitfield.binary_string(string)
         self.assertSequenceEqual(actual, expected)
