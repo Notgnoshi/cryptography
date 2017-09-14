@@ -1,5 +1,5 @@
 from crypto.classical import LfsrCipher
-from crypto.random import LinearFeedbackShiftRegister
+from crypto.random import LinearFeedbackShiftRegister, generate_alpha
 from crypto.utilities import Bitfield
 import itertools
 import numpy
@@ -94,7 +94,7 @@ class LfsrCipherTest(unittest.TestCase):
         expected = 'zyxwvuts'
         self.assertSequenceEqual(actual, expected)
 
-    def test_encrypt_decrypt(self):
+    def test_encrypt_decrypt_1(self):
         initial_values = numpy.array([1, 0, 1, 0, 0, 1])
         coeffs = numpy.array([1, 1, 0, 1, 1, 0])
         cipher = LfsrCipher(initial_values, coeffs)
@@ -103,3 +103,18 @@ class LfsrCipherTest(unittest.TestCase):
         ciphertext = cipher.encrypt(plaintext)
         actual = cipher.decrypt(ciphertext)
         self.assertSequenceEqual(plaintext, actual)
+
+    def test_encrypt_decrypt_2(self):
+        size = 100
+        initial_values = numpy.ones(size, dtype=int)
+        initial_values[:size // 2] = 0
+        numpy.random.shuffle(initial_values)
+        coeffs = numpy.ones(size, dtype=int)
+        coeffs[:size // 2] = 0
+        numpy.random.shuffle(coeffs)
+
+        cipher = LfsrCipher(initial_values, coeffs)
+        plaintext = generate_alpha(1000)
+        ciphertext = cipher.encrypt(plaintext)
+        actual = cipher.decrypt(ciphertext)
+        self.assertSequenceEqual(actual, plaintext)
