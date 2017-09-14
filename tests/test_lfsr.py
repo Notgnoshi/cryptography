@@ -34,7 +34,7 @@ class LsfrTest(unittest.TestCase):
 
 
 class LfsrCipherTest(unittest.TestCase):
-    def test_xor_bits(self):
+    def test_xor_bits_1(self):
         # Values taken from textbook, page 44.
         initial_values = numpy.array([0, 1, 0, 0, 0])
         coeffs = numpy.array([1, 0, 1, 0, 0])
@@ -49,30 +49,57 @@ class LfsrCipherTest(unittest.TestCase):
         # Test the actual bitwise XOR of the key and the given plaintext.
         actual = list(cipher.xor_key('1011001110001111', cipher.encode_key_stream))
         expected = list(int(b) for b in '1111000111010110')
-        self.assertSequenceEqual(actual, expected)
+        self.assertListEqual(actual, expected)
 
-    def test_encrypt_1(self):
-        initial_values = numpy.array([0, 1, 0, 0, 0])
-        coeffs = numpy.array([1, 0, 1, 0, 0])
-
+    def test_xor_bits_2(self):
+        # Values taken from HW 1 problem 6
+        initial_values = numpy.array([1, 0, 1, 0, 0, 1])
+        coeffs = numpy.array([1, 1, 0, 1, 1, 0])
         cipher = LfsrCipher(initial_values, coeffs)
 
-        cipher_char = cipher.encrypt('a')
+        actual = list(cipher.xor_key('100001100100011011000110', cipher.encode_key_stream))
+        expected = list(int(b) for b in '001000001000001001000001')
+        self.assertListEqual(actual, expected)
 
-        self.assertEqual(cipher_char, '#')
+    def test_encrypt_1(self):
+        # Values taken from HW 1 problem 6
+        initial_values = numpy.array([1, 0, 1, 0, 0, 1])
+        coeffs = numpy.array([1, 1, 0, 1, 1, 0])
+        cipher = LfsrCipher(initial_values, coeffs)
 
-        message_char = cipher.decrypt(cipher_char)
-        self.assertEqual(message_char, 'a')
+        ciphertext = cipher.encrypt('abc')
+        actual = [ord(c) for c in ciphertext]
+        expected = [4, 65, 130]
+        self.assertListEqual(actual, expected)
 
-    @unittest.skip('Decrypt is not working...')
     def test_encrypt_2(self):
         # Values taken from HW 1 problem 6
         initial_values = numpy.array([1, 0, 1, 0, 0, 1])
         coeffs = numpy.array([1, 1, 0, 1, 1, 0])
         cipher = LfsrCipher(initial_values, coeffs)
 
-        message = string.ascii_lowercase
-        ciphertext = cipher.encrypt(message)
-        plaintext = cipher.decrypt(ciphertext)
+        ciphertext = cipher.encrypt('zyxwvuts')
+        actual = [ord(c) for c in ciphertext]
+        expected = [31, 90, 153, 215, 233, 255, 13, 164]
+        self.assertListEqual(actual, expected)
 
-        self.assertEqual(plaintext, message)
+    def test_decrypt_1(self):
+        initial_values = numpy.array([1, 0, 1, 0, 0, 1])
+        coeffs = numpy.array([1, 1, 0, 1, 1, 0])
+        cipher = LfsrCipher(initial_values, coeffs)
+
+        # 'zyxwvuts' encrypted as above
+        ciphertext = ''.join(chr(n) for n in [31, 90, 153, 215, 233, 255, 13, 164])
+        actual = cipher.decrypt(ciphertext)
+        expected = 'zyxwvuts'
+        self.assertSequenceEqual(actual, expected)
+
+    def test_encrypt_decrypt(self):
+        initial_values = numpy.array([1, 0, 1, 0, 0, 1])
+        coeffs = numpy.array([1, 1, 0, 1, 1, 0])
+        cipher = LfsrCipher(initial_values, coeffs)
+
+        plaintext = string.ascii_lowercase
+        ciphertext = cipher.encrypt(plaintext)
+        actual = cipher.decrypt(ciphertext)
+        self.assertSequenceEqual(plaintext, actual)
