@@ -10,7 +10,7 @@ Coursework for CSC 512, Cryptography.
     - `gmpy2`
     - `numpy`
     - Tentatively `sympy`.
-    - `sudo -H pip install gmpy2 numpy sympy`
+    - Use `sudo -H pip install gmpy2 numpy sympy` to install
 
     Example usage may be found in the course homework and in the unit tests.
 
@@ -40,3 +40,8 @@ Coursework for CSC 512, Cryptography.
 
 ## TODO
 * **Enigma simulator**
+* Make lower/upper case consistent
+* Allow for more than just `a-z` input
+* Portfolio writeup
+    - Documentation
+    - Algorithm explanation
