@@ -33,8 +33,6 @@ Coursework for CSC 512, Cryptography.
 * Library unit tests: `tests/`
 * Library examples: `examples/`
 * Documentation/writeup LaTeX source: `doc/`
-* Rename `short/` to `snippets/`
-* Move homework code (`short/`) to `homework/snippets/`?
 
 ---
 

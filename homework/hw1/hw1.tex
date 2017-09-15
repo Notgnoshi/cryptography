@@ -1,9 +1,9 @@
 \documentclass[12pt]{article}
-\usepackage{amsmath, amssymb, amsthm, minted, cancel, color}
+\usepackage{amsmath, amssymb, amsthm, cancel, color, parskip, minted}
 \usepackage[margin=1in]{geometry}
 \usepackage[hidelinks]{hyperref}
 
-
+\setminted{autogobble=true, style=tango}
 \renewcommand{\mod}[1]{\mathrm{mod}\ #1}
 \renewcommand{\pmod}[1]{\ (\mod{#1})}
 \newtheorem*{defn}{Definition}
@@ -12,238 +12,162 @@
 \author{Austin Gill}
 
 \begin{document}
-\maketitle
+    \maketitle
 
-Note. My \texttt{crypto} Python library used below may be found at \url{https://github.com/Notgnoshi/cryptography}, as can several Matlab snippets.
+    Note. My \texttt{crypto} Python library used below may be found at \url{https://github.com/Notgnoshi/cryptography}, as can several Matlab snippets.
 \section*{(1)} \textit{Suppose you encrypt a text using an affine cipher, then encrypt the encryption using another affine cipher (both are working $\mod{26}$). Is there any advantage to doing this, rather than using a single affine cipher? Why or why not?}
 
-\begin{defn}
-Let $\alpha , \beta \in \mathbb Z$ with $\gcd(\alpha , 26) = 1$. The function $E(m) = \alpha m_i + \beta \pmod{26}$ is called an affine cipher.
-\end{defn}
+    \begin{defn}
+    Let $\alpha , \beta \in \mathbb Z$ with $\gcd(\alpha , 26) = 1$. The function $E(m) = \alpha m_i + \beta \pmod{26}$ is called an affine cipher.
+    \end{defn}
 
-Suppose $E(m) = (F \circ G)(m)$, where $F(m) = am_i + b$ and $G(m) = cm_i + d$ are both affine ciphers $\pmod{26}$. Then
+    Suppose $E(m) = (F \circ G)(m)$, where $F(m) = am_i + b$ and $G(m) = cm_i + d$ are both affine ciphers $\pmod{26}$. Then
 
-\begin{align*}
-    E(m) &= F(G(m))\\
-         &= a(cm_i + d) + b \pmod{26}\\
-         &= acm_i + ad + b \pmod{26}\\
-         &= pm_i + q \pmod{26}\\
-\end{align*}
+    \begin{align*}
+        E(m) &= F(G(m))\\
+             &= a(cm_i + d) + b \pmod{26}\\
+             &= acm_i + ad + b \pmod{26}\\
+             &= pm_i + q \pmod{26}\\
+    \end{align*}
 
-where $p = ac \pmod{26}$ and $q = ad + b \pmod{26}$, which is no different than a single affine cipher. The difficulty of cracking this cipher remains unchanged.
+    where $p = ac \pmod{26}$ and $q = ad + b \pmod{26}$, which is no different than a single affine cipher. The difficulty of cracking this cipher remains unchanged.
 
 \section*{(2)} \textit{Suppose we work $\mod{27}$ instead of $\mod{26}$ for affine ciphers. How many keys are possible? What if we work $\mod{29}$?}
 
-The following numbers are those relatively prime with 26, 27, and 29.
-\begin{itemize}
-  \item[$\pmod{26}$:]
-  \texttt{[1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25]}
-  \item[$\pmod{27}$:]
-  \texttt{[1, 2, 4, 5, 7, 8, 10, 11, 13, 14, 16, 17, 19, 20, 22, 23, 25, 26]}
-  \item[$\pmod{29}$:]
-  \texttt{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]}
-\end{itemize}
-There are 12 numbers relatively prime with 26, 18 with 27, and 28 with 29. In general, if there are $m$ numbers relatively prime with $n$, then there are $n\cdot m$ key possibilities for an affine cipher.
+    The following numbers are those relatively prime with 26, 27, and 29.
+    \begin{itemize}
+      \item[$\pmod{26}$:]
+      \texttt{[1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25]}
+      \item[$\pmod{27}$:]
+      \texttt{[1, 2, 4, 5, 7, 8, 10, 11, 13, 14, 16, 17, 19, 20, 22, 23, 25, 26]}
+      \item[$\pmod{29}$:]
+      \texttt{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]}
+    \end{itemize}
+    There are 12 numbers relatively prime with 26, 18 with 27, and 28 with 29. In general, if there are $m$ numbers relatively prime with $n$, then there are $n\cdot m$ key possibilities for an affine cipher.
 
-The following are the number of key possibilities for 26, 27, and 29.
+    The following are the number of key possibilities for 26, 27, and 29.
 
-\begin{itemize}
-  \item[$\pmod{26}$:] 312 key possibilities
-  \item[$\pmod{27}$:] 486 key possibilities
-  \item[$\pmod{29}$:] 812 key possibilities
-\end{itemize}
+    \begin{itemize}
+      \item[$\pmod{26}$:] 312 key possibilities
+      \item[$\pmod{27}$:] 486 key possibilities
+      \item[$\pmod{29}$:] 812 key possibilities
+    \end{itemize}
 
 \section*{(3)} \textit{Eve captures Bob’s Hill cipher machine, which uses a $2\times2$ matrix $M \mod{26}$. She tries a chosen plaintext attack. She finds that the plaintext $ba$ encrypts to $HC$ and the plaintext $zz$ encrypts to $GT$. What is the matrix $M$.}
 
-Solve the matrix equation
+    Solve the matrix equation
 
-$$\begin{pmatrix}1 & 0\\25 & 25\end{pmatrix}\begin{pmatrix}a & b\\c & d\end{pmatrix} \equiv \begin{pmatrix}7 & 2\\6 & 19\end{pmatrix} \pmod{26}$$
+    $$\begin{pmatrix}1 & 0\\25 & 25\end{pmatrix}\begin{pmatrix}a & b\\c & d\end{pmatrix} \equiv \begin{pmatrix}7 & 2\\6 & 19\end{pmatrix} \pmod{26}$$
 
-Note that oddly enough, $\begin{pmatrix}1 & 0\\25 & 25\end{pmatrix}$ is its own modular inverse. So, we have
+    Note that oddly enough, $\begin{pmatrix}1 & 0\\25 & 25\end{pmatrix}$ is its own modular inverse. So, we have
 
-$$M = \begin{pmatrix}a & b\\c & d\end{pmatrix} = \begin{pmatrix}1 & 0\\25 & 25\end{pmatrix}\begin{pmatrix}7 & 2\\6 & 19\end{pmatrix} \pmod{26} = \begin{pmatrix}7 & 2\\ {\color{red}\bcancel{12}} 13 & 5\end{pmatrix} \pmod{26}$$
+    $$M = \begin{pmatrix}a & b\\c & d\end{pmatrix} = \begin{pmatrix}1 & 0\\25 & 25\end{pmatrix}\begin{pmatrix}7 & 2\\6 & 19\end{pmatrix} \pmod{26} = \begin{pmatrix}7 & 2\\ {\color{red}\bcancel{12}} 13 & 5\end{pmatrix} \pmod{26}$$
 
-The following verifies
+    The following verifies
 
-\begin{minted}{python}
->>> import numpy
->>> from crypto.math import modular_matrix_inverse
->>> from crypto.classical import HillCipher
+    \begin{minted}{python}
+    >>> import numpy
+    >>> from crypto.math import modular_matrix_inverse
+    >>> from crypto.classical import HillCipher
 
->>> A = numpy.matrix([[1, 0], [25, 25]])
->>> B = numpy.matrix([[7, 2], [6, 19]])
+    >>> A = numpy.matrix([[1, 0], [25, 25]])
+    >>> B = numpy.matrix([[7, 2], [6, 19]])
 
->>> key = numpy.matmul(A, B)
->>> key
-matrix([[ 7,  2],
-        [13,  5]])
->>> cipher = HillCipher(key)
->>> cipher.encrypt('bazz')
-'HCGT'
-\end{minted}
+    >>> key = numpy.matmul(A, B)
+    >>> key
+    matrix([[ 7,  2],
+            [13,  5]])
+    >>> cipher = HillCipher(key)
+    >>> cipher.encrypt('bazz')
+    'HCGT'
+    \end{minted}
 
 \section*{(4)} \textit{A sequence generated by a length three recurrence starts $001110$. Find the next four elements of the sequence.}
 
-Knowing the length of the recurrence, set up and solve the following matrix equation for $\vec{c}$
+    Knowing the length of the recurrence, set up and solve the following matrix equation for $\vec{c}$
 
-$$\begin{pmatrix}x_1 & x_2 & \cdots & x_m \\ x_2 & x_2 & \cdots & x_{m+1} \\ \vdots & \vdots & \ddots & \vdots \\ x_m & x_{m+1} & \cdots & x_{2m - 1}\end{pmatrix} \cdot \vec{c} \equiv \begin{pmatrix}x_{m+1} \\ x_{m+2} \\ \vdots \\ x_{2m}\end{pmatrix}$$
+    $$\begin{pmatrix}x_1 & x_2 & \cdots & x_m \\ x_2 & x_2 & \cdots & x_{m+1} \\ \vdots & \vdots & \ddots & \vdots \\ x_m & x_{m+1} & \cdots & x_{2m - 1}\end{pmatrix} \cdot \vec{c} \equiv \begin{pmatrix}x_{m+1} \\ x_{m+2} \\ \vdots \\ x_{2m}\end{pmatrix}$$
 
-where the recurrence is
+    where the recurrence is
 
-$$x_m = \begin{pmatrix}x_{n} \\ x_{n + 1} \\ \vdots \\ x_{m - 1}\end{pmatrix} \cdot \vec{c}^T$$
+    $$x_m = \begin{pmatrix}x_{n} \\ x_{n + 1} \\ \vdots \\ x_{m - 1}\end{pmatrix} \cdot \vec{c}^T$$
 
-In this particular case, we have the following
+    In this particular case, we have the following
 
-$$\begin{pmatrix}0 & 0 & 1 \\ 0 & 1 & 1 \\ 1 & 1 & 1\end{pmatrix}\cdot\begin{pmatrix}c_0 \\ c_1 \\ c_2\end{pmatrix} = \begin{pmatrix}1 \\ 1 \\ 0\end{pmatrix}$$
+    $$\begin{pmatrix}0 & 0 & 1 \\ 0 & 1 & 1 \\ 1 & 1 & 1\end{pmatrix}\cdot\begin{pmatrix}c_0 \\ c_1 \\ c_2\end{pmatrix} = \begin{pmatrix}1 \\ 1 \\ 0\end{pmatrix}$$
 
-which yields
+    which yields
 
-$$\vec{c} = \begin{pmatrix}-1 \\ 0 \\ 1\end{pmatrix} \equiv \begin{pmatrix}1 \\ 0 \\ 1\end{pmatrix} \pmod{2}$$
+    $$\vec{c} = \begin{pmatrix}-1 \\ 0 \\ 1\end{pmatrix} \equiv \begin{pmatrix}1 \\ 0 \\ 1\end{pmatrix} \pmod{2}$$
 
-resulting in the recurrence
+    resulting in the recurrence
 
-$$x_{n + 3} = x_n + x_{n + 2}$$
+    $$x_{n + 3} = x_n + x_{n + 2}$$
 
-which implemented in Matlab yields the following
+    which implemented in Matlab yields the following
 
-\begin{minted}{matlab}
-function seq = recurrence(x, c, seq_length)
-    [m, n] = size(c);
-    for i = 1:seq_length
-        x(i + n) = mod(dot(c, x(i : i+n-1)), 2);
-    end
-
-    seq = x;
-end
-
->>> x = [0 0 1];
->>> c = [1 0 1];
->>> recurrence(x, c, 12)
-    ans =
-        0 0 1 1 1 0 1 0 0 1 1 1 0 1 0
-\end{minted}
+    \inputminted{matlab}{../snippets/matlab/recurrence.m}
 
 \section*{(5)} \textit{Experiment with the affine cipher $y = m x + n \pmod{26}$ for values of $m > 26$. In particular, determine whether or not these encryptions are the same as ones obtained with $m < 26$.}
 
-The following Python script verifies that the encryptions do not differ for $n < 26$ and $m > 26$ as long as $n \equiv m \pmod{26}$.
+    The following Python script verifies that the encryptions do not differ for $n < 26$ and $m > 26$ as long as $n \equiv m \pmod{26}$.
 
-\begin{minted}{python}
-#!/usr/bin/python3
-from crypto.classical import AffineCipher
-import math
-import random
+    \inputminted{python}{hw1_affine.py}
 
-def main():
-    message = 'thisisatest'
-    # Generate lists of numbers relatively prime with 26.
-    lesser_nums = filter(lambda x: math.gcd(x, 26) == 1, range(0, 27))
-    greater_nums = filter(lambda x: math.gcd(x, 26) == 1, range(26, 26 * 2))
+    In particular, we have that
 
-    # Pairwise iterate over lesser and greater numbers.
-    for l, g in zip(lesser_nums, greater_nums):
-        shift = random.randrange(0, 27)
-        lesser = AffineCipher(l, shift)
-        greater = AffineCipher(g, shift)
-
-        l_cipher = lesser.encrypt(message)
-        g_cipher = greater.encrypt(message)
-        print('lesser (m={}): {}'.format(l, l_cipher))
-        print('greater (m={}): {}'.format(g, g_cipher))
-
-if __name__ == '__main__':
-    main()
-\end{minted}
-
-In particular, we have that
-
-\begin{align*}
-    a \cdot b \pmod{m} &= a \pmod{m} \cdot b \pmod{m}\\
-    a + b \pmod{m} &= a \pmod{m} + b \pmod{m}\\
-\end{align*}
+    \begin{align*}
+        a \cdot b \pmod{m} &= a \pmod{m} \cdot b \pmod{m}\\
+        a + b \pmod{m} &= a \pmod{m} + b \pmod{m}\\
+    \end{align*}
 
 \section*{(6)} \textit{The following sequence was generated by a linear feedback shift register. Determine the recurrence that generated it.}
 
-\texttt{[1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1,
-1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0,
-0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1,
-1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0]}
+    \texttt{[1, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1,
+    1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 1, 0, 0,
+    0, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1,
+    1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0]}
 
-Using the following Matlab code
+    Using the following Matlab code
 
-\begin{minted}{matlab}
-for size = 1:(length(x) / 2)
-    A = gen_matrix(x, size);
-    d = mod(round(det(A)), 2);
+    \inputminted[breaklines=true]{matlab}{../snippets/matlab/LFSR.m}
 
-    fprintf('size: %d det: %d (mod 2)\n', size, d);
+    the matrix size was determined to be $6$, and the vector $\vec{c} = \begin{pmatrix}1 & 1 & 0 & 1 & 1 & 0\end{pmatrix}$ yielding the recurrence relation
 
-    if d ~= 0
-        b = x(size + 1 : 2 * size)';
-        A_inv = matmodinverse(A, 2);
-        c = mod(A_inv * b, 2)';
-
-        if isequal(x, recurrence(x, c, length(x) - size))
-           fprintf('sequences equal\n');
-           disp(c);
-        end
-    end
-end
-\end{minted}
-
-Which uses the following two functions
-
-\begin{minted}{matlab}
-function A = gen_matrix(seq, size)
-    A = [];
-    for i = 1:size
-        A = [A; seq(i:i + size - 1)];
-    end
-end
-
-function Ainv = matmodinverse(A, m)
-    a = round(det(A));
-    res = mod(a * (1:m), m);
-    b = find(res == 1);
-    Ainv = mod(b * round(a * inv(A)), m);
-end
-\end{minted}
-
-the matrix size was determined to be $6$, and the vector $\vec{c} = \begin{pmatrix}1 & 1 & 0 & 1 & 1 & 0\end{pmatrix}$ yielding the recurrence relation
-
-$$ x_{n + 6} = x_n + x_{n + 1} + x_{n + 3} + x_{n + 4}$$
+    $$ x_{n + 6} = x_n + x_{n + 1} + x_{n + 3} + x_{n + 4}$$
 
 \section*{(7)} \textit{You have caught the following ciphertext, and you believe it was encrypted by an affine cipher:}
 
-\begin{center}
-\texttt{edsgickxhuklzveqzvkxwkzukcvuh}
-\end{center}
+    \begin{center}
+      \texttt{edsgickxhuklzveqzvkxwkzukcvuh}
+    \end{center}
 
-\noindent\textit{You also believe that the first two letters of the plaintext are} \texttt{if}. \textit{Decrypt.}
+    \textit{You also believe that the first two letters of the plaintext are} \texttt{if}. \textit{Decrypt.}
 
-That is,
+    That is,
 
-$$\begin{cases}
-a \cdot ``i" + b = ``e" \pmod{26}\\
-a \cdot ``f" + b = ``d" \pmod{26}\\
-\end{cases}$$
+    $$\begin{cases}
+    a \cdot ``i" + b = ``e" \pmod{26}\\
+    a \cdot ``f" + b = ``d" \pmod{26}\\
+    \end{cases}$$
 
-or rather,
+    or rather,
 
-$$\begin{cases}
-8a + b = 4 \pmod{26}\\
-5a + b = 3 \pmod{26}\\
-\end{cases}$$
+    $$\begin{cases}
+    8a + b = 4 \pmod{26}\\
+    5a + b = 3 \pmod{26}\\
+    \end{cases}$$
 
-Yielding the solution $a = 9$ and $b = 10$. The following Python snippet confirms
+    Yielding the solution $a = 9$ and $b = 10$. The following Python snippet confirms
 
-\begin{minted}{matlab}
->>> from crypto.classical import AffineCipher
->>> cipher = 'edsgickxhuklzveqzvkxwkzukcvuh'
->>> affine = AffineCipher(a=9, b=10)
->>> affine.encrypt('if')
-'ed'
->>> affine.decrypt(cipher)
-'ifyoucanreadthisthankateacher'
-\end{minted}
+    \begin{minted}{python}
+        >>> from crypto.classical import AffineCipher
+        >>> cipher = 'edsgickxhuklzveqzvkxwkzukcvuh'
+        >>> affine = AffineCipher(a=9, b=10)
+        >>> affine.encrypt('if')
+        'ed'
+        >>> affine.decrypt(cipher)
+        'ifyoucanreadthisthankateacher'
+    \end{minted}
 
 \end{document}
