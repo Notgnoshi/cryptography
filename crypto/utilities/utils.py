@@ -1,6 +1,11 @@
 import itertools
 import functools
 import operator
+import string
+
+# Lookup tables for letters and numbers
+LETTER_TABLE = dict(zip(string.ascii_lowercase, range(0, 26)))
+NUMBER_TABLE = dict(zip(range(0, 26), string.ascii_lowercase))
 
 
 def product(iterable):
@@ -15,3 +20,13 @@ def nslice(iterable, n, fill_value=None):
     """
     args = [iter(iterable)] * n
     return itertools.zip_longest(*args, fillvalue=fill_value)
+
+
+def int_mapping(character):
+    """Maps a given character (a-z) to an integer (0-25)"""
+    return LETTER_TABLE[character.lower()]
+
+
+def char_mapping(integer):
+    """Maps a given integer (0-25) to a character (a-z)"""
+    return NUMBER_TABLE[integer]

@@ -1,4 +1,4 @@
-from crypto.utilities import nslice
+from crypto.utilities import nslice, int_mapping, char_mapping
 from crypto.math import modular_matrix_inverse
 import gmpy2
 import math
@@ -26,25 +26,14 @@ class HillCipher(object):
         return M
 
     @classmethod
-    def _numberize(cls, c):
-        """Turns a character into an int"""
-        # 65 = A in ascii
-        return ord(c.upper()) - 65
-
-    @classmethod
-    def _characterize(cls, n):
-        """Turns an int into a character"""
-        return chr(n + 65)
-
-    @classmethod
     def encode(cls, string):
         """Encodes an alphabetic string such that A:0, B:1, C:2, ..."""
-        return [cls._numberize(c.upper()) for c in string]
+        return [int_mapping(c.upper()) for c in string]
 
     @classmethod
     def decode(cls, nums):
         """Decodes a numeric list such that 0:A, 1:B, 2:C, ..."""
-        return ''.join(cls._characterize(n) for n in nums).upper()
+        return ''.join(char_mapping(int(n)) for n in nums).upper()
 
     @classmethod
     def pad_message(cls, message, block_size):
