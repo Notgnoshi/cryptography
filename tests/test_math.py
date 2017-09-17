@@ -6,10 +6,15 @@ import unittest
 
 
 class MathTest(unittest.TestCase):
-    def test_modular_matrix_inverse(self):
-        m = np.matrix([[7, 14], [20, 19]])
+    def test_modular_matrix_inverse_1(self):
+        m = np.matrix([[7, 14], [20, 19]], dtype=int)
         m_inv = np.matrix([[5, 10], [18, 21]], dtype=int)
         self.assertSequenceEqual(modular_matrix_inverse(m, 26).tolist(), m_inv.tolist())
+
+    def test_modular_matrix_inverse_2(self):
+        m = np.matrix([[1, 1, 1], [1, 2, 3], [1, 4, 9]])
+        m_inv = np.matrix([[3, 3, 6], [8, 4, 10], [1, 4, 6]])
+        self.assertSequenceEqual(modular_matrix_inverse(m, 11).tolist(), m_inv.tolist())
 
     def test_infinite_prime_generator(self):
         generator = primes()
