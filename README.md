@@ -11,6 +11,7 @@ Coursework for CSC 512, Cryptography.
     - `numpy`
     - Tentatively `sympy`.
     - Use `sudo -H pip install gmpy2 numpy sympy` to install
+        * `gmpy2` requires: `sudo apt install libgmp3-dev libmpc-dev libmpfr-dev`
 
     Example usage may be found in the course homework and in the unit tests.
 
