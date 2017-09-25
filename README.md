@@ -41,6 +41,7 @@ Coursework for CSC 512, Cryptography.
 * **Enigma simulator**
 * Make lower/upper case consistent
 * Allow for more than just `a-z` input
+* Classical Cipher Attacks
 * Portfolio writeup
     - Documentation
     - Algorithm explanation
