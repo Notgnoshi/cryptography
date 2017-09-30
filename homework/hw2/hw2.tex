@@ -3,11 +3,14 @@
 \usepackage[margin=1in]{geometry}
 \usepackage[hidelinks]{hyperref}
 
-\setminted{autogobble=true, style=tango}
+\setminted{autogobble=true, style=tango, breaklines}
 \renewcommand{\thesubsection}{\thesection.\alph{subsection}}
 
 \renewcommand{\mod}[1]{\mathrm{mod}\ #1}
 \renewcommand{\pmod}[1]{\ (\mod{#1})}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\newcommand{\Z}{\mathbb{Z}}
 \newtheorem*{defn}{Definition}
 \newtheorem*{thm}{Theorem}
 
@@ -18,13 +21,64 @@
 \maketitle
 
 \section{} \textit{Let $p$ be prime. Show that $a^p \equiv a \pmod{p}$ for all $a$.}
+
+    \begin{proof}
+        Let $p$ be prime, and further suppose $p$ does not divide $a$. Then from Fermat's Little Theorem, we have
+
+        \begin{align*}
+            a^{p - 1} &\equiv 1 &\pmod{p}\\
+            a \cdot a^{p - 1} &\equiv a \cdot 1 &\pmod{p}\\
+            a^p &\equiv a &\pmod{p}\\
+        \end{align*}
+
+        Thus, as long as $p \nmid a$, we have $a^p \equiv a \pmod{p}$.
+    \end{proof}
+
 \section{} \textit{Let $p \geq 3$ be prime. Show that the only solutions to $x^2 \equiv 1 \pmod{p}$ are $x \equiv \pm 1 \pmod{p}$.}
+
+    \begin{proof}
+        Let $p$ be an odd prime. Then
+
+        \begin{align*}
+            x^2 &\equiv 1 &\pmod{p}\\
+            x^2 - 1 &\equiv 0 &\pmod{p}\\
+            (x + 1)(x - 1) &\equiv 0 &\pmod{p}\\
+        \end{align*}
+
+        Since $p$ is prime, $x$ must be $\pm 1$.
+    \end{proof}
+
 \section{}
     \subsection{} \textit{Find all four solutions to $x^2 \equiv 133 \pmod{143}$.}
     \subsection{} \textit{Find all two solutions to $x^2 \equiv 77 \pmod{143}$.}
+
+        The Python snippet below solves both equations
+
+        \inputminted{python}{hw2_3.py}
+
+        and outputs the following:
+
+        \begin{minted}{python}
+            [43, 56, 87, 100]
+            [44, 99]
+        \end{minted}
 \section{}
     \subsection{} \textit{Find solutions to $3x - 15y = 2$.}
+
+        Note $\gcd(3, 15) = 3$, which does not divide 2. Thus there is no integer solution for $3x - 15y = 2$.
     \subsection{} \textit{Find solutions to $3x - 14y = 2$.}
+
+        However, $\gcd(3, -14) = -1$. The following
+
+        \begin{minted}{python}
+            from crypto.math import extended_gcd
+            g, x, y = extended_gcd(3, -14)
+        \end{minted}
+
+        gives $x = -5$ and $y = -1$. (note 14 is positive) Thus we have $$3 \cdot (-5) - 14 \cdot (-1) = -1.$$ Multiplying both sides by $-2$, we get $$2 \cdot 3 \cdot 5 - 2 \cdot 14 \cdot 1 = 2,$$ or rather $$3 \cdot 10 - 14 \cdot 2 = 2$$
+
+        Thus, $x = 10$ and $y = 2$ is a solution.
+
 \section{} \textit{Prove the following theorem.}
     \begin{thm}
         Let $p$ be a position prime and $g$ be a primitive root modulo $p$.
@@ -35,7 +89,25 @@
     \end{thm}
 \section{}
     \subsection{} \textit{Let $p$ be a positive prime. Define a \textbf{primitive root modulo $p$}.}
+
+        \begin{defn}
+            A \textbf{primitive root} or \textbf{generator} mod $p$ is a number whose powers mod $p$ generate every element of $\Z_p$.
+
+            Equivalently, suppose $\phi : \Z_p \to \Z_p$ defined by $\phi(x) = a^x \pmod{p}$. $a$ is a primitive root mod $p$ if $\phi(\Z_p) = \Z_p$.
+        \end{defn}
     \subsection{} \textit{Identify all primitive root modulo $11$. Is your solution consistent with the claim that there are $\phi(\phi(p))$ primitive roots modulo $p$?}
+
+        The following
+        \inputminted{python}{hw2_6.py}
+        gives
+        \begin{minted}{python}
+            [2, 6, 7, 8]
+        \end{minted}
+        as the primitive roots of $11$.
+
+        $$\phi(\phi(11)) = \phi(10) = \phi(2 \cdot 5) = (2 - 1)(5 - 1) = 4$$
+
+        This my solution is consistent. with the above claim.
     \subsection{} \textit{We stated the \textbf{Primitive Root Theorem}:}
 
         \begin{thm}
