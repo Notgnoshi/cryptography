@@ -1,18 +1,5 @@
 \documentclass[12pt]{article}
-\usepackage{amsmath, amssymb, amsthm, cancel, color, parskip, minted}
-\usepackage[margin=1in]{geometry}
-\usepackage[hidelinks]{hyperref}
-
-\setminted{autogobble=true, style=tango, breaklines}
-\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
-
-\renewcommand{\mod}[1]{\mathrm{mod}\ #1}
-\renewcommand{\pmod}[1]{\ (\mod{#1})}
-\renewcommand{\qedsymbol}{$\blacksquare$}
-
-\newcommand{\Z}{\mathbb{Z}}
-\newtheorem*{defn}{Definition}
-\newtheorem*{thm}{Theorem}
+\input{../hw.sty}
 
 \title{Homework 2}
 \author{Austin Gill}
@@ -62,6 +49,7 @@
             [43, 56, 87, 100]
             [44, 99]
         \end{minted}
+
 \section{}
     \subsection{} \textit{Find solutions to $3x - 15y = 2$.}
 
@@ -87,6 +75,7 @@
             \item Let $j$ and $k$ be integers, then $$g^j \equiv g^k \pmod{p} \Longleftrightarrow j \equiv k \pmod{p - 1}$$
         \end{enumerate}
     \end{thm}
+
 \section{}
     \subsection{} \textit{Let $p$ be a positive prime. Define a \textbf{primitive root modulo $p$}.}
 
@@ -95,6 +84,7 @@
 
             Equivalently, suppose $\phi : \Z_p \to \Z_p$ defined by $\phi(x) = a^x \pmod{p}$. $a$ is a primitive root mod $p$ if $\phi(\Z_p) = \Z_p$.
         \end{defn}
+
     \subsection{} \textit{Identify all primitive root modulo $11$. Is your solution consistent with the claim that there are $\phi(\phi(p))$ primitive roots modulo $p$?}
 
         The following
@@ -107,7 +97,8 @@
 
         $$\phi(\phi(11)) = \phi(10) = \phi(2 \cdot 5) = (2 - 1)(5 - 1) = 4$$
 
-        This my solution is consistent. with the above claim.
+        Thus my solution is consistent with the above claim.
+
     \subsection{} \textit{We stated the \textbf{Primitive Root Theorem}:}
 
         \begin{thm}
