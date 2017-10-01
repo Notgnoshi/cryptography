@@ -1,0 +1,20 @@
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cancel}
+\usepackage{color}
+\usepackage{parskip}
+\usepackage{minted}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\setminted{autogobble=true, style=tango, breaklines}
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+\renewcommand{\mod}[1]{\mathrm{mod}\ #1}
+\renewcommand{\pmod}[1]{\ (\mod{#1})}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newtheorem*{defn}{Definition}
+\newtheorem*{thm}{Theorem}
