@@ -69,12 +69,30 @@
 
 \section{} \textit{Prove the following theorem.}
     \begin{thm}
-        Let $p$ be a position prime and $g$ be a primitive root modulo $p$.
+        Let $p$ be a positive prime and $g$ be a primitive root modulo $p$.
         \begin{enumerate}
             \item Let $n$ be an integer, then $$g^n \equiv 1 \pmod{p} \Longleftrightarrow n \equiv 0 \pmod{p - 1}$$
             \item Let $j$ and $k$ be integers, then $$g^j \equiv g^k \pmod{p} \Longleftrightarrow j \equiv k \pmod{p - 1}$$
         \end{enumerate}
     \end{thm}
+
+    \begin{proof} Let $p$ be a positive prime and $g$ be a primitive root modulo $p$.
+        \begin{enumerate}
+            \item Let $n$ be an integer.
+            \begin{itemize}
+                \item[$(\Longrightarrow)$] Suppose $g^n \equiv 1 \pmod{p}$. We wish to show that $n$ divides $p - 1$. Thus we have
+                $$n = (p - 1)q + r$$
+                for some remainder $r$ between $0$ and $p - 1$. We wish to show that $r = 0$. We then have
+                $$1 \equiv g^n \equiv g^{(p - 1)q + r} \equiv g^{(p - 1)q}g^r \pmod{p}$$
+                but by Fermat's Little Theorem, we have
+                $$g^{(p - 1)q} \equiv (g^q)^{p - 1} \equiv 1 \pmod{p}$$
+                so then we have
+                $$1 \equiv g^n \equiv 1 \cdot g^r \equiv g^r \pmod{p}$$
+
+                \item[$(\Longleftarrow)$] Suppose $n \equiv 0 \pmod{p - 1}$.
+            \end{itemize}
+        \end{enumerate}
+    \end{proof}
 
 \section{}
     \subsection{} \textit{Let $p$ be a positive prime. Define a \textbf{primitive root modulo $p$}.}
@@ -82,7 +100,7 @@
         \begin{defn}
             A \textbf{primitive root} or \textbf{generator} mod $p$ is a number whose powers mod $p$ generate every element of $\Z_p$.
 
-            Equivalently, suppose $\phi : \Z_p \to \Z_p$ defined by $\phi(x) = a^x \pmod{p}$. $a$ is a primitive root mod $p$ if $\phi(\Z_p) = \Z_p$.
+            Equivalently, suppose $\phi : \Z_p \to \Z_p$ defined by $\phi(x) = a^x \pmod{p}$. $a$ is a primitive root mod $p$ iff $\phi(\Z_p) = \Z_p$.
         \end{defn}
 
     \subsection{} \textit{Identify all primitive root modulo $11$. Is your solution consistent with the claim that there are $\phi(\phi(p))$ primitive roots modulo $p$?}
