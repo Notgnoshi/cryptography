@@ -7,14 +7,18 @@
 % suck.
 \usepackage{parskip}
 \usepackage{minted}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
 \usepackage[margin=1in]{geometry}
 \usepackage[hidelinks]{hyperref}
 
 \setminted{autogobble=true, style=tango, breaklines}
+\usetikzlibrary{arrows, shapes, positioning}
 
 \renewcommand{\thesubsection}{\thesection.\alph{subsection}}
-\renewcommand{\mod}[1]{\mathrm{mod}\ #1}
-\renewcommand{\pmod}[1]{\ (\mod{#1})}
+% \renewcommand{\mod}[1]{\mathrm{mod}\ #1}
+% \renewcommand{\pmod}[1]{(\mod{#1})}
 \renewcommand{\qedsymbol}{$\blacksquare$}
 
 \newcommand{\Z}{\mathbb{Z}}
