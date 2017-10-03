@@ -72,6 +72,7 @@
         Let $p$ be a positive prime and $g$ be a primitive root modulo $p$.
         \begin{enumerate}
             \item Let $n$ be an integer, then $$g^n \equiv 1 \pmod{p} \Longleftrightarrow n \equiv 0 \pmod{p - 1}$$
+
             \item Let $j$ and $k$ be integers, then $$g^j \equiv g^k \pmod{p} \Longleftrightarrow j \equiv k \pmod{p - 1}$$
         \end{enumerate}
     \end{thm}
@@ -88,20 +89,62 @@
                 $$g^{(p - 1)q} \equiv (g^q)^{p - 1} \equiv 1 \pmod{p}$$
                 so then we have
                 $$1 \equiv g^n \equiv 1 \cdot g^r \equiv g^r \pmod{p}$$
+                We wish to show that this implies $r = 0$. So by way of contradiction, suppose $r \neq 0$. But $0 \leq r < p - 1$, so rather, suppose $r > 0$.
 
-                \item[$(\Longleftarrow)$] Suppose $n \equiv 0 \pmod{p - 1}$.
+                Consider then, the powers of $g \pmod{p}$. $g$ is a primitive root, or a generator, of $p$, so
+                \begin{align*}
+                    1 &\equiv g^r &\pmod{p}\\
+                    g \cdot 1\equiv g &\equiv g \cdot g^r \equiv g^{r + 1} &\pmod{p}\\
+                    g^2 &\equiv g^{r + 2} &\pmod{p}\\
+                    &\vdots &\vdots
+                \end{align*}
+                Thus the powers of $g$ generate only the $r$ numbers $g, g^2, \dots, 1$. However, $r$ must be less than $p - 1$, so not every number mod $p$ may be a power of $g$. This is a contradiction. Thus $r$ must equal $0$. Therefore $p - 1$ must divide $n$.
+
+                \item[$(\Longleftarrow)$] Suppose $n \equiv 0 \pmod{p - 1}$. Then $n = (p - 1)q$ for some $q$. Thus we have
+                $$g^n \equiv g^{(p - 1)q} \equiv {(g^q)}^{p - 1} \pmod{p}$$
+                By Fermat's Little Theorem we have
+                $$g^n \equiv {(g^q)}^{p - 1} \equiv 1 \pmod{p}$$
+                which is the result we wished for.
+            \end{itemize}
+
+            \item Let $j, k \in \Z$, and without loss of generality suppose $j \geq k$.
+            \begin{itemize}
+                \item[$(\Longrightarrow)$] Suppose $g^j \equiv g^k \pmod{p}$. We wish to show that $j \equiv k \pmod{p - 1}$. We have
+                \begin{align*}
+                    g^j &\equiv g^k &\pmod{p}\\
+                    \frac{g^j}{g^k} &\equiv 1 &\pmod{p}\\
+                    g^{j - k} &\equiv 1 &\pmod{p}\\
+                \end{align*}
+                By part (1), we have $j - k \equiv 0 \pmod{p - 1}$, implying that $j \equiv k \pmod{p - 1}$
+
+                \item[$(\Longleftarrow)$] Suppose $j \equiv k \pmod{p - 1}$. We wish to show that $g^j \equiv g^k \pmod{p}$. If $j \equiv k \pmod{p - 1}$, then $j - k \equiv 0 \pmod{p - 1}$. Again by part (1), we have that $g^{j - k} \equiv 1 \pmod{p}$.
+                \begin{align*}
+                    g^{j - k} &\equiv 1 &\pmod{p}\\
+                    g^k \cdot g^{j - k} &\equiv g^k \cdot 1 &\pmod{p}\\
+                    g^{k + j - k} \equiv g^j &\equiv g^k &\pmod{p}\\
+                \end{align*}
+                Thus we have $g^j \equiv g^k \pmod{p}$.
             \end{itemize}
         \end{enumerate}
     \end{proof}
 
 \section{}
-    \subsection{} \textit{Let $p$ be a positive prime. Define a \textbf{primitive root modulo $p$}.}
-
+    \subsection{}
         \begin{defn}
             A \textbf{primitive root} or \textbf{generator} mod $p$ is a number whose powers mod $p$ generate every element of $\Z_p$.
 
-            Equivalently, suppose $\phi : \Z_p \to \Z_p$ defined by $\phi(x) = a^x \pmod{p}$. $a$ is a primitive root mod $p$ iff $\phi(\Z_p) = \Z_p$.
+            Equivalently, suppose $\phi : \Z_p \setminus \{0\} \to \Z_p \setminus \{0\}$ defined by $\phi(x) = a^x \pmod{p}$. $a$ is a primitive root mod $p$ iff $\phi(\Z_p \setminus \{0\}) = \Z_p \setminus \{0\}$.
         \end{defn}
+
+        This is my understanding from discussion in class and the textbook. However, looking up the definition gives this:
+
+        \begin{defn}
+            A number $g$ is a primitive root of $n$ if every number $a$ that is coprime with $n$ is congruents to some power of $g$ mod $n$.
+
+            Equivalently, for every integer $a$ coprime with $n$, there exists a $k \in \Z$ such that $g^k \equiv a \pmod{n}$.
+        \end{defn}
+
+        This impacts the theorem stated in part (c), because every number less than a prime $p$ is coprime with $p$. This is not true for composite numbers. It also impacts the implementation of the following Python script.
 
     \subsection{} \textit{Identify all primitive root modulo $11$. Is your solution consistent with the claim that there are $\phi(\phi(p))$ primitive roots modulo $p$?}
 
@@ -117,6 +160,17 @@
 
         Thus my solution is consistent with the above claim.
 
+        \subsubsection{Alternate Script Implementation}
+        \begin{minted}{python}
+            def primitive_roots(m):
+                """Yields the primitive roots of `m`"""
+                for a in range(1, m):
+                    if set(powmod(a, p, m) for p in range(1, m)) == set(range(1, m)):
+                        yield a
+        \end{minted}
+
+        This implementation also yields \texttt{[2, 6, 7, 8]} as the primitive roots of $11$, but does not allow composite numbers to have primitive roots.
+
     \subsection{} \textit{We stated the \textbf{Primitive Root Theorem}:}
 
         \begin{thm}
@@ -131,5 +185,50 @@
 
         \textit{Hint: Check modulo $8$.}
 
-\section{} \textit{Question 3.27 in the book.}
+        The above Python snippet yields an empty list as the primitive roots of $8$. However, it yields the list \texttt{[3, 7]} as the primitive roots of $10$. Thus there exists a unit that is a primitive root of a composite $n$, and there does not exist a unit that is a primitive root of a different composite $m$.
+
+\section{} Alice designs a cryptosystem as follows.
+    \begin{itemize}
+        \item She chooses two distinct primes $p$ and $q$ congruent to $3 \mod 4$, and keeps them secret.
+        \item She makes $n = pq$ public.
+        \item When Bob wants to send Alice a message $m$, he computes $x = m^2 \pmod{n}$ and sends $x$ to Alice.
+        \item Alice decrypts the message as follows:
+        \begin{enumerate}
+            \item Given a number $x$, compute the square roots of $x \pmod{n}$. There will usually be more than one square root. Possible because Alice knows $p$ and $q$.
+            \item Choose a square root at random. Assume this is $m$.
+            \begin{enumerate}
+                \item If the message is meaningful, stop.
+                \item Otherwise pick a different random square root.
+            \end{enumerate}
+        \end{enumerate}
+    \end{itemize}
+
+    \subsection{} \textit{Why should Alice expect to get a meaningful message fairly soon?}
+
+        There are only four possible solutions to $m^2 \equiv x \pmod{pq}$ obtainable by the Chinese Remainder Theorem:
+
+        \begin{figure}[H]
+            \centering
+            \begin{tikzpicture}[>=stealth, node distance=4cm]
+                \node[] (A) {$m^2 \equiv x \pmod{pq}$};
+                \node[below left of=A] (B) {$\sqrt{m^2} \equiv \sqrt{x} \pmod{p}$};
+                \node[below right of=A] (C) {$\sqrt{m^2} \equiv \sqrt{x} \pmod{q}$};
+                \node[below of=B] (D) {$m \equiv \pm \sqrt{x} \equiv x^{\frac{1}{4}(p + 1} \pmod{p}$};
+                \node[below of=C] (E) {$m \equiv \pm \sqrt{x} \equiv x^{\frac{1}{4}(q + 1} \pmod{q}$};
+
+                \draw[->] (A) -- (B);
+                \draw[->] (A) -- (C);
+                \draw[->] (B) -- (D);
+                \draw[->] (C) -- (E);
+            \end{tikzpicture}
+            \caption{The solutions of $m^2 \equiv x \pmod{pq}$}
+        \end{figure}
+
+    \subsection{} \textit{If Oscar intercepts $x$, and already knows $n$, why should it be hard to determine $m$?}
+
+        The primary difficulty of this problem lies in factoring $n$ into $p$ and $q$, something that Alice already knows.
+
+    \subsection{} \textit{If Eve breaks into Alice's office and is able to execute chosen-ciphertext attacks on Alice's decryption machine, how can she determine the factorization of $n = pq$?}
+
+    According to the statement on page 88 of the textbook, finding the four solutions $\pm a$, $\pm b$ to $x^2 \equiv y \pmod{n}$ is computationally equivalent to factoring $n$. Alice's decryption machine effectively returns the four solutions $\pm a$, $\pm b$. We know that $a \equiv b \pmod{p}$, so then $\gcd(a - b, n) = p$. Finding $q$ is a simple matter from there.
 \end{document}
