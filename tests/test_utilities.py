@@ -1,8 +1,8 @@
-from crypto.utilities import preprocessor
+from crypto.utilities import preprocess
 import unittest
 
 
-class PreprocessorTest(unittest.TestCase):
+class PreprocessTest(unittest.TestCase):
     def test_frankenstein(self):
         text = """From Italy they visited Germany and France.  I, their eldest child, was
         born at Naples, and as an infant accompanied them in their rambles.  I
@@ -15,13 +15,13 @@ class PreprocessorTest(unittest.TestCase):
         # Breaking this onto multiple lines breaks the test. Sorry pep8.
         expected = """fromitalytheyvisitedgermanyandfranceitheireldestchildwasbornatnaplesandasaninfantaccompaniedthemintheirramblesiremainedforseveralyearstheironlychildmuchastheywereattachedtoeachothertheyseemedtodrawinexhaustiblestoresofaffectionfromaverymineoflovetobestowthemuponmemymotherstendercaressesandmyfatherssmileofbenevolentpleasurewhileregardingmearemyfirstrecollections"""
 
-        self.assertSequenceEqual(''.join(preprocessor(text)), expected)
+        self.assertSequenceEqual(''.join(preprocess(text)), expected)
 
     def test_unicode(self):
         text = 'ÈÆÖÉEAEOE'
         expected = 'eaeoe'
-        self.assertSequenceEqual(''.join(preprocessor(text)), expected)
+        self.assertSequenceEqual(''.join(preprocess(text)), expected)
 
         text = 'ÈÆÖÉEAEOE'
         expected = 'èæöéeaeoe'
-        self.assertSequenceEqual(''.join(preprocessor(text, ascii=False)), expected)
+        self.assertSequenceEqual(''.join(preprocess(text, ascii=False)), expected)

@@ -1,5 +1,5 @@
 from crypto.random import LinearFeedbackShiftRegister
-from crypto.utilities import Bitstream, Bitfield, nslice, preprocessor
+from crypto.utilities import Bitstream, Bitfield, nslice
 
 
 class LfsrCipher(object):
