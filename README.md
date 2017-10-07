@@ -41,3 +41,7 @@ Coursework for CSC 512, Cryptography.
 * Portfolio writeup
     - Documentation
     - Algorithm explanation
+* GCD, extended GCD
+* modinverse
+* toy DES
+* DES
