@@ -19,10 +19,6 @@ Coursework for CSC 512, Cryptography.
 
     Class homework.
 
-* `short/`
-
-    Short snippets that don't really belong in the `crypto` library.
-
 * `tests/`
 
     Unit tests for the `crypto` library. Run with `python3 tests/runtests.py`.
@@ -34,14 +30,18 @@ Coursework for CSC 512, Cryptography.
 * Library unit tests: `tests/`
 * Library examples: `examples/`
 * Documentation/writeup LaTeX source: `doc/`
+    - Provide makefile for compiling LaTeX documentation?
 
 ---
 
 ## TODO
-* **Enigma simulator**
 * Make lower/upper case consistent
-* Allow for more than just `a-z` input
+* Allow for more than just `a-z` input?
 * Classical Cipher Attacks
 * Portfolio writeup
     - Documentation
     - Algorithm explanation
+* `PreProcessor` class to convert to lowercase, ascii alphabetic, etc
+* `PostProcessor` class to chunk output?
+    - Probably just call this `Chunker`...
+* `Cipher` base class that preprocesses text, defines common interfaces, etc?
