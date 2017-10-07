@@ -19,7 +19,7 @@ class AffineAttack(object):
         """
         most_common = self.frequencies.most_common(3)
         b1 = int_mapping(most_common[0][0])
-        # Pick `e` and `t` so that the matrix is invertible mod 26.
+        # Pick `e` and `t` over `e` and `a` so that the matrix is invertible mod 26.
         b3 = int_mapping(most_common[2][0])
         b = numpy.matrix([[b1], [b3]])
         m_inverse = numpy.matrix([[19, 7], [3, 24]])
