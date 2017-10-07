@@ -2,13 +2,14 @@
 import sys
 sys.path.append('../../../')
 from crypto.math import SymbolFrequencies
+from crypto.utilities import preprocessor
 
 
 def main(texts):
     """Print the letter frequency table for the given files."""
     for text in texts:
         with open(text, 'r') as f:
-            count = SymbolFrequencies(''.join(f).upper())
+            count = SymbolFrequencies(''.join(preprocessor(''.join(f))))
             print(80 * '=')
             print('file:', text)
             print(80 * '=')

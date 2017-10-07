@@ -1,3 +1,4 @@
+from crypto.utilities import preprocessor
 from collections import Counter
 from operator import itemgetter
 
@@ -5,9 +6,9 @@ from operator import itemgetter
 class SymbolFrequencies(Counter):
     """Calculates a symbol frequency table from a given iterable"""
 
-    def __init__(self, iterable, filter_key=str.isalpha):
+    def __init__(self, iterable):
         # Call the parent Counter constructor.
-        super().__init__(filter(filter_key, iterable))
+        super().__init__(iterable)
         # Total number of symbols.
         self.total = sum(self.values())
         # Allow same syntax for counts as for proportions.
