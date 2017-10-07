@@ -1,4 +1,5 @@
 from crypto.math import *
+from crypto.utilities import nslice
 import math
 import numpy as np
 import random
@@ -73,3 +74,62 @@ class MathTest(unittest.TestCase):
         g, x, y = extended_gcd(a, b)
         self.assertEqual(g, math.gcd(a, b))
         self.assertEqual(g, a * x + b * y)
+
+    def test_continued_fraction_coeffs(self):
+        decimal = math.sqrt(5)
+        a_ks = fraction_coeffs(decimal)
+        values = [a for a, _ in zip(a_ks, range(4))]
+        self.assertSequenceEqual(values, [2, 4, 4, 4])
+
+        decimal = math.pi
+        a_ks = fraction_coeffs(decimal)
+        values = [a for a, _ in zip(a_ks, range(7))]
+        self.assertSequenceEqual(values, [3, 7, 15, 1, 292, 1, 1])
+
+        decimal = math.sqrt(13)
+        a_ks = fraction_coeffs(decimal)
+        values = [a for a, _ in zip(a_ks, range(6))]
+        self.assertSequenceEqual(values, [3, 1, 1, 1, 1, 6])
+
+        decimal = math.sqrt(12)
+        a_ks = fraction_coeffs(decimal)
+        values = [a for a, _ in zip(a_ks, range(5))]
+        self.assertSequenceEqual(values, [3, 2, 6, 2, 6])
+
+        decimal = math.sqrt(7)
+        a_ks = fraction_coeffs(decimal)
+        values = [a for a, _ in zip(a_ks, range(5))]
+        self.assertSequenceEqual(values, [2, 1, 1, 1, 4])
+
+        decimal = 3.764705882
+        a_ks = fraction_coeffs(decimal)
+        values = [a for a, _ in zip(a_ks, range(5))]
+        # The textbook has 9803921 as the last value. I suspect this difference is due
+        # to the book using more decimal places than they show in the text.
+        self.assertSequenceEqual(values, [3, 1, 3, 4, 9803917])
+
+    def test_continued_fraction_values(self):
+        decimal = math.sqrt(5)
+        C_ks = fraction_values(decimal)
+        values = [a for a, _ in zip(C_ks, range(5))]
+        self.assertSequenceEqual(values, [(2, 1), (9, 4), (38, 17), (161, 72), (682, 305)])
+
+        decimal = math.pi
+        C_ks = fraction_values(decimal)
+        values = [a for a, _ in zip(C_ks, range(5))]
+        self.assertSequenceEqual(values, [(3, 1), (22, 7), (333, 106), (355, 113), (103993, 33102)])
+
+        decimal = math.sqrt(12)
+        C_ks = fraction_values(decimal)
+        values = [a for a, _ in zip(C_ks, range(5))]
+        self.assertSequenceEqual(values, [(3, 1), (7, 2), (45, 13), (97, 28), (627, 181)])
+
+    def test_approximate_decimal(self):
+        p, q = approximate_decimal(math.pi, 1e-2)
+        self.assertEqual((p, q), (22, 7))
+
+        p, q = approximate_decimal(math.pi, 1e-3)
+        self.assertEqual((p, q), (333, 106))
+
+        p, q = approximate_decimal(math.pi, 1e-18)
+        self.assertEqual((p, q), (245850922, 78256779))
