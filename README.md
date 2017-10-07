@@ -37,6 +37,7 @@ Coursework for CSC 512, Cryptography.
 ## TODO
 * Make lower/upper case consistent
 * Allow for more than just `a-z` input?
+* Refactor Hill cipher to be less fragile
 * Classical Cipher Attacks
 * Portfolio writeup
     - Documentation
