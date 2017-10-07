@@ -1,4 +1,4 @@
-from crypto.utilities import int_mapping, char_mapping
+from crypto.utilities import int_mapping, char_mapping, preprocessor
 import gmpy2
 
 
@@ -28,7 +28,7 @@ class AffineCipher(object):
 
     def encrypt(self, message):
         """Textually encrypts a given message."""
-        return ''.join(char_mapping(num) for num in self._encrypt_str(message.lower()))
+        return ''.join(char_mapping(num) for num in self._encrypt_str(preprocessor(message)))
 
     def decrypt(self, cipher):
         """Textually decrypts a given ciphertext."""

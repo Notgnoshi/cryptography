@@ -1,4 +1,4 @@
-from crypto.utilities import int_mapping, char_mapping
+from crypto.utilities import int_mapping, char_mapping, preprocessor
 import itertools
 
 
@@ -10,7 +10,8 @@ class VigenereCipher(object):
 
     def encrypt(self, message):
         """Encrypts the given message using a Vigenere Cipher"""
-        cipher = (((k + int_mapping(c)) % 26) for k, c in zip(itertools.cycle(self.key), message))
+        cipher = (((k + int_mapping(c)) % 26)
+                  for k, c in zip(itertools.cycle(self.key), preprocessor(message)))
         return ''.join(char_mapping(n) for n in cipher)
 
     def decrypt(self, cipher):

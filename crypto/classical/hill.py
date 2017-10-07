@@ -1,4 +1,4 @@
-from crypto.utilities import nslice, int_mapping, char_mapping
+from crypto.utilities import nslice, int_mapping, char_mapping, preprocessor
 from crypto.math import modular_matrix_inverse
 import gmpy2
 import math
@@ -48,7 +48,7 @@ class HillCipher(object):
         """Encrypts a the given message using the Hill Cipher."""
 
         coded_blocks = []
-        for block in nslice(message, self.block_size, self.fill_value):
+        for block in nslice(preprocessor(message), self.block_size, self.fill_value):
             nums = numpy.matrix(self.encode(block))
             coded_blocks.append(numpy.mod(numpy.matmul(nums, self.key), self.alphabet_size))
 
