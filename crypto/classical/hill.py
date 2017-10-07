@@ -28,12 +28,12 @@ class HillCipher(object):
     @classmethod
     def encode(cls, string):
         """Encodes an alphabetic string such that A:0, B:1, C:2, ..."""
-        return [int_mapping(c.upper()) for c in string]
+        return [int_mapping(c.lower()) for c in string]
 
     @classmethod
     def decode(cls, nums):
         """Decodes a numeric list such that 0:A, 1:B, 2:C, ..."""
-        return ''.join(char_mapping(int(n)) for n in nums).upper()
+        return ''.join(char_mapping(int(n)) for n in nums).lower()
 
     @classmethod
     def pad_message(cls, message, block_size):
@@ -42,7 +42,7 @@ class HillCipher(object):
         if len(message) % block_size == 0:
             return message
 
-        return message + 'X' * (block_size - (len(message) % block_size))
+        return message + 'x' * (block_size - (len(message) % block_size))
 
     def encrypt(self, message):
         """Encrypts a the given message using the Hill Cipher."""

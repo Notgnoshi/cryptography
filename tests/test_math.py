@@ -133,3 +133,17 @@ class MathTest(unittest.TestCase):
 
         p, q = approximate_decimal(math.pi, 1e-18)
         self.assertEqual((p, q), (245850922, 78256779))
+
+
+class SymbolFrequencyTest(unittest.TestCase):
+    def test_counts(self):
+        symbols = 'aaaabbbb'
+        expected = {'a': 4, 'b': 4}
+        actual = SymbolFrequencies(symbols)
+        self.assertEqual(actual, expected)
+
+    def test_proportions(self):
+        symbols = 'aaaabbbb'
+        expected = {'a': 1 / 2, 'b': 1 / 2}
+        actual = SymbolFrequencies(symbols).proportions
+        self.assertEqual(actual, expected)
