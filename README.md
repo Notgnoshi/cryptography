@@ -41,7 +41,3 @@ Coursework for CSC 512, Cryptography.
 * Portfolio writeup
     - Documentation
     - Algorithm explanation
-* `PreProcessor` class to convert to lowercase, ascii alphabetic, etc
-* `PostProcessor` class to chunk output?
-    - Probably just call this `Chunker`...
-* `Cipher` base class that preprocesses text, defines common interfaces, etc?
