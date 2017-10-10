@@ -1,3 +1,8 @@
+from .preprocess import preprocess
+from .utils import nslice
+from functools import reduce
+
+
 class Bitfield(object):
     """A utility class for bitfield manipulations"""
     @classmethod
@@ -43,22 +48,32 @@ class Bitfield(object):
 
         return integer
 
+    @classmethod
+    def bits_to_bytes(cls, bitstream):
+        """Converts a bitstream to a bytestream"""
+        # Reverse the eight_bits to account for endianness
+        return (reduce(lambda byte, bit: byte << 1 | bit, reversed(eight_bits)) for eight_bits in nslice(bitstream, 8))
+
 
 class Bitstream(object):
-    """Turns a sequence of bytes into a bit-by-bit bitstream of its lsbf binary representation."""
+    """Turns an iterable of bytes into a bit-by-bit bitstream of its lsbf binary representation."""
 
-    def __init__(self, byte_seq):
-        self.bitstream = self._bits(byte_seq)
+    def __init__(self, bytestream):
+        self.bytestream = bytestream
 
-    def _bits(self, bytes):
+    def _bits(self, bytestream):
         """A generator to yield bit after bit of the bitstream"""
-        for byte in bytes:
+        for byte in bytestream:
             for bit in Bitfield.bits(byte, 8):
                 yield bit
 
     def __iter__(self):
-        return self
+        return self._bits(self.bytestream)
 
-    def __next__(self):
-        """Get the next bit from the bitstream"""
-        return next(self.bitstream)
+
+class TextBitstream(Bitstream):
+    """Turns an iterable of characters into a Bitstream."""
+
+    def __init__(self, text):
+        # Convert a byte sequence of preprocessed text to a bitstream
+        super().__init__(ord(c) for c in preprocess(text))

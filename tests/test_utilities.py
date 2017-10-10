@@ -84,6 +84,18 @@ class BitfieldTest(unittest.TestCase):
         actual = Bitfield.bits_to_integer(bits)
         self.assertEqual(actual, num)
 
+    def test_bits_to_bytes(self):
+        string = b'abcd'
+        bits = [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 0,
+                0, 1, 1, 0]
+
+        bitstream = Bitstream(string)
+        bytestream = Bitfield.bits_to_bytes(bitstream)
+        self.assertListEqual(list(bytestream), list(string))
+
+        bytestream = Bitfield.bits_to_bytes(bits)
+        self.assertListEqual(list(bytestream), list(string))
+
 
 class BitstreamTest(unittest.TestCase):
     def test_bitstream_types(self):
@@ -105,3 +117,13 @@ class BitstreamTest(unittest.TestCase):
         actual = ''.join(str(bit) for bit in bitstream)
         expected = Bitfield.binary_string(string)
         self.assertSequenceEqual(actual, expected)
+
+    def test_text_bitstream(self):
+        string = 'abcd'
+        bitstream = TextBitstream(string)
+        # abcd in binary lsbf format
+        expected = [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0,
+                    0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0]
+
+        actual = list(bit for bit in bitstream)
+        self.assertListEqual(actual, expected)

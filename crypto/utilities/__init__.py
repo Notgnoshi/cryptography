@@ -2,7 +2,7 @@
 Utility submodule of crypto. Defines useful utilities.
 """
 
-from .bitstream import Bitstream, Bitfield
+from .bitstream import *
 from .utils import *
-from .chunker import chunker
-from .preprocess import preprocess
+from .chunker import *
+from .preprocess import *
