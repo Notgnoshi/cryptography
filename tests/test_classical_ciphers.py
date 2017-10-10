@@ -1,6 +1,6 @@
 from crypto.classical import *
 from crypto.random import generate_alpha, LinearFeedbackShiftRegister
-from crypto.utilities import Bitfield
+from crypto.utilities import *
 import itertools
 import numpy
 import math
