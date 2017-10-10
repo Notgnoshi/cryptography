@@ -9,10 +9,13 @@ class HillCipher(object):
     """Implements a classical Hill Cipher."""
 
     def __init__(self, key=None, block_size=5, alphabet_size=26):
+        # Generate a key if one is not given.
         self.key = key if key is not None else self.generate_key(block_size, alphabet_size)
-        self.block_size, _ = key.shape
+        # Infer the block_size if the key was passed in.
+        self.block_size, _ = self.key.shape
         self.alphabet_size = alphabet_size
-        self.fill_value = 'X'
+        self.key_inverse = modular_matrix_inverse(self.key, self.alphabet_size)
+        self.fill_value = 'x'
 
     @classmethod
     def generate_key(cls, block_size, alphabet_size=26):
@@ -27,48 +30,45 @@ class HillCipher(object):
 
     @classmethod
     def encode(cls, string):
-        """Encodes an alphabetic string such that A:0, B:1, C:2, ..."""
-        return [int_mapping(c.lower()) for c in string]
+        """Encodes an alphabetic string such that a:0, b:1, c:2, ..."""
+        return [int_mapping(c) for c in string]
 
     @classmethod
     def decode(cls, nums):
-        """Decodes a numeric list such that 0:A, 1:B, 2:C, ..."""
-        return ''.join(char_mapping(int(n)) for n in nums).lower()
+        """Decodes a numeric list such that 0:a, 1:b, 2:c, ..."""
+        return ''.join(char_mapping(int(n)) for n in nums)
 
     @classmethod
     def pad_message(cls, message, block_size):
-        """Pads a message with enough 'X's to produce full blocks."""
-        # If the message length is evenly divisible by the block size, don't pad.
-        if len(message) % block_size == 0:
-            return message
-
-        return message + 'x' * (block_size - (len(message) % block_size))
+        """Pads a message with enough 'x's to produce full blocks."""
+        return message + 'x' * ((block_size - len(message)) % block_size)
 
     def encrypt(self, message):
         """Encrypts a the given message using the Hill Cipher."""
-
-        coded_blocks = []
+        blocks = []
+        # Convert the message into blocks with the given fill value to make them evenly divisible.
         for block in nslice(preprocess(message), self.block_size, self.fill_value):
-            nums = numpy.matrix(self.encode(block))
-            coded_blocks.append(numpy.mod(numpy.matmul(nums, self.key), self.alphabet_size))
+            block = numpy.matrix(self.encode(block))
+            blocks.append(numpy.mod(numpy.matmul(block, self.key), self.alphabet_size))
 
-        cipher = ''
-        for block in coded_blocks:
-            cipher += self.decode(numpy.nditer(block))
+        # Convert the numerically encrypted text to a string.
+        ciphertext = ''
+        for block in blocks:
+            ciphertext += self.decode(numpy.nditer(block))
 
-        return cipher
+        return ciphertext
 
     def decrypt(self, ciphertext):
         """Decrypts the given ciphertext using the Hill Cipher."""
-        m_inv = modular_matrix_inverse(self.key, self.alphabet_size)
-
-        decoded_blocks = []
+        blocks = []
+        # Encrypted text should have evenly divisible blocks, but if not, avoid a crash by filling.
         for block in nslice(ciphertext, self.block_size, self.fill_value):
-            nums = numpy.matrix(self.encode(block))
-            decoded_blocks.append(numpy.mod(numpy.matmul(nums, m_inv), self.alphabet_size))
+            block = numpy.matrix(self.encode(block))
+            blocks.append(numpy.mod(numpy.matmul(block, self.key_inverse), self.alphabet_size))
 
-        text = ''
-        for block in decoded_blocks:
-            text += self.decode(numpy.nditer(block))
+        # Convert the numerically decrypted text to a string.
+        plaintext = ''
+        for block in blocks:
+            plaintext += self.decode(numpy.nditer(block))
 
-        return text
+        return plaintext

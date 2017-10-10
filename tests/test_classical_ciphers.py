@@ -47,6 +47,10 @@ class HillCipherTest(unittest.TestCase):
 
     def test_pad_message(self):
         message = 'test'
+        block_size = 3
+        self.assertEqual('testxx', HillCipher.pad_message(message, block_size))
+        block_size = 4
+        self.assertEqual('test', HillCipher.pad_message(message, block_size))
         block_size = 5
         self.assertEqual('testx', HillCipher.pad_message(message, block_size))
         block_size = 6
