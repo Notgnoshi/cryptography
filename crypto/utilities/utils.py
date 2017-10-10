@@ -1,3 +1,4 @@
+from collections import deque
 import itertools
 import functools
 import operator
@@ -30,3 +31,10 @@ def int_mapping(character):
 def char_mapping(integer):
     """Maps a given integer (0-25) to a character (a-z)"""
     return NUMBER_TABLE[integer]
+
+
+def wrap_around(l, n):
+    """Returns a wrapped-around version of list `l` starting at index `n`"""
+    queue = deque(l)
+    queue.rotate(n)
+    return list(queue)

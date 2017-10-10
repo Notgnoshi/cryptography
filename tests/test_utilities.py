@@ -127,3 +127,11 @@ class BitstreamTest(unittest.TestCase):
 
         actual = list(bit for bit in bitstream)
         self.assertListEqual(actual, expected)
+
+
+class MiscTest(unittest.TestCase):
+    def test_wrap_around(self):
+        seq = [1, 2, 3, 4, 5, 6]
+        expected = [5, 6, 1, 2, 3, 4]
+        actual = wrap_around(seq, 2)
+        self.assertListEqual(actual, expected)
