@@ -1,5 +1,5 @@
 from crypto.utilities import int_mapping, char_mapping, preprocess
-import itertools
+from itertools import cycle
 
 
 class VigenereCipher(object):
@@ -10,11 +10,10 @@ class VigenereCipher(object):
 
     def encrypt(self, message):
         """Encrypts the given message using a Vigenere Cipher"""
-        cipher = (((k + int_mapping(c)) % 26)
-                  for k, c in zip(itertools.cycle(self.key), preprocess(message)))
-        return ''.join(char_mapping(n) for n in cipher)
+        E = (((k + int_mapping(c)) % 26) for k, c in zip(cycle(self.key), preprocess(message)))
+        return ''.join(char_mapping(n) for n in E)
 
     def decrypt(self, cipher):
         """Decrypts the given ciphertext using a Vigenere Cipher"""
-        text = (((int_mapping(c) - k) % 26) for k, c in zip(itertools.cycle(self.key), cipher))
-        return ''.join(char_mapping(n) for n in text)
+        D = (((int_mapping(c) - k) % 26) for k, c in zip(cycle(self.key), cipher))
+        return ''.join(char_mapping(n) for n in D)
