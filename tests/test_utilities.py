@@ -86,17 +86,20 @@ class BitfieldTest(unittest.TestCase):
 
 
 class BitstreamTest(unittest.TestCase):
-    def test_bitstream_1(self):
-        string = 'abcd'
-        bitstream = Bitstream(bytes(string, 'ascii'))
-        # abcd in binary lsbf format
-        expected = [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0,
-                    0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0]
+    def test_bitstream_types(self):
+        # Test equivalent representations of a string. Prefer (ord(c) ...) for large strings.
+        strings = [bytes('abcd', 'ascii'), b'abcd', 'abcd'.encode('ascii'), [97, 98, 99, 100],
+                   (ord(c) for c in 'abcd'), bytearray('abcd', 'ascii')]
+        for string in strings:
+            bitstream = Bitstream(string)
+            # abcd in binary lsbf format
+            expected = [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0,
+                        0, 0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0]
 
-        actual = list(bit for bit in bitstream)
-        self.assertListEqual(actual, expected)
+            actual = list(bit for bit in bitstream)
+            self.assertListEqual(actual, expected)
 
-    def test_bitstream_2(self):
+    def test_bitstream(self):
         string = generate_alpha(1000)
         bitstream = Bitstream(bytes(string, 'ascii'))
         actual = ''.join(str(bit) for bit in bitstream)
