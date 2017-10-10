@@ -7,8 +7,8 @@ ALPHABET = string.ascii_letters + string.digits
 
 
 def generate_alpha(n):
-    '''Generates an alphabetic password of length n'''
-    return ''.join(choice(string.ascii_uppercase) for i in range(n))
+    '''Generates a lowercase alphabetic password of length n'''
+    return ''.join(choice(string.ascii_lowercase) for i in range(n))
 
 
 def generate_alnum(n):

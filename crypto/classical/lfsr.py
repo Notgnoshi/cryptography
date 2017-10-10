@@ -1,5 +1,5 @@
 from crypto.random import LinearFeedbackShiftRegister
-from crypto.utilities import Bitstream, nslice, bits_to_integer
+from crypto.utilities import Bitstream, TextBitstream, bits_to_bytes
 
 
 class LfsrCipher(object):
@@ -18,16 +18,15 @@ class LfsrCipher(object):
 
     def encrypt(self, message):
         """Encrypts the given message with a LFSR Cipher."""
-        # Convert to integer representation of each character on the fly
-        message_stream = Bitstream(ord(c) for c in message)
+        message_stream = TextBitstream(message)
         cipher_bits = self.xor_key(message_stream, self.encode_key_stream)
 
-        return ''.join(chr(bits_to_integer(byte)) for byte in nslice(cipher_bits, 8))
+        return ''.join(map(chr, bits_to_bytes(cipher_bits)))
 
     def decrypt(self, ciphertext):
         """Decrypts the given ciphertext with a LFSR Cipher."""
-        # Convert to integer representation of each character on the fly
+        # Cannot use TextBitstream because of preprocessing
         cipher_stream = Bitstream(ord(c) for c in ciphertext)
         cipher_bits = self.xor_key(cipher_stream, self.decode_key_stream)
 
-        return ''.join(chr(bits_to_integer(byte)) for byte in nslice(cipher_bits, 8))
+        return ''.join(map(chr, bits_to_bytes(cipher_bits)))
