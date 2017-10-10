@@ -125,7 +125,7 @@ class LfsrCipherTest(unittest.TestCase):
         self.assertListEqual(actual, expected)
 
         # Test the actual bitwise XOR of the key and the given plaintext.
-        actual = list(cipher.xor_key('1011001110001111', cipher.encode_key_stream))
+        actual = list(xor_streams((int(b) for b in '1011001110001111'), cipher.encode_key_stream))
         expected = list(int(b) for b in '1111000111010110')
         self.assertListEqual(actual, expected)
 
@@ -135,7 +135,8 @@ class LfsrCipherTest(unittest.TestCase):
         coeffs = numpy.array([1, 1, 0, 1, 1, 0])
         cipher = LfsrCipher(initial_values, coeffs)
 
-        actual = list(cipher.xor_key('100001100100011011000110', cipher.encode_key_stream))
+        actual = list(xor_streams((int(b)
+                                   for b in '100001100100011011000110'), cipher.encode_key_stream))
         expected = list(int(b) for b in '001000001000001001000001')
         self.assertListEqual(actual, expected)
 

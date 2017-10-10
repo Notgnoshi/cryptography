@@ -52,6 +52,11 @@ def bits_to_bytes(bitstream):
     return (reduce(lambda byte, bit: byte << 1 | bit, reversed(eight_bits)) for eight_bits in nslice(bitstream, 8))
 
 
+def xor_streams(bitstream1, bitstream2):
+    """Bitwise XORs two bitstreams"""
+    return (l ^ r for l, r in zip(bitstream1, bitstream2))
+
+
 class Bitstream(object):
     """Turns an iterable of bytes into a bit-by-bit bitstream of its lsbf binary representation."""
 
