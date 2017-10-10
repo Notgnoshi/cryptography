@@ -1,4 +1,3 @@
-from .preprocess import preprocess
 from .utils import nslice
 from functools import reduce
 
@@ -77,5 +76,5 @@ class TextBitstream(Bitstream):
     """Turns an iterable of characters into a Bitstream."""
 
     def __init__(self, text):
-        # Convert a byte sequence of preprocessed text to a bitstream
-        super().__init__(ord(c) for c in preprocess(text))
+        # Convert a byte sequence of text to a bitstream
+        super().__init__(ord(c) for c in text)

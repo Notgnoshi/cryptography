@@ -1,5 +1,5 @@
 from crypto.random import LinearFeedbackShiftRegister
-from crypto.utilities import Bitstream, TextBitstream, bits_to_bytes, xor_streams
+from crypto.utilities import TextBitstream, bits_to_bytes, xor_streams, preprocess
 
 
 class LfsrCipher(object):
@@ -14,15 +14,14 @@ class LfsrCipher(object):
 
     def encrypt(self, message):
         """Encrypts the given message with a LFSR Cipher."""
-        message_stream = TextBitstream(message)
+        message_stream = TextBitstream(preprocess(message))
         cipher_bits = xor_streams(message_stream, self.encode_key_stream)
 
         return ''.join(map(chr, bits_to_bytes(cipher_bits)))
 
     def decrypt(self, ciphertext):
         """Decrypts the given ciphertext with a LFSR Cipher."""
-        # Cannot use TextBitstream because of preprocessing...
-        cipher_stream = Bitstream(ord(c) for c in ciphertext)
+        cipher_stream = TextBitstream(ciphertext)
         cipher_bits = xor_streams(cipher_stream, self.decode_key_stream)
 
         return ''.join(map(chr, bits_to_bytes(cipher_bits)))
