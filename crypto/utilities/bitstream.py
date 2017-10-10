@@ -70,7 +70,7 @@ class Bitstream(object):
     """Turns an iterable of bytes into a bit-by-bit bitstream of its lsbf binary representation."""
 
     def __init__(self, bytestream):
-        self.bytestream = bytestream
+        self.bits = self._bits(bytestream)
 
     def _bits(self, bytestream):
         """A generator to yield bit after bit of the bitstream"""
@@ -79,7 +79,10 @@ class Bitstream(object):
                 yield bit
 
     def __iter__(self):
-        return self._bits(self.bytestream)
+        return self.bits
+
+    def __next__(self):
+        return next(self.bits)
 
 
 class TextBitstream(Bitstream):
