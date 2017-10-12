@@ -5,4 +5,4 @@ useful to cryptography.
 
 from .frequencies import SymbolFrequencies
 from .math import *
-from .extended_fractions import *
+from .continued_fractions import *
