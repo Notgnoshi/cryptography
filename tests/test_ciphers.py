@@ -1,4 +1,5 @@
 from crypto.ciphers import *
+from crypto.random import generate_alpha
 from crypto.utilities import *
 import unittest
 
@@ -39,8 +40,26 @@ class ToyDesCipherTest(unittest.TestCase):
         for i, chunk in enumerate(chunker):
             self.assertTupleEqual(chunk, chunks[i])
 
+    def test_chunker_3(self):
+        bitstream = TextBitstream('abcdef')
+        chunker = DesChunker(bitstream, 6)
+        string = ToyDesCipher.chunks_to_string(chunker)
+        self.assertSequenceEqual(string, 'abcdef')
+
     def test_encrypt_1(self):
-        key = 0b010011001
-        des = ToyDesCipher(key)
-        print(des.encrypt('aaa'))
-        print(des.decrypt(des.encrypt('aaa')))
+        text = 'abcdef'
+        key = [0, 1, 0, 0, 1, 1, 0, 0, 1]
+        cipher = ToyDesCipher(key)
+        ciphertext = cipher.encrypt(text)
+        plaintext = cipher.decrypt(ciphertext)
+        self.assertEqual(text, plaintext)
+
+    def test_encrypt_2(self):
+        # Encrypt and decrypt a random text 10 times... That's gotta verify it works right?
+        for i in range(10):
+            text = generate_alpha(360)
+            key = [0, 1, 0, 0, 0, 1, 1, 1, 1]
+            cipher = ToyDesCipher(key)
+            ciphertext = cipher.encrypt(text)
+            plaintext = cipher.decrypt(ciphertext)
+            self.assertEqual(text, plaintext)
