@@ -21,9 +21,11 @@ class DesChunker(object):
             yield chunk[:chunk_size], chunk[chunk_size:]
 
     def __iter__(self):
+        """Returns the chunker generator"""
         return self.chunker
 
     def __next__(self):
+        """Returns the next chunk in the chunker"""
         return next(self.chunker)
 
 
