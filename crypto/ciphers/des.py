@@ -253,8 +253,8 @@ class DesCipher(object):
 
     def encrypt(self, message):
         """Encrypts the given message using the DES cipher"""
-        # Pad the preprocessed message to be a multiple of 64 bits.
-        message = HillCipher.pad_message(''.join(preprocess(message)), 8)
+        # Pad the message to be a multiple of 64 bits.
+        message = HillCipher.pad_message(message, 8)
         # Convert the message to a bitstream.
         bitstream = TextBitstream(message)
         # Chunk the bitstream into 64 bit chunks --> a tuple (L, R) of 32 bit bitstrings.

@@ -130,10 +130,10 @@ class DesCipherTest(unittest.TestCase):
     def test_message_padding(self):
         # make sure the string does not end with 'x'. Add punctuation to make sure the cipher pads
         # the preprocessed message
-        text = generate_alpha(random.randint(100, 800)) + 'asdf.,'
+        text = generate_alpha(random.randint(100, 800)) + 'asdf'
         key = 76173234526173235131
         cipher = DesCipher(key)
         ciphertext = cipher.encrypt(text)
         plaintext = cipher.decrypt(ciphertext)
         # Compare against the text string with the trailing punctuation removed.
-        self.assertEqual(text[:-2], plaintext.rstrip('x'))
+        self.assertEqual(text, plaintext.rstrip('x'))
