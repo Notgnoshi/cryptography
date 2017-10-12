@@ -1,6 +1,7 @@
 from crypto.ciphers import *
 from crypto.random import generate_alpha
 from crypto.utilities import *
+import itertools
 import random
 import unittest
 
@@ -49,8 +50,7 @@ class ToyDesCipherTest(unittest.TestCase):
 
     def test_encrypt_1(self):
         text = 'abcdef'
-        # Could also use '010011001' or some other tuple of truthy/falsey values.
-        key = [0, 1, 0, 0, 1, 1, 0, 0, 1]
+        key = 0b010011001
         cipher = ToyDesCipher(key)
         ciphertext = cipher.encrypt(text)
         plaintext = cipher.decrypt(ciphertext)
@@ -60,7 +60,7 @@ class ToyDesCipherTest(unittest.TestCase):
         # Encrypt and decrypt a random text 10 times... That's gotta verify it works right?
         for i in range(10):
             text = generate_alpha(360)
-            key = [0, 1, 0, 0, 0, 1, 1, 1, 1]
+            key = 0b010001111
             cipher = ToyDesCipher(key)
             ciphertext = cipher.encrypt(text)
             plaintext = cipher.decrypt(ciphertext)
@@ -70,8 +70,69 @@ class ToyDesCipherTest(unittest.TestCase):
         # make sure the string does not end with 'x'. Add punctuation to make sure the cipher pads
         # the preprocessed message
         text = generate_alpha(random.randint(100, 800)) + 'asdf.,'
-        key = [1, 0, 1, 0, 1, 0, 0, 1, 0]
+        key = 0b101010010
         cipher = ToyDesCipher(key)
+        ciphertext = cipher.encrypt(text)
+        plaintext = cipher.decrypt(ciphertext)
+        # Compare against the text string with the trailing punctuation removed.
+        self.assertEqual(text[:-2], plaintext.rstrip('x'))
+
+
+class DesCipherTest(unittest.TestCase):
+    def test_expander(self):
+        bits = list(bits_of(1234, 32))
+        self.assertEqual(len(bits), 32)
+        expanded_bits = DesCipher.expand_bits(bits)
+        self.assertEqual(len(expanded_bits), 48)
+
+    def test_initial_permutation(self):
+        bits = [0] * 64
+        bits[57] = 1
+        bits[49] = 1
+        bits[6] = 1
+
+        expected = [0] * 64
+        expected[0] = 1
+        expected[1] = 1
+        expected[63] = 1
+
+        chunker = DesChunker(bits, 32)
+        permuter = DesCipher.initial_permuter(chunker)
+        chunk = list(itertools.chain.from_iterable(next(permuter)))
+        self.assertListEqual(chunk, expected)
+
+    def test_inverse_permutation(self):
+        bits = list(bits_of(127615873723911234878, 64))
+        chunker = DesChunker(bits, 32)
+        IP = DesCipher.initial_permuter(chunker)
+        FP = DesCipher.inverse_initial_permuter(IP)
+        chunk = list(itertools.chain.from_iterable(next(FP)))
+        self.assertListEqual(bits, chunk)
+
+    def test_encrypt_1(self):
+        text = 'abcdefgh'
+        key = 1476123957612341
+        cipher = DesCipher(key)
+        ciphertext = cipher.encrypt(text)
+        plaintext = cipher.decrypt(ciphertext)
+        self.assertSequenceEqual(text, plaintext)
+
+    def test_encrypt_2(self):
+        # Encrypt and decrypt a random text 10 times... That's gotta verify it works right?
+        for i in range(10):
+            text = generate_alpha(128)
+            key = 776481980476271347
+            cipher = DesCipher(key)
+            ciphertext = cipher.encrypt(text)
+            plaintext = cipher.decrypt(ciphertext)
+            self.assertEqual(text, plaintext)
+
+    def test_message_padding(self):
+        # make sure the string does not end with 'x'. Add punctuation to make sure the cipher pads
+        # the preprocessed message
+        text = generate_alpha(random.randint(100, 800)) + 'asdf.,'
+        key = 76173234526173235131
+        cipher = DesCipher(key)
         ciphertext = cipher.encrypt(text)
         plaintext = cipher.decrypt(ciphertext)
         # Compare against the text string with the trailing punctuation removed.
