@@ -28,6 +28,22 @@ class DesChunker(object):
         """Returns the next chunk in the chunker"""
         return next(self.chunker)
 
+    @classmethod
+    def chunks_to_bitstream(cls, chunker):
+        """Converts a sequence of (L, R) chunks into a bitstream"""
+        for L, R in chunker:
+            # Yield the left bits
+            for bit in L:
+                yield bit
+            # and then the right bits.
+            for bit in R:
+                yield bit
+
+    @classmethod
+    def chunks_to_string(cls, chunker):
+        """Converts a sequence of (L, R) chunks into a string"""
+        return bits_to_string(cls.chunks_to_bitstream(chunker))
+
 
 class DesCipher(object):
     """Defines the DES cipher."""

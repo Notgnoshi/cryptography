@@ -1,6 +1,7 @@
 from crypto.ciphers import *
 from crypto.random import generate_alpha
 from crypto.utilities import *
+import random
 import unittest
 
 
@@ -43,11 +44,12 @@ class ToyDesCipherTest(unittest.TestCase):
     def test_chunker_3(self):
         bitstream = TextBitstream('abcdef')
         chunker = DesChunker(bitstream, 6)
-        string = ToyDesCipher.chunks_to_string(chunker)
+        string = DesChunker.chunks_to_string(chunker)
         self.assertSequenceEqual(string, 'abcdef')
 
     def test_encrypt_1(self):
         text = 'abcdef'
+        # Could also use '010011001' or some other tuple of truthy/falsey values.
         key = [0, 1, 0, 0, 1, 1, 0, 0, 1]
         cipher = ToyDesCipher(key)
         ciphertext = cipher.encrypt(text)
@@ -63,3 +65,14 @@ class ToyDesCipherTest(unittest.TestCase):
             ciphertext = cipher.encrypt(text)
             plaintext = cipher.decrypt(ciphertext)
             self.assertEqual(text, plaintext)
+
+    def test_message_padding(self):
+        # make sure the string does not end with 'x'. Add punctuation to make sure the cipher pads
+        # the preprocessed message
+        text = generate_alpha(random.randint(100, 800)) + 'asdf.,'
+        key = [1, 0, 1, 0, 1, 0, 0, 1, 0]
+        cipher = ToyDesCipher(key)
+        ciphertext = cipher.encrypt(text)
+        plaintext = cipher.decrypt(ciphertext)
+        # Compare against the text string with the trailing punctuation removed.
+        self.assertEqual(text[:-2], plaintext.rstrip('x'))
