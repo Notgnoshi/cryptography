@@ -44,5 +44,12 @@ Coursework for CSC 512, Cryptography.
     - Algorithm explanation
 * GCD, extended GCD
 * modinverse
-* toy DES
+* Continued fractions
+* Primitive roots
+* Convert all ciphers to take in bytes.
 * DES
+    - Pass in bytes, get bytes out
+    - Unit test the example in the project assignment
+* Differential Cryptanalysis for three rounds
+* Change ToyDesCipher to four rounds
+
