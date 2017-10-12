@@ -18,10 +18,11 @@ class ToyDesCipher(object):
           [(1, 0, 1), (0, 1, 1), (0, 0, 0), (1, 1, 1), (1, 1, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)]]
 
     def __init__(self, key, number_of_rounds=3):
-        """Takes the key as a bitstring '10001010'"""
-        if len(key) != 9:
-            raise ValueError('key must be a 9-bit sequence of 1\'s and 0\'s')
-        self.key = [bool(bit) for bit in key]
+        """
+            Takes the first 9 bits of the given `key` and runs `number_of_rounds` of the Feistel
+            System on the messages to be encrypted.
+        """
+        self.key = list(bits_of(key, 9))
         self.number_of_rounds = number_of_rounds
 
     @classmethod
@@ -46,7 +47,7 @@ class ToyDesCipher(object):
         # Concatenate the output of the S-boxes.
         return self._S1(bits[:4]) + self._S2(bits[4:])
 
-    def feistel_round(self, L, R, i):
+    def _feistel_round(self, L, R, i):
         """Runs one round of the Feistel System on the given chunk"""
         K = wrap_around(self.key, i)
         return R, tuple(xor_streams(L, self._f(R, K)))
@@ -55,7 +56,7 @@ class ToyDesCipher(object):
         """Runs the Feistel System rounds on a single (L, R) chunk to encrypt it."""
         L, R = chunk
         for i in range(1, self.number_of_rounds + 1):
-            L, R = self.feistel_round(L, R, i)
+            L, R = self._feistel_round(L, R, i)
         return L, R
 
     def _encrypt_chunks(self, chunker):
@@ -72,9 +73,9 @@ class ToyDesCipher(object):
         # Chunk the bitstream into 12 bit chunks --> a tuple (L, R) of 6 bit bitstrings.
         chunker = DesChunker(bitstream, 6)
         # Lazily encrypt chunk after chunk.
-        encryptor = self._encrypt_chunks(chunker)
+        encrypter = self._encrypt_chunks(chunker)
         # Now convert the above generator into a string and return it.
-        return DesChunker.chunks_to_string(encryptor)
+        return DesChunker.chunks_to_string(encrypter)
 
     def _decrypt_chunk(self, chunk):
         """Runs the Feistel System rounds on a single (L, R) chunk to decrypt it."""
@@ -82,7 +83,7 @@ class ToyDesCipher(object):
         R, L = chunk
         # Run the feistel rounds as in encryption, but with keys going from n..1
         for i in range(self.number_of_rounds, 0, -1):
-            L, R = self.feistel_round(L, R, i)
+            L, R = self._feistel_round(L, R, i)
         # Swap L and R
         return R, L
 
@@ -98,6 +99,6 @@ class ToyDesCipher(object):
         # Chunk the bitstream into 12 bit chunks --> a tuple (L, R) of 6 bit bitstrings.
         chunker = DesChunker(bitstream, 6)
         # Lazily decrypt chunk after chunk
-        decryptor = self._decrypt_chunks(chunker)
+        decrypter = self._decrypt_chunks(chunker)
         # Now convert the above generator into a string and return it.
-        return DesChunker.chunks_to_string(decryptor)
+        return DesChunker.chunks_to_string(decrypter)
