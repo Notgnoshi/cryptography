@@ -49,6 +49,60 @@ class DesChunker(object):
 class DesCipher(object):
     """Defines the DES cipher."""
 
+    # Initial permutation table
+    _initial_permutation = [57, 49, 41, 33, 25, 17, 9, 1,
+                            59, 51, 43, 35, 27, 19, 11, 3,
+                            61, 53, 45, 37, 29, 21, 13, 5,
+                            63, 55, 47, 39, 31, 23, 15, 7,
+                            56, 48, 40, 32, 24, 16, 8, 0,
+                            58, 50, 42, 34, 26, 18, 10, 2,
+                            60, 52, 44, 36, 28, 20, 12, 4,
+                            62, 54, 46, 38, 30, 22, 14, 6]
+
+    # Final permutation (IP^-1) table
+    _final_permutation = [39, 7, 47, 15, 55, 23, 63, 31,
+                          38, 6, 46, 14, 54, 22, 62, 30,
+                          37, 5, 45, 13, 53, 21, 61, 29,
+                          36, 4, 44, 12, 52, 20, 60, 28,
+                          35, 3, 43, 11, 51, 19, 59, 27,
+                          34, 2, 42, 10, 50, 18, 58, 26,
+                          33, 1, 41, 9, 49, 17, 57, 25,
+                          32, 0, 40, 8, 48, 16, 56, 24]
+
+    # Expand bits table
+    _expand_bits = [31, 0, 1, 2, 3, 4, 3, 4, 5, 6, 7, 8, 7, 8, 9, 10, 11, 12, 11, 12, 13, 14,
+                    15, 16, 15, 16, 17, 18, 19, 20, 19, 20, 21, 22, 23, 24, 23, 24, 25, 26, 27,
+                    28, 27, 28, 29, 30, 31, 0]
+
+    # Permutation table for the output of the S-Boxes
+    _sbox_permutation = [15, 6, 19, 20, 28, 11,
+                         27, 16, 0, 14, 22, 25,
+                         4, 17, 30, 9, 1, 7,
+                         23, 13, 31, 26, 2, 8,
+                         18, 12, 29, 5, 21, 10,
+                         3, 24]
+
+    # Key permutation table, filters out the parity bits.
+    _key_permutation = [56, 48, 40, 32, 24, 16, 8,
+                        0, 57, 49, 41, 33, 25, 17,
+                        9, 1, 58, 50, 42, 34, 26,
+                        18, 10, 2, 59, 51, 43, 35,
+                        62, 54, 46, 38, 30, 22, 14,
+                        6, 61, 53, 45, 37, 29, 21,
+                        13, 5, 60, 52, 44, 36, 28,
+                        20, 12, 4, 27, 19, 11, 3]
+
+    # CD bitstring permutation table
+    _CD_permutation = [13, 16, 10, 23, 0, 4,
+                       2, 27, 14, 5, 20, 9,
+                       22, 18, 11, 3, 25, 7,
+                       15, 6, 26, 19, 12, 1,
+                       40, 51, 30, 36, 46, 54,
+                       29, 39, 50, 44, 32, 47,
+                       43, 48, 38, 55, 33, 52,
+                       45, 41, 49, 35, 28, 31]
+
+    # The (in)famous S-boxes.
     _sbox = [
         # S1
         [[14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7],
@@ -106,102 +160,50 @@ class DesCipher(object):
             parity bits.
         """
 
-        # TODO: Create a DesKey class?
-        def permute_key(key):
-            """Permutes the given key"""
-            permutation = [56, 48, 40, 32, 24, 16, 8,
-                           0, 57, 49, 41, 33, 25, 17,
-                           9, 1, 58, 50, 42, 34, 26,
-                           18, 10, 2, 59, 51, 43, 35,
-                           62, 54, 46, 38, 30, 22, 14,
-                           6, 61, 53, 45, 37, 29, 21,
-                           13, 5, 60, 52, 44, 36, 28,
-                           20, 12, 4, 27, 19, 11, 3]
-            return [key[i] for i in permutation]
-
-        def CiDi(key, num_rounds):
-            """Yields the bitstring CiDi for i=1..16"""
+        def keys(key, num_rounds):
+            """Yields the permuted key bitstring for i = 1..num_rounds"""
             C, D = key[:28], key[28:]
             # Rounds are 1-indexed, so shift array over by one
             left_shifts = [None, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1]
             for i in range(1, self.number_of_rounds + 1):
                 C, D = wrap_around(C, -left_shifts[i]), wrap_around(D, -left_shifts[i])
-                yield C + D
-
-        def keys(CiDi):
-            """Yield K1, K2, ..., Kn"""
-            def permute(CD):
-                """Permutes the bitstring CD"""
-                permutation = [13, 16, 10, 23, 0, 4,
-                               2, 27, 14, 5, 20, 9,
-                               22, 18, 11, 3, 25, 7,
-                               15, 6, 26, 19, 12, 1,
-                               40, 51, 30, 36, 46, 54,
-                               29, 39, 50, 44, 32, 47,
-                               43, 48, 38, 55, 33, 52,
-                               45, 41, 49, 35, 28, 31]
-                return [CD[i] for i in permutation]
-
-            for CD in CiDi:
-                yield permute(CD)
+                yield self.permute(C + D, self._CD_permutation)
 
         self.key = list(bits_of(key, 64))
         # Permute the key. The permutation discards the parity bits...
-        self.key = permute_key(self.key)
+        self.key = self.permute(self.key, self._key_permutation)
         self.number_of_rounds = 16
-        # A list of the 16 keys K1 .. K16, with None prepended to allow 1-indexing.
-        self.keys = [None] + list(keys(CiDi(self.key, self.number_of_rounds)))
+        # A list of the 16 keys K1 .. K16, shifted over by one to allow 1-indexing.
+        self.keys = [None] + list(keys(self.key, self.number_of_rounds))
 
     @classmethod
-    def expand_bits(cls, bitstring):
+    def expand_bits(cls, bits):
         """Expand a 32 bit bitstring into a 48 bit bitstring"""
-        permutation = [32, 1, 2, 3, 4, 5, 4, 5, 6, 7, 8, 9, 8, 9, 10, 11, 12, 13, 12, 13, 14, 15,
-                       16, 17, 16, 17, 18, 19, 20, 21, 20, 21, 22, 23, 24, 25, 24, 25, 26, 27, 28,
-                       29, 28, 29, 30, 31, 32, 1]
-        if len(bitstring) != 32:
+        if len(bits) != 32:
             raise ValueError('Can only expand 32 bit bitstrings')
         else:
-            # indices are 0-indexed.
-            return [bitstring[i - 1] for i in permutation]
+            return cls.permute(bits, cls._expand_bits)
+
+    @classmethod
+    def permute(cls, seq, permutation):
+        """Runs `seq` through the given `permutation`"""
+        return [seq[i] for i in permutation]
 
     @classmethod
     def initial_permuter(cls, chunker):
         """Yield permuted chunk after permuted chunk"""
-        def permute(chunk):
-            """Returns the permuted chunk"""
-            permutation = [57, 49, 41, 33, 25, 17,  9, 1,
-                           59, 51, 43, 35, 27, 19, 11, 3,
-                           61, 53, 45, 37, 29, 21, 13, 5,
-                           63, 55, 47, 39, 31, 23, 15, 7,
-                           56, 48, 40, 32, 24, 16,  8, 0,
-                           58, 50, 42, 34, 26, 18, 10, 2,
-                           60, 52, 44, 36, 28, 20, 12, 4,
-                           62, 54, 46, 38, 30, 22, 14, 6]
-            chunk = list(itertools.chain.from_iterable(chunk))
-            chunk = [chunk[i] for i in permutation]
-            return tuple(chunk[:32]), tuple(chunk[32:])
-
         for chunk in chunker:
-            yield permute(chunk)
+            chunk = list(itertools.chain.from_iterable(chunk))
+            chunk = cls.permute(chunk, cls._initial_permutation)
+            yield tuple(chunk[:32]), tuple(chunk[32:])
 
     @classmethod
     def inverse_initial_permuter(cls, chunker):
         """Yield inverse permuted chunk after chunk"""
-        def inverse_permute(chunk):
-            permutation = [39, 7, 47, 15, 55, 23, 63, 31,
-                           38, 6, 46, 14, 54, 22, 62, 30,
-                           37, 5, 45, 13, 53, 21, 61, 29,
-                           36, 4, 44, 12, 52, 20, 60, 28,
-                           35, 3, 43, 11, 51, 19, 59, 27,
-                           34, 2, 42, 10, 50, 18, 58, 26,
-                           33, 1, 41,  9, 49, 17, 57, 25,
-                           32, 0, 40,  8, 48, 16, 56, 24]
-            chunk = list(itertools.chain.from_iterable(chunk))
-            chunk = [chunk[i] for i in permutation]
-            return tuple(chunk[:32]), tuple(chunk[32:])
-
         for chunk in chunker:
-            yield inverse_permute(chunk)
+            chunk = list(itertools.chain.from_iterable(chunk))
+            chunk = cls.permute(chunk, cls._final_permutation)
+            yield tuple(chunk[:32]), tuple(chunk[32:])
 
     def _s_box(self, box, bits):
         """Returns the `box`th S-box value of the given `bits`"""
@@ -213,22 +215,11 @@ class DesCipher(object):
 
     def _f(self, R, K):
         """The encryption function `f` in the DES algorithm"""
-        def permute(C):
-            """Permutes the bitstring C"""
-            # TODO: Stop writing this code. Save the tables and use one function.
-            permutation = [15, 6, 19, 20, 28, 11,
-                           27, 16, 0, 14, 22, 25,
-                           4, 17, 30, 9, 1, 7,
-                           23, 13, 31, 26, 2, 8,
-                           18, 12, 29, 5, 21, 10,
-                           3, 24]
-            return [C[i] for i in permutation]
-
         bits = tuple(xor_streams(self.expand_bits(R), K))
         Bs = nslice(bits, 6)
         Ss = [self._s_box(i, bits) for i, bits in enumerate(Bs)]
         C = list(itertools.chain.from_iterable(Ss))
-        return permute(C)
+        return self.permute(C, self._sbox_permutation)
 
     def feistel_round(self, L, R, i):
         """Runs one round of the Feistel System on the given chunk"""
