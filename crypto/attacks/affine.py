@@ -1,6 +1,6 @@
 from crypto.classical import AffineCipher
 from crypto.math import SymbolFrequencies
-from crypto.utilities import preprocess, int_mapping
+from crypto.utilities import int_mapping
 import numpy
 
 
@@ -9,7 +9,7 @@ class AffineAttack(object):
 
     def __init__(self, ciphertext):
         """Construct an affine cipher attack given some large ciphertext"""
-        self.ciphertext = ''.join(preprocess(ciphertext))
+        self.ciphertext = ''.join(ciphertext)
         self.frequencies = SymbolFrequencies(self.ciphertext)
 
     def naive_frequency_attack(self):
