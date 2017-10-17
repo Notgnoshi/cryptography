@@ -1,4 +1,23 @@
-\usepackage{amssymb, amsmath, amsthm}
-\usepackage[cache=false]{minted}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cancel}
+\usepackage{color}
 \usepackage{parskip}
+\usepackage[cache=false]{minted}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
 
+\setminted{autogobble=true, style=tango, breaklines}
+\usetikzlibrary{arrows, shapes, positioning}
+
+% \renewcommand{\mod}[1]{\mathrm{mod}\ #1}
+% \renewcommand{\pmod}[1]{(\mod{#1})}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newtheorem*{defn}{Definition}
+\newtheorem*{thm}{Theorem}
