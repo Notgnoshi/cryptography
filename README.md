@@ -23,14 +23,16 @@ Coursework for CSC 512, Cryptography.
 
     Unit tests for the `crypto` library. Run with `python3 tests/runtests.py`.
 
+* `docs/`
+
+    Library documentation. Build by running `make` in the `docs/` directory. Other targets are `make clean` and `make view` for viewing the resultant PDF.
+
 ---
 
 ## Portfolio
 * Library: `crypto/`
 * Library unit tests: `tests/`
 * Library examples: `examples/`
-* Documentation/writeup LaTeX source: `doc/`
-    - Provide makefile for compiling LaTeX documentation?
 
 ---
 
@@ -52,4 +54,3 @@ Coursework for CSC 512, Cryptography.
     - Unit test the example in the project assignment
 * Differential Cryptanalysis for three rounds
 * Change ToyDesCipher to four rounds
-
