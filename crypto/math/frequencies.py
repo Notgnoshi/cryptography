@@ -6,6 +6,7 @@ class SymbolFrequencies(Counter):
     """Calculates a symbol frequency table from a given iterable"""
 
     def __init__(self, iterable):
+        """Construct a SymbolFrequencies table from a given iterable"""
         # Call the parent Counter constructor.
         super().__init__(iterable)
         # Total number of symbols.

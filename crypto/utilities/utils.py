@@ -10,7 +10,11 @@ NUMBER_TABLE = dict(zip(range(0, 26), string.ascii_lowercase))
 
 
 def product(iterable):
-    """Returns the product of an iterable"""
+    """
+        Returns the product of an iterable
+
+        :param iterable: The iterable to take the product of
+    """
     return functools.reduce(operator.mul, iterable)
 
 
