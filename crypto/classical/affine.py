@@ -3,7 +3,15 @@ import gmpy2
 
 
 class AffineCipher(object):
-    """Implements a classical Affine Cipher"""
+    """
+        Implements a classical Affine Cipher.
+
+        Example usage:
+
+        >>> cipher = AffineCipher(9, 18)
+        >>> cipher.encrypt('affine')
+        'sllmfc'
+    """
 
     def __init__(self, a, b):
         self.a = a
@@ -33,3 +41,8 @@ class AffineCipher(object):
     def decrypt(self, cipher):
         """Textually decrypts a given ciphertext."""
         return ''.join(char_mapping(num) for num in self._decrypt_str(cipher))
+
+
+if __name__ == '__main__':
+    import doctest
+    doctest.testmod()

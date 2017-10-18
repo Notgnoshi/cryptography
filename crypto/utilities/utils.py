@@ -11,9 +11,18 @@ NUMBER_TABLE = dict(zip(range(0, 26), string.ascii_lowercase))
 
 def product(iterable):
     """
-        Returns the product of an iterable
+        Returns the product of an iterable. Note the iterable does not need to be a sequence,
+        i.e. it will consume generators and return a generator itself.
 
-        :param iterable: The iterable to take the product of
+        Examples:
+
+        >>> it = [1, 2, 3]
+        >>> product(it)
+        6
+
+        >>> it = range(1, 5)
+        >>> product(it)
+        24
     """
     return functools.reduce(operator.mul, iterable)
 
