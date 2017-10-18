@@ -23,10 +23,6 @@ Coursework for CSC 512, Cryptography.
 
     Unit tests for the `crypto` library. Run with `python3 tests/runtests.py`.
 
-* `docs/`
-
-    Library documentation. Build by running `make` in the `docs/` directory. Other targets are `make clean` and `make view` for viewing the resultant PDF.
-
 ---
 
 ## Portfolio
@@ -44,6 +40,10 @@ Coursework for CSC 512, Cryptography.
 * Portfolio writeup
     - Documentation
     - Algorithm explanation
+    - Use `pydoc3` to generate the docstrings in HTML
+    - Add code examples to class and module level docstrings
+    - add more verbose docstrings
+    - Think about using Sphinx to generate documentation
 * GCD, extended GCD
 * modinverse
 * Continued fractions
