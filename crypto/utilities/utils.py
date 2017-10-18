@@ -1,3 +1,7 @@
+"""
+Misc utilities useful for large projects. Mostly related to iteration and sequences.
+"""
+
 from collections import deque
 import itertools
 import functools
@@ -31,23 +35,60 @@ def nslice(iterable, n, fill_value=None):
     """
         Yield n-tuple slices of iterable, using fill_value once iterable has
         been exhausted.
+
+        Example:
+
+        >>> it = range(0, 10)  # 0..9
+        >>> slices = nslice(it, 2)
+        >>> next(slices)
+        (0, 1)
+        >>> next(slices)
+        (2, 3)
     """
     args = [iter(iterable)] * n
     return itertools.zip_longest(*args, fillvalue=fill_value)
 
 
 def int_mapping(character):
-    """Maps a given character (a-z) to an integer (0-25)"""
+    """
+        Maps a given character (a-z) to an integer (0-25)
+
+        Example:
+
+        >>> int_mapping('a')
+        0
+        >>> int_mapping('z')
+        25
+    """
     return LETTER_TABLE[character.lower()]
 
 
 def char_mapping(integer):
-    """Maps a given integer (0-25) to a character (a-z)"""
+    """
+        Maps a given integer (0-25) to a character (a-z)
+
+        Example:
+
+        >>> char_mapping(0)
+        'a'
+        >>> char_mapping(25)
+        'z'
+    """
     return NUMBER_TABLE[integer]
 
 
 def wrap_around(l, n):
-    """Returns a wrapped-around version of list `l` starting at index `n`"""
+    """
+        Returns a wrapped-around version of list `l` starting at index `n`
+
+        Example:
+
+        >>> l = [1, 2, 3, 4]
+        >>> wrap_around(l, 1)  # A right rotation by one
+        [4, 1, 2, 3]
+        >>> wrap_around(l, -1)  # A left rotation by one
+        [2, 3, 4, 1]
+    """
     queue = deque(l)
     queue.rotate(n)
     return list(queue)
