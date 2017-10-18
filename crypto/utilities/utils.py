@@ -11,6 +11,26 @@ import string
 # Lookup tables for letters and numbers
 LETTER_TABLE = dict(zip(string.ascii_lowercase, range(0, 26)))
 NUMBER_TABLE = dict(zip(range(0, 26), string.ascii_lowercase))
+ALPHABET = frozenset(string.ascii_lowercase)
+
+
+def preprocess(text, ascii=True):
+    """
+        Preprocess text. Converts to lowercase and filters non-alphabetic characters.
+        Defaults to defining alphabetic characters as ascii-alphabetic
+
+        Examples:
+
+        >>> text = 'ABC.,#'
+        >>> ''.join(preprocess(text))
+        'abc'
+
+        # TODO: Add unicode example
+    """
+    if ascii:
+        return filter(ALPHABET.__contains__, text.lower())
+    else:
+        return filter(str.isalpha, text.lower())
 
 
 def product(iterable):

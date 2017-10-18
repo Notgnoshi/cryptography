@@ -7,7 +7,6 @@ Examples:
 
 from .bitstream import *
 from .utils import *
-from .preprocessor import *
 from .delegates import *
 
 
@@ -18,6 +17,5 @@ def load_tests(loader, tests, ignore):
     # Add class level doctests.
     tests.addTests(doctest.DocTestSuite(bitstream))
     tests.addTests(doctest.DocTestSuite(utils))
-    tests.addTests(doctest.DocTestSuite(preprocessor))
     # tests.addTests(doctest.DocTestSuite(delegates))
     return tests
