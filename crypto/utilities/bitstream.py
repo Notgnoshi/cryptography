@@ -3,41 +3,92 @@ from functools import reduce
 
 
 def set_ith_bit(num, index, value):
-    """Sets the ith bit of num to the given value"""
+    """
+        Sets the ith bit of num to the given value
+
+        Example:
+
+        >>> set_ith_bit(1, 1, 1)
+        3
+    """
     # https://stackoverflow.com/questions/28360586/setting-nth-bit-of-unsigned-int
     num ^= (-value ^ num) & (1 << index)
     return num
 
 
 def set_bit(num, bit):
-    """Sets to ith bit of num to 1"""
+    """
+        Sets to ith bit of num to 1
+
+        Example:
+
+        >>> set_bit(1, 1)
+        3
+    """
     return set_ith_bit(num, bit, 1)
 
 
 def clear_bit(num, bit):
-    """Sets the ith bit of num to 0"""
+    """
+        Sets the ith bit of num to 0
+
+        Example:
+        >>> clear_bit(3, 1)
+        1
+    """
     return set_ith_bit(num, bit, 0)
 
 
 def get_bit(num, bit):
-    """Gets the value of the ith bit of num"""
+    """
+        Gets the value of the ith bit of num
+
+        Example:
+
+        >>> get_bit(3, 1)
+        1
+        >>> get_bit(1, 1)
+        0
+    """
     return bool((num >> bit) & 1)
 
 
 def bits_of(value, bits=None):
-    """A generator to iterate over `bits` bits of the given value"""
+    """
+        A generator to iterate over `bits` bits of the given value starting from the least
+        significant bit to the most significant bit.
+
+        Example:
+
+        >>> list(bits_of(3, 4))  # 0b0011
+        [1, 1, 0, 0]
+    """
     bits = value.bit_length() if bits is None else bits
     for i in range(bits):
         yield (value >> i) & 1
 
 
 def binary_string(string):
-    """Returns the binary representation of a string, lsbf"""
+    """
+        Returns the binary representation of a string, lsbf
+
+        Example:
+
+        >>> binary_string('a')
+        '10000110'
+    """
     return ''.join('{0:08b}'.format(ord(x), 'b')[::-1] for x in string)
 
 
 def bits_to_integer(seq):
-    """Converts a sequence of bits into a integer"""
+    """
+        Converts a sequence of bits into a integer
+
+        Example:
+
+        >>> bits_to_integer([1, 1, 0, 0])
+        3
+    """
     integer = 0
     for i, bit in enumerate(seq):
         integer = set_ith_bit(integer, i, bit)
@@ -46,23 +97,57 @@ def bits_to_integer(seq):
 
 
 def bits_to_bytes(bitstream):
-    """Converts a bitstream to a bytestream"""
+    """
+        Converts a bitstream to a bytestream
+
+        Example:
+
+        >>> bits = [1, 1, 1, 1, 0, 0, 0, 0]  # 0b00001111 = 15
+        >>> bytes = bits_to_bytes(bits)
+        >>> next(bytes)
+        15
+    """
     # Reverse the eight_bits to account for endianness
     return (reduce(lambda byte, bit: byte << 1 | bit, reversed(eight_bits)) for eight_bits in nslice(bitstream, 8))
 
 
 def bytes_to_string(bytestream):
-    """Converts a bytestream to a string"""
+    """
+        Converts a bytestream to a string
+
+        Example:
+
+        >>> string = b'abcd'
+        >>> bytes_to_string(string)
+        'abcd'
+    """
     return ''.join(map(chr, bytestream))
 
 
 def bits_to_string(bitstream):
-    """Converts a bitstream to a string"""
+    """
+        Converts a bitstream to a string
+
+        Example:
+
+        >>> bits = [1, 0, 0, 0, 0, 1, 1, 0]
+        >>> bits_to_string(bits)
+        'a'
+    """
     return bytes_to_string(bits_to_bytes(bitstream))
 
 
 def xor_streams(bitstream1, bitstream2):
-    """Bitwise XORs two bitstreams"""
+    """
+        Bitwise XORs two bitstreams
+
+        Example:
+
+        >>> a = [1, 0, 1, 1]
+        >>> b = [0, 0, 1, 1]
+        >>> list(xor_streams(a, b))
+        [1, 0, 0, 0]
+    """
     return (l ^ r for l, r in zip(bitstream1, bitstream2))
 
 
