@@ -8,7 +8,10 @@ Examples:
 from .affine import AffineAttack
 from .vigenere import VigenereAttack
 
+from crypto.tests import run_once
 
+
+@run_once
 def load_tests(loader, tests, ignore):
     import doctest
     # Add the doctests in this file.
