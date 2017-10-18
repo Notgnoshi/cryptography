@@ -49,6 +49,27 @@ def nslice(iterable, n, fill_value=None):
     return itertools.zip_longest(*args, fillvalue=fill_value)
 
 
+def chunker(text, chunk_size=5, fill_value=None):
+    """
+        Returns chunk after chunk of `text` with chunk size `chunk_size`
+        and fill character `fill_value`. Equivalent to using ''.join() on
+        each output of crypto.utilities.nslice.
+
+        Example:
+
+        >>> s = 'abcdefg'
+        >>> c = chunker(s, 3, 'x')
+        >>> next(c)
+        'abc'
+        >>> next(c)
+        'def'
+        >>> next(c)
+        'gxx'
+    """
+    for chunk in nslice(text, chunk_size, fill_value=fill_value):
+        yield ''.join(chunk)
+
+
 def int_mapping(character):
     """
         Maps a given character (a-z) to an integer (0-25)
