@@ -98,14 +98,26 @@ def bits_to_integer(seq):
 
 def bits_to_bytes(bitstream):
     """
-        Converts a bitstream to a bytestream
+        Converts a bitstream to a bytestream. Requires the length of the bitstream (which need not
+        be known) to be a multiple of 8.
 
-        Example:
+        Examples:
 
         >>> bits = [1, 1, 1, 1, 0, 0, 0, 0]  # 0b00001111 = 15
         >>> bytes = bits_to_bytes(bits)
         >>> next(bytes)
         15
+
+        Results in a failure if the length of the bitstream is not divisible by 8:
+
+        >>> bits = [1, 1, 1, 1, 0, 0, 0]
+        >>> len(bits)
+        7
+        >>> bytes = bits_to_bytes(bits)
+        >>> next(bytes)
+        Traceback (most recent call last):
+        ...
+        TypeError: unsupported operand type(s) for <<: 'NoneType' and 'int'
     """
     # Reverse the eight_bits to account for endianness
     return (reduce(lambda byte, bit: byte << 1 | bit, reversed(eight_bits)) for eight_bits in nslice(bitstream, 8))
@@ -126,13 +138,18 @@ def bytes_to_string(bytestream):
 
 def bits_to_string(bitstream):
     """
-        Converts a bitstream to a string
+        Converts a bitstream to a string. Due to implementation, bits_to_string has the same
+        problem related to bitstream length being divisible by 8 as bits_to_bytes has.
 
         Example:
 
         >>> bits = [1, 0, 0, 0, 0, 1, 1, 0]
         >>> bits_to_string(bits)
         'a'
+        >>> bits_to_string([1, 1, 1])
+        Traceback (most recent call last):
+        ...
+        TypeError: unsupported operand type(s) for <<: 'NoneType' and 'int'
     """
     return bytes_to_string(bits_to_bytes(bitstream))
 
@@ -152,10 +169,35 @@ def xor_streams(bitstream1, bitstream2):
 
 
 class Bitstream(object):
-    """Turns an iterable of bytes into a bit-by-bit bitstream of its lsbf binary representation."""
+    """
+        Turns an iterable of bytes into a bit-by-bit bitstream of its lsbf binary representation.
+
+        Example:
+
+        >>> bitstream = Bitstream(b'abc')
+        >>> list(bitstream)
+        [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0]
+
+        >>> bitstream = Bitstream(ord(c) for c in 'abc')
+        >>> list(bitstream)
+        [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0]
+    """
 
     def __init__(self, bytestream):
-        """Convert the given bytestream to a bitstream"""
+        """
+            Convert the given bytestream to a bitstream. The given bytestream may take on any number
+            of forms:
+
+            >>> # The following are equivalent
+            >>> bytestream = b'abc'
+            >>> bytestream = bytes('abc', 'ascii')
+            >>> bytestream = (ord(c) for c in 'abc')
+            >>> bytestream = map(ord, 'abc')
+            >>> bytestream = bytearray('abc', 'ascii')
+            >>> bytestream = [97, 98, 99]
+            >>> # They all work the same:
+            >>> bitstream = Bitstream(bytestream)
+        """
         self.bits = self._bits(bytestream)
 
     def _bits(self, bytestream):
@@ -165,16 +207,51 @@ class Bitstream(object):
                 yield bit
 
     def __iter__(self):
-        """Returns the bitstream generator"""
+        """
+            Returns the bitstream generator to iterate over.
+
+            Example:
+
+            >>> bitstream = Bitstream(b'abc')
+            >>> sum = 0
+            >>> for bit in bitstream:
+            ...     sum += bit
+            >>> sum  # There are 10 True bits in the bitstream.
+            10
+        """
         return self.bits
 
     def __next__(self):
-        """Get the next bit of the bitstream"""
+        """
+            Get the next bit of the bitstream
+
+            Example:
+
+            >>> bitstream = Bitstream(b'abc')
+            >>> next(bitstream)
+            1
+            >>> next(bitstream)
+            0
+        """
         return next(self.bits)
 
 
 class TextBitstream(Bitstream):
-    """Turns an iterable of characters into a Bitstream."""
+    """
+        Turns an iterable of characters into a Bitstream. As with Bitstream, the iterable may be of
+        many forms. Usually it will be some kind of lazily evaluated generator rather than a single
+        string or array defined all at once.
+
+        Example:
+
+        >>> # The following are all equivalent
+        >>> text = 'abc'
+        >>> text = ['a', 'b', 'c']
+        >>> text = (c for c in 'abc')  # A dumb example, but useful for large portions of text.
+        >>> bitstream1 = TextBitstream(text)
+        >>> bitstream2 = Bitstream(b'abc')
+        >>> assert list(bitstream1) == list(bitstream2)
+    """
 
     def __init__(self, text):
         """Convert the given text to a bitstream"""
