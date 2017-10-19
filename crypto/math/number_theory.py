@@ -1,3 +1,7 @@
+"""
+Various number theory functions useful for cryptography.
+"""
+
 import itertools
 import math
 import random
@@ -20,20 +24,29 @@ def modular_matrix_inverse(matrix, modulus):
     return numpy.around(numpy.mod(det_inv * (det * m_inv), modulus))
 
 
-def coprimes(n):
-    """Yields the numbers from 0 to n that are coprime with n."""
-    return iter(filter(lambda x: math.gcd(x, n) == 1, range(n)))
+def coprimes(num):
+    """
+        Yields the numbers from 1 to `num` that are coprime with `num`.
+
+        Example:
+
+        >>> list(coprimes(5))
+        [1, 2, 3, 4]
+    """
+    return iter(filter(lambda x: math.gcd(x, num) == 1, range(num)))
 
 
 def prime_pi(n):
     """Returns the number of primes less than n"""
+    # Alternatively: return sympy.primepi(n)
     return n / math.log(n)
 
 
-def random_prime(n):
-    """Generates a random large prime number with n digits"""
+def random_prime(digits):
+    """Generates a random large prime number with `digits` digits"""
+    # TODO: There's got to be a better implementation than this...
     # Generate a random number with n digits
-    num = random.randint(10**(n - 1) + 1, 10**n)
+    num = random.randint(10**(digits - 1) + 1, 10**digits)
     # Find the next prime after the number - will *probably* have n digits.
     return gmpy2.next_prime(num)
 
@@ -44,18 +57,28 @@ def is_prime(x):
 
 
 def _primes():
-    """An infinite prime generator."""
+    """An infinite prime generator for internal use."""
     start = 1
     while True:
-        start = gmpy2.next_prime(start)
+        # Convert from mpz() to Python int
+        start = int(gmpy2.next_prime(start))
         yield start
 
 
-def primes(n=None):
-    """A generator that yields the first n primes. Defaults to infinite primes."""
-    if n is None:
+def primes(limit=None):
+    """
+        A generator that yields the first `limit` primes. Defaults to infinite primes.
+        Uses gmpy2.next_prime() to generate prime after prime.
+
+        Example:
+
+        >>> p = primes(10)
+        >>> list(p)
+        [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+    """
+    if limit is None:
         return _primes()
-    return itertools.islice(_primes(), n)
+    return itertools.islice(_primes(), limit)
 
 
 def extended_gcd(a, b):

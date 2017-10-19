@@ -45,12 +45,12 @@ class MathTest(unittest.TestCase):
         self.assertEqual(len(str(actual)), n)
         self.assertTrue(is_prime(actual))
 
-    def test_is_prime_small(self):
+    def test_is_prime_small_1(self):
         n = 10
         prime = random_prime(n)
         self.assertTrue(is_prime(prime))
 
-    def test_is_prime_small(self):
+    def test_is_prime_small_2(self):
         n = 200
         prime = random_prime(n)
         self.assertTrue(is_prime(prime))
@@ -108,19 +108,19 @@ class MathTest(unittest.TestCase):
         # to the book using more decimal places than they show in the text.
         self.assertSequenceEqual(values, [3, 1, 3, 4, 9803917])
 
-    def test_continued_fraction_values(self):
+    def test_continued_fractions(self):
         decimal = math.sqrt(5)
-        C_ks = fraction_values(decimal)
+        C_ks = fractions(decimal)
         values = [a for a, _ in zip(C_ks, range(5))]
         self.assertSequenceEqual(values, [(2, 1), (9, 4), (38, 17), (161, 72), (682, 305)])
 
         decimal = math.pi
-        C_ks = fraction_values(decimal)
+        C_ks = fractions(decimal)
         values = [a for a, _ in zip(C_ks, range(5))]
         self.assertSequenceEqual(values, [(3, 1), (22, 7), (333, 106), (355, 113), (103993, 33102)])
 
         decimal = math.sqrt(12)
-        C_ks = fraction_values(decimal)
+        C_ks = fractions(decimal)
         values = [a for a, _ in zip(C_ks, range(5))]
         self.assertSequenceEqual(values, [(3, 1), (7, 2), (45, 13), (97, 28), (627, 181)])
 
