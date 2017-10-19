@@ -1,8 +1,8 @@
 """
 Attacks submodule of crypto. Implements several attack methods of various ciphers.
 
-Examples:
-
+* affine: Implements attacks on an affine cipher
+* vigenere: Implements attacks on a vigenere cipher
 """
 from crypto.tests import run_once
 

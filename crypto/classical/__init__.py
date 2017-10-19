@@ -1,11 +1,10 @@
 """
 Classical cipher submodule of crypto. Defines several classical ciphers.
 
-Examples:
-
->>> cipher = AffineCipher(3, 19)
->>> cipher.encrypt('affine')
-'tiirgf'
+* affine: Implements a classical Affine Cipher
+* hill: Implements a classical Hill Block Cipher
+* lfsr: Implements a Linear Feedback Shift Register Cipher
+* vigenere: Implements a Vigenere Cipher
 """
 from crypto.tests import run_once
 

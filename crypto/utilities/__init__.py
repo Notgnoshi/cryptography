@@ -1,8 +1,9 @@
 """
 Utility submodule of crypto. Defines useful utilities.
 
-Examples:
-
+* bitwise: Defines several useful functions and classes for working with binary data in Python
+* delegates: Unused as of yet, but defines classes implementing the delegate design pattern
+* utilities: Miscellaneous utilities primarily dealing with iteration and working with text
 """
 
 from crypto.tests import run_once

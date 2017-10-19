@@ -2,8 +2,9 @@
 Mathematics submodule of crypto. Defines various number theory, linear algebra, etc functions
 useful to cryptography.
 
-Examples:
-
+* continued_fractions: Defines several functions for working with continued fractions
+* frequencies: Implements a symbol frequency calculator
+* number_theory: Implements several useful nuber theory functions
 """
 from crypto.tests import run_once
 

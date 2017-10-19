@@ -1,8 +1,8 @@
 """
 Cipher submodule of crypto. Defines several common ciphers.
 
-Examples:
-
+* des: Implements the DES cipher
+* toy_des: Implements a toy version of the DES cipher
 """
 from crypto.tests import run_once
 
