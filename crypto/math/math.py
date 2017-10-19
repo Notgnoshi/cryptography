@@ -1,8 +1,8 @@
 import itertools
-import gmpy2
 import math
-import numpy
 import random
+import numpy
+import gmpy2
 # from sympy import Matrix
 
 
@@ -55,8 +55,7 @@ def primes(n=None):
     """A generator that yields the first n primes. Defaults to infinite primes."""
     if n is None:
         return _primes()
-    else:
-        return itertools.islice(_primes(), n)
+    return itertools.islice(_primes(), n)
 
 
 def extended_gcd(a, b):

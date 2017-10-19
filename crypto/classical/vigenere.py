@@ -1,5 +1,5 @@
-from crypto.utilities import int_mapping, char_mapping, preprocess
 from itertools import cycle
+from crypto.utilities import int_mapping, char_mapping, preprocess
 
 
 class VigenereCipher(object):

@@ -1,4 +1,6 @@
-from crypto.utilities import *
+import itertools
+from crypto.utilities import nslice, wrap_around, TextBitstream
+from crypto.utilities import bits_to_string, bits_of, bits_to_integer, xor_streams
 from crypto.classical import HillCipher
 
 
@@ -12,7 +14,8 @@ class DesChunker(object):
         """Creates a chunker, to return tuples (L, R) where L and R have the specified chunk size"""
         self.chunker = self._chunker(bitstream, chunk_size)
 
-    def _chunker(self, bitstream, chunk_size):
+    @staticmethod
+    def _chunker(bitstream, chunk_size):
         """
             Chunker implementation. Requires the bitstream to have a number of bits evenly
             divisible by 2 * `chunk_size`

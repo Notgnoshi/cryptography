@@ -1,7 +1,7 @@
+import numpy
 from crypto.classical import AffineCipher
 from crypto.math import SymbolFrequencies
 from crypto.utilities import int_mapping
-import numpy
 
 
 class AffineAttack(object):

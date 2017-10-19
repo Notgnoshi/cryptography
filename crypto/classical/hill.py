@@ -1,8 +1,7 @@
-from crypto.utilities import nslice, int_mapping, char_mapping, preprocess
-from crypto.math import modular_matrix_inverse
-import gmpy2
 import math
 import numpy
+from crypto.utilities import nslice, int_mapping, char_mapping, preprocess
+from crypto.math import modular_matrix_inverse
 
 
 class HillCipher(object):
@@ -34,12 +33,12 @@ class HillCipher(object):
         return [int_mapping(c) for c in string]
 
     @staticmethod
-    def decode( nums):
+    def decode(nums):
         """Decodes a numeric list such that 0:a, 1:b, 2:c, ..."""
         return ''.join(char_mapping(int(n)) for n in nums)
 
     @staticmethod
-    def pad_message( message, block_size):
+    def pad_message(message, block_size):
         """Pads a message with enough 'x's to produce full blocks."""
         return message + 'x' * ((block_size - len(message)) % block_size)
 

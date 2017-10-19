@@ -200,7 +200,8 @@ class Bitstream(object):
         """
         self.bits = self._bits(bytestream)
 
-    def _bits(self, bytestream):
+    @staticmethod
+    def _bits(bytestream):
         """A generator to yield bit after bit of the bitstream"""
         for byte in bytestream:
             for bit in bits_of(byte, 8):
