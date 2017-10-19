@@ -8,7 +8,7 @@ as well as the submodule docstring itself.
 """
 
 
-def run_once(f):
+def run_once(func):
     """
         A decorator to ensure load_tests() is ran only once. Otherwise the test discovery will
         discover the load_tests() functions more than once and add the tests to the test suite.
@@ -20,7 +20,7 @@ def run_once(f):
     def wrapper(*args, **kwargs):
         if not wrapper.has_run:
             wrapper.has_run = True
-            return f(*args, **kwargs)
+            return func(*args, **kwargs)
         else:
             return pass_through(*args, **kwargs)
     wrapper.has_run = False
@@ -37,7 +37,6 @@ def runtests():
         >>> runtests()
         ...
     """
-    import doctest
     import unittest
     loader = unittest.TestLoader()
     # Discover all tests in the current directory that are prefixed with `test`. Also discovers

@@ -165,7 +165,7 @@ class DesCipher(object):
             C, D = key[:28], key[28:]
             # Rounds are 1-indexed, so shift array over by one
             left_shifts = [None, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1]
-            for i in range(1, self.number_of_rounds + 1):
+            for i in range(1, num_rounds + 1):
                 C, D = wrap_around(C, -left_shifts[i]), wrap_around(D, -left_shifts[i])
                 yield self.permute(C + D, self._CD_permutation)
 

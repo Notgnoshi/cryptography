@@ -17,8 +17,8 @@ class HillCipher(object):
         self.key_inverse = modular_matrix_inverse(self.key, self.alphabet_size)
         self.fill_value = 'x'
 
-    @classmethod
-    def generate_key(cls, block_size, alphabet_size=26):
+    @staticmethod
+    def generate_key(block_size, alphabet_size=26):
         """Generate the Hill cipher matrix key"""
         # Create a random matrix from 0 to N that is nxn
         M = numpy.random.randint(0, alphabet_size + 1, (block_size, block_size))
@@ -28,18 +28,18 @@ class HillCipher(object):
             M = numpy.random.randint(0, alphabet_size + 1, (block_size, block_size))
         return M
 
-    @classmethod
-    def encode(cls, string):
+    @staticmethod
+    def encode(string):
         """Encodes an alphabetic string such that a:0, b:1, c:2, ..."""
         return [int_mapping(c) for c in string]
 
-    @classmethod
-    def decode(cls, nums):
+    @staticmethod
+    def decode( nums):
         """Decodes a numeric list such that 0:a, 1:b, 2:c, ..."""
         return ''.join(char_mapping(int(n)) for n in nums)
 
-    @classmethod
-    def pad_message(cls, message, block_size):
+    @staticmethod
+    def pad_message( message, block_size):
         """Pads a message with enough 'x's to produce full blocks."""
         return message + 'x' * ((block_size - len(message)) % block_size)
 

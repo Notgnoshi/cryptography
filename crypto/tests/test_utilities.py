@@ -26,7 +26,7 @@ class PreprocessTest(unittest.TestCase):
 
         text = 'ÈÆÖÉEAEOE'
         expected = 'èæöéeaeoe'
-        self.assertSequenceEqual(''.join(preprocess(text, ascii=False)), expected)
+        self.assertSequenceEqual(''.join(preprocess(text, use_ascii=False)), expected)
 
 
 class BitfieldTest(unittest.TestCase):

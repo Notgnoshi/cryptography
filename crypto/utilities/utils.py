@@ -14,7 +14,7 @@ NUMBER_TABLE = dict(zip(range(0, 26), string.ascii_lowercase))
 ALPHABET = frozenset(string.ascii_lowercase)
 
 
-def preprocess(text, ascii=True):
+def preprocess(text, use_ascii=True):
     """
         Preprocess text. Converts to lowercase and filters non-alphabetic characters.
         Defaults to defining alphabetic characters as ascii-alphabetic
@@ -27,7 +27,7 @@ def preprocess(text, ascii=True):
 
         # TODO: Add unicode example
     """
-    if ascii:
+    if use_ascii:
         return filter(ALPHABET.__contains__, text.lower())
     else:
         return filter(str.isalpha, text.lower())
@@ -51,10 +51,10 @@ def product(iterable):
     return functools.reduce(operator.mul, iterable)
 
 
-def nslice(iterable, n, fill_value=None):
+def nslice(iterable, slice_size, fill_value=None):
     """
-        Yield n-tuple slices of iterable, using fill_value once iterable has
-        been exhausted.
+        Yield `slice_size`-tuple slices of `iterable`, using `fill_value` once
+        iterable has been exhausted.
 
         Example:
 
@@ -65,7 +65,7 @@ def nslice(iterable, n, fill_value=None):
         >>> next(slices)
         (2, 3)
     """
-    args = [iter(iterable)] * n
+    args = [iter(iterable)] * slice_size
     return itertools.zip_longest(*args, fillvalue=fill_value)
 
 
@@ -118,7 +118,7 @@ def char_mapping(integer):
     return NUMBER_TABLE[integer]
 
 
-def wrap_around(l, n):
+def wrap_around(seq, shift):
     """
         Returns a wrapped-around version of list `l` starting at index `n`
 
@@ -130,6 +130,6 @@ def wrap_around(l, n):
         >>> wrap_around(l, -1)  # A left rotation by one
         [2, 3, 4, 1]
     """
-    queue = deque(l)
-    queue.rotate(n)
+    queue = deque(seq)
+    queue.rotate(shift)
     return list(queue)
