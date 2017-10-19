@@ -4,11 +4,10 @@ Attacks submodule of crypto. Implements several attack methods of various cipher
 Examples:
 
 """
+from crypto.tests import run_once
 
 from .affine import AffineAttack
 from .vigenere import VigenereAttack
-
-from crypto.tests import run_once
 
 
 @run_once

@@ -1,5 +1,5 @@
 from functools import reduce
-from .utils import nslice
+from .utilities import nslice
 
 
 def set_ith_bit(num, index, value):

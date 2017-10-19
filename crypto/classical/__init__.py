@@ -7,13 +7,12 @@ Examples:
 >>> cipher.encrypt('affine')
 'tiirgf'
 """
+from crypto.tests import run_once
 
 from .affine import AffineCipher
 from .hill import HillCipher
 from .lfsr import LfsrCipher
 from .vigenere import VigenereCipher
-
-from crypto.tests import run_once
 
 
 @run_once

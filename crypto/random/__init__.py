@@ -5,12 +5,11 @@ text.
 Examples:
 
 """
+from crypto.tests import run_once
 
 from .blum_blum_shub import *
 from .passwords import *
 from .LFSR import *
-
-from crypto.tests import run_once
 
 
 @run_once

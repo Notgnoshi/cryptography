@@ -4,11 +4,10 @@ Cipher submodule of crypto. Defines several common ciphers.
 Examples:
 
 """
+from crypto.tests import run_once
 
 from .toy_des import *
 from .des import *
-
-from crypto.tests import run_once
 
 
 @run_once

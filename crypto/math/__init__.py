@@ -5,12 +5,11 @@ useful to cryptography.
 Examples:
 
 """
+from crypto.tests import run_once
 
 from .frequencies import SymbolFrequencies
 from .math import *
 from .continued_fractions import *
-
-from crypto.tests import run_once
 
 
 @run_once

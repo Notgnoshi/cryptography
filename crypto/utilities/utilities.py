@@ -24,13 +24,13 @@ def preprocess(text, use_ascii=True):
         >>> text = 'ABC.,#'
         >>> ''.join(preprocess(text))
         'abc'
-
-        # TODO: Add unicode example
+        >>> text = 'ÈÆÖÉEAEOE,.%'
+        >>> ''.join(preprocess(text, use_ascii=False))
+        'èæöéeaeoe'
     """
     if use_ascii:
         return filter(ALPHABET.__contains__, text.lower())
-    else:
-        return filter(str.isalpha, text.lower())
+    return filter(str.isalpha, text.lower())
 
 
 def product(iterable):
