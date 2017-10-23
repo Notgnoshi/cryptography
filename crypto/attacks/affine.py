@@ -1,22 +1,45 @@
 import numpy
 from crypto.classical import AffineCipher
-from crypto.math import SymbolFrequencies
+from crypto.math import SymbolFrequencies, coprimes
 from crypto.utilities import int_mapping
 
 
 class AffineAttack(object):
-    """Implements a strategy to attack an Affine Cipher."""
+    """
+        Implements a strategy to attack an Affine Cipher.
+    """
 
     def __init__(self, ciphertext):
-        """Construct an affine cipher attack given some large ciphertext"""
+        """
+            Construct an affine cipher attack given some large ciphertext
+
+            Example:
+
+            >>> from crypto.classical import AffineCipher
+            >>> cipher = AffineCipher(9, 18)
+            >>> ciphertext = cipher.encrypt('This is a test')
+            >>> attack = AffineAttack(ciphertext)
+        """
         self.ciphertext = ''.join(ciphertext)
         self.frequencies = SymbolFrequencies(self.ciphertext)
 
-    def naive_frequency_attack(self):
+    def naive_frequency(self):
         """
             Executes a symbol frequency attack. Assumes the most common plaintext symbols
             are `e`, `a`, and `t` respectively.
+
+            Example:
+
+            >>> # demonstrates usage and naivette
+            >>> from crypto.classical import AffineCipher
+            >>> cipher = AffineCipher(9, 18)
+            >>> ciphertext = cipher.encrypt('This is a test')
+            >>> attack = AffineAttack(ciphertext)
+            >>> attack.naive_frequency()
+            'estdtdlepde'
+            >>> # above not equal to 'thisisatest' because 't' is the most common character
         """
+        # TODO: Implement a less naive strategy?!
         most_common = self.frequencies.most_common(3)
         b1 = int_mapping(most_common[0][0])
         # Pick `e` and `t` over `e` and `a` so that the matrix is invertible mod 26.
@@ -26,3 +49,25 @@ class AffineAttack(object):
         x = numpy.transpose(numpy.mod(m_inverse * b, 26)).tolist()[0]
         cipher = AffineCipher(*x)
         return cipher.decrypt(self.ciphertext)
+
+    def brute_force(self):
+        """
+            Yields the results of a brute force attack on all possible keys one by one. Yields
+            tuples of the form (a, b, decrypted text).
+
+            Example:
+
+            >>> from crypto.classical import AffineCipher
+            >>> affine = AffineCipher(9, 18)
+            >>> c = affine.encrypt('This is a test')
+            >>> attack = AffineAttack(c)
+            >>> b = attack.brute_force()
+            >>> for p, a, b in b:
+            ...     if p.startswith('this'):
+            ...         print(a, b, p)
+            9 18 thisisatest
+        """
+        for a in coprimes(26):
+            for b in range(26):
+                cipher = AffineCipher(a, b)
+                yield cipher.decrypt(self.ciphertext), a, b

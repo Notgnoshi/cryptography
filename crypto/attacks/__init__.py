@@ -16,6 +16,6 @@ def load_tests(loader, tests, ignore):
     # Add the doctests in this file.
     tests.addTests(doctest.DocTestSuite('crypto.attacks'))
     # Add class level doctests.
-    tests.addTests(doctest.DocTestSuite(affine))
-    tests.addTests(doctest.DocTestSuite(vigenere))
+    tests.addTests(doctest.DocTestSuite('crypto.attacks.affine'))
+    tests.addTests(doctest.DocTestSuite('crypto.attacks.vigenere'))
     return tests

@@ -14,7 +14,7 @@ affine_well_behaved_ciphertext = """idowopcunstnahdsfichdpoqudoqhhdcloqpfshmofyp
 class AffineAttackTest(unittest.TestCase):
     def test_affine_naive(self):
         attack = AffineAttack(affine_well_behaved_ciphertext)
-        decrypted = attack.naive_frequency_attack()
+        decrypted = attack.naive_frequency()
         self.assertSequenceEqual(decrypted, well_behaved_plaintext)
 
     def test_all_keys_naive(self):
@@ -24,10 +24,20 @@ class AffineAttackTest(unittest.TestCase):
                 cipher = AffineCipher(a, b)
                 ciphertext = cipher.encrypt(well_behaved_plaintext)
                 attack = AffineAttack(ciphertext)
-                decrypted = attack.naive_frequency_attack()
+                decrypted = attack.naive_frequency()
                 self.assertSequenceEqual(decrypted, well_behaved_plaintext)
+
+    def test_brute_force(self):
+        attack = AffineAttack(affine_well_behaved_ciphertext)
+        candidates = []
+        for plaintext, a, b in attack.brute_force():
+            if plaintext.startswith('who'):
+                candidates.append((a, b))
+
+        self.assertListEqual(candidates, [(9, 18)])
 
 
 class VigenereAttackTest(unittest.TestCase):
+    @unittest.skip
     def test_vigenere(self):
-        pass
+        raise NotImplementedError

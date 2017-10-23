@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import sys
+from gmpy2 import powmod
 sys.path.append('../../')
 from crypto.math import coprimes
-from gmpy2 import powmod
 
 
 def primitive_roots(m):

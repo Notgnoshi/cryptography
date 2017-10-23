@@ -1,7 +1,7 @@
 #!/usr/bin/python3
-from crypto.classical import AffineCipher
 import math
 import random
+from crypto.classical import AffineCipher
 
 
 def main():

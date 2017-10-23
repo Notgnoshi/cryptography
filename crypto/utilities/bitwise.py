@@ -1,3 +1,8 @@
+"""
+Defines several useful functions and classes for working with binary
+data in Python.
+"""
+
 from functools import reduce
 from .utilities import nslice
 
@@ -120,7 +125,8 @@ def bits_to_bytes(bitstream):
         TypeError: unsupported operand type(s) for <<: 'NoneType' and 'int'
     """
     # Reverse the eight_bits to account for endianness
-    return (reduce(lambda byte, bit: byte << 1 | bit, reversed(eight_bits)) for eight_bits in nslice(bitstream, 8))
+    return (reduce(lambda byte, bit: byte << 1 | bit, reversed(eight_bits)) for
+            eight_bits in nslice(bitstream, 8))
 
 
 def bytes_to_string(bytestream):

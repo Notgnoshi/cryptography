@@ -19,7 +19,7 @@ def load_tests(loader, tests, ignore):
     # Add the doctests in this file.
     tests.addTests(doctest.DocTestSuite('crypto.math'))
     # Add class level doctests.
-    tests.addTests(doctest.DocTestSuite(frequencies))
-    tests.addTests(doctest.DocTestSuite(number_theory))
-    tests.addTests(doctest.DocTestSuite(continued_fractions))
+    tests.addTests(doctest.DocTestSuite('crypto.math.frequencies'))
+    tests.addTests(doctest.DocTestSuite('crypto.math.number_theory'))
+    tests.addTests(doctest.DocTestSuite('crypto.math.continued_fractions'))
     return tests

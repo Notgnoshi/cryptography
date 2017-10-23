@@ -8,9 +8,9 @@ text.
 """
 from crypto.tests import run_once
 
-from .blum_blum_shub import *
-from .passwords import *
-from .LFSR import *
+from .blum_blum_shub import bbs, bbsn
+from .passwords import generate_alnum, generate_alpha, generate_phrase
+from .LFSR import LinearFeedbackShiftRegister
 
 
 @run_once
@@ -19,7 +19,7 @@ def load_tests(loader, tests, ignore):
     # Add the doctests in this file.
     tests.addTests(doctest.DocTestSuite('crypto.random'))
     # Add class level doctests.
-    tests.addTests(doctest.DocTestSuite(blum_blum_shub))
-    tests.addTests(doctest.DocTestSuite(passwords))
-    tests.addTests(doctest.DocTestSuite(LFSR))
+    tests.addTests(doctest.DocTestSuite('crypto.random.blum_blum_shub'))
+    tests.addTests(doctest.DocTestSuite('crypto.random.passwords'))
+    tests.addTests(doctest.DocTestSuite('crypto.random.LFSR'))
     return tests

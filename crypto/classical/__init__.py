@@ -20,8 +20,8 @@ def load_tests(loader, tests, ignore):
     # Add the doctests in this file.
     tests.addTests(doctest.DocTestSuite('crypto.classical'))
     # Add class level doctests.
-    tests.addTests(doctest.DocTestSuite(affine))
-    tests.addTests(doctest.DocTestSuite(hill))
-    tests.addTests(doctest.DocTestSuite(lfsr))
-    tests.addTests(doctest.DocTestSuite(vigenere))
+    tests.addTests(doctest.DocTestSuite('crypto.classical.affine'))
+    tests.addTests(doctest.DocTestSuite('crypto.classical.hill'))
+    tests.addTests(doctest.DocTestSuite('crypto.classical.lfsr'))
+    tests.addTests(doctest.DocTestSuite('crypto.classical.vigenere'))
     return tests

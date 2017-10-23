@@ -1,4 +1,3 @@
-import itertools
 from crypto.utilities import wrap_around, preprocess, TextBitstream
 from crypto.utilities import bits_to_integer, xor_streams, bits_of
 from crypto.classical import HillCipher

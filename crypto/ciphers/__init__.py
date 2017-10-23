@@ -6,8 +6,8 @@ Cipher submodule of crypto. Defines several common ciphers.
 """
 from crypto.tests import run_once
 
-from .toy_des import *
-from .des import *
+from .toy_des import ToyDesCipher
+from .des import DesCipher, DesChunker
 
 
 @run_once
@@ -16,6 +16,6 @@ def load_tests(loader, tests, ignore):
     # Add the doctests in this file.
     tests.addTests(doctest.DocTestSuite('crypto.ciphers'))
     # Add class level doctests.
-    tests.addTests(doctest.DocTestSuite(toy_des))
-    tests.addTests(doctest.DocTestSuite(des))
+    tests.addTests(doctest.DocTestSuite('crypto.ciphers.toy_des'))
+    tests.addTests(doctest.DocTestSuite('crypto.ciphers.des'))
     return tests
