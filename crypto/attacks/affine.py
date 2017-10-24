@@ -33,13 +33,15 @@ class AffineAttack(object):
             >>> # demonstrates usage and naivette
             >>> from crypto.classical import AffineCipher
             >>> cipher = AffineCipher(9, 18)
-            >>> ciphertext = cipher.encrypt('This is a test')
+            >>> ciphertext = cipher.encrypt('This is not a test')
             >>> attack = AffineAttack(ciphertext)
             >>> attack.naive_frequency()
-            'estdtdlepde'
+            'estdtdyzelepde'
             >>> # above not equal to 'thisisatest' because 't' is the most common character
         """
         # TODO: Implement a less naive strategy?!
+        # TODO: The doctest for this function randomly failed with the plaintext 'This is a test'.
+        #       Occaisionally it would compute the (alpha, beta) pair as (20, 22), which is weird...
         most_common = self.frequencies.most_common(3)
         b1 = int_mapping(most_common[0][0])
         # Pick `e` and `t` over `e` and `a` so that the matrix is invertible mod 26.
