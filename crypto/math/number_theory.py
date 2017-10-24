@@ -53,8 +53,7 @@ def random_prime(digits):
 def is_prime(x, method='miller-rabin'):
     """
         Returns True if x is prime, False otherwise. Uses the given primality test, which defaults
-        to Miller Rabin. The given method may be one of the following: 'fermat', 'euler', or
-        'miller-rabin'
+        to Miller Rabin. The given method may be one of the following: 'fermat' or 'miller-rabin'
 
         Example:
 
@@ -62,13 +61,21 @@ def is_prime(x, method='miller-rabin'):
         True
         >>> is_prime(11, method='miller-rabin')  # Equivalent to the above
         True
+        >>> is_prime(11, method='fermat')
+        True
     """
 
     methods = {'miller-rabin': _miller_rabin_prime_test,
-               'fermat': _fermat_prime_test,
-               'euler': _euler_prime_test}
-    test = methods[method]
-    return test(x)
+               'fermat': _fermat_prime_test}
+    prime_test = methods[method]
+
+    # Handle some easy edge cases up front
+    if x == 2 or x == 3:
+        return True
+    if x < 2 or x % 2 == 0:
+        return False
+
+    return prime_test(x)
 
 
 def _primes():
@@ -147,12 +154,6 @@ def _miller_rabin_prime_test(x, attempts=25):
     """
         Implements the Miller Rabin primality test
     """
-    # Handle some easy edge cases up front
-    if x == 2 or x == 3:
-        return True
-    if x < 2 or x % 2 == 0:
-        return False
-
     # Find 2^s as the largest power of two that divides x-1
     power, remainder = _miller_rabin_decompose(x - 1)
     for _ in range(attempts):
@@ -165,9 +166,12 @@ def _miller_rabin_prime_test(x, attempts=25):
     return True
 
 
-def _fermat_prime_test(x):
-    raise NotImplementedError('This primality test has not been implemented yet')
-
-
-def _euler_prime_test(x):
-    raise NotImplementedError('This primality test has not been implemented yet')
+def _fermat_prime_test(x, attempts=25):
+    """
+        Implements the Fermat primality (compositeness) test
+    """
+    for _ in range(attempts):
+        a = random.randint(1, x - 1)
+        if pow(a, x - 1, x) != 1:
+            return False
+    return True

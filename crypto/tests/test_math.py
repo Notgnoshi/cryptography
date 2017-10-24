@@ -148,7 +148,14 @@ class PrimalityTest(unittest.TestCase):
 
     def test_miller_rabin_prime(self):
         n = 396736894567834589803
-        self.assertTrue(is_prime(n))
+        self.assertTrue(is_prime(n, 'miller-rabin'))
+
+        # Test several psuedo primes and carmichael numbers
+        self.assertFalse(is_prime(9, 'miller-rabin'))
+        self.assertFalse(is_prime(561, 'miller-rabin'))
+        self.assertFalse(is_prime(1729, 'miller-rabin'))
+        self.assertFalse(is_prime(2465, 'miller-rabin'))
+        self.assertFalse(is_prime(52633, 'miller-rabin'))
 
     def test_miller_rabin_against_gmpy2(self):
         # Test that gmpy2 gives the same result against 5000 large numbers
@@ -156,10 +163,20 @@ class PrimalityTest(unittest.TestCase):
             self.assertEqual(is_prime(i, 'miller-rabin'), gmpy2.is_prime(i))
 
     def test_fermat(self):
-        self.assertRaises(NotImplementedError, is_prime, 2, 'fermat')
+        n = 396736894567834589803
+        self.assertTrue(is_prime(n, 'fermat'))
 
-    def test_euler(self):
-        self.assertRaises(NotImplementedError, is_prime, 2, 'euler')
+        # Test several psuedo primes and carmichael numbers
+        self.assertFalse(is_prime(9, 'fermat'))
+        self.assertFalse(is_prime(561, 'fermat'))
+        self.assertFalse(is_prime(1729, 'fermat'))
+        self.assertFalse(is_prime(2465, 'fermat'))
+        self.assertFalse(is_prime(52633, 'fermat'))
+
+    def test_fermat_against_gmpy2(self):
+        # Test that gmpy2 gives the same result against 5000 large numbers
+        for i in range(50000000000, 50000005000):
+            self.assertEqual(is_prime(i, 'fermat'), gmpy2.is_prime(i))
 
 
 class SymbolFrequencyTest(unittest.TestCase):
