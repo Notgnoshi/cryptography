@@ -1,5 +1,6 @@
 from crypto.math import *
 from crypto.utilities import nslice
+import gmpy2
 import math
 import numpy as np
 import random
@@ -32,32 +33,6 @@ class MathTest(unittest.TestCase):
         expected = [1, 3, 5, 7, 9, 11, 15, 17, 19, 21, 23, 25]
         actual = list(coprimes(26))
         self.assertListEqual(expected, actual)
-
-    def test_random_prime_small(self):
-        n = 10
-        actual = random_prime(n)
-        self.assertEqual(len(str(actual)), n)
-        self.assertTrue(is_prime(actual))
-
-    def test_random_prime_large(self):
-        n = 200
-        actual = random_prime(n)
-        self.assertEqual(len(str(actual)), n)
-        self.assertTrue(is_prime(actual))
-
-    def test_is_prime_small_1(self):
-        n = 10
-        prime = random_prime(n)
-        self.assertTrue(is_prime(prime))
-
-    def test_is_prime_small_2(self):
-        n = 200
-        prime = random_prime(n)
-        self.assertTrue(is_prime(prime))
-
-    def test_is_prime(self):
-        n = 396736894567834589803
-        self.assertTrue(is_prime(n))
 
     def test_extended_gcd(self):
         a, b = 297, 140
@@ -133,6 +108,58 @@ class MathTest(unittest.TestCase):
 
         p, q = approximate_decimal(math.pi, 1e-18)
         self.assertEqual((p, q), (245850922, 78256779))
+
+
+class PrimalityTest(unittest.TestCase):
+    def test_miller_rabin_edge_cases(self):
+        self.assertFalse(is_prime(1))
+        self.assertTrue(is_prime(2))
+        self.assertFalse(is_prime(-3))
+        self.assertFalse(is_prime(9))
+        self.assertFalse(is_prime(1729))
+
+    def test_miller_rabin_not_prime(self):
+        even_not_prime = 1234987232
+        self.assertFalse(is_prime(even_not_prime, method='miller-rabin'))
+        odd_not_prime = 87934596237845
+        self.assertFalse(is_prime(odd_not_prime, method='miller-rabin'))
+
+    def test_miller_rabin_random_small(self):
+        n = 10
+        actual = random_prime(n)
+        self.assertEqual(len(str(actual)), n)
+        self.assertTrue(is_prime(actual))
+
+    def test_miller_rabin_random_large(self):
+        n = 200
+        actual = random_prime(n)
+        self.assertEqual(len(str(actual)), n)
+        self.assertTrue(is_prime(actual))
+
+    def test_miller_rabin_small_1(self):
+        n = 10
+        prime = random_prime(n)
+        self.assertTrue(is_prime(prime))
+
+    def test_miller_rabin_small_2(self):
+        n = 200
+        prime = random_prime(n)
+        self.assertTrue(is_prime(prime))
+
+    def test_miller_rabin_prime(self):
+        n = 396736894567834589803
+        self.assertTrue(is_prime(n))
+
+    def test_miller_rabin_against_gmpy2(self):
+        # Test that gmpy2 gives the same result against 5000 large numbers
+        for i in range(50000000000, 50000005000):
+            self.assertEqual(is_prime(i, 'miller-rabin'), gmpy2.is_prime(i))
+
+    def test_fermat(self):
+        self.assertRaises(NotImplementedError, is_prime, 2, 'fermat')
+
+    def test_euler(self):
+        self.assertRaises(NotImplementedError, is_prime, 2, 'euler')
 
 
 class SymbolFrequencyTest(unittest.TestCase):
