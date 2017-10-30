@@ -47,10 +47,21 @@ Coursework for CSC 512, Cryptography.
 * GCD, extended GCD
 * modinverse
 * Continued fractions
-* Primitive roots
+* Primitive roots (verification and finding)
 * Convert all ciphers to take in bytes.
 * DES
     - Pass in bytes, get bytes out
     - Unit test the example in the project assignment
 * Differential Cryptanalysis for three rounds
 * Change ToyDesCipher to four rounds
+* Create script to encrypt file with cipher determined by commandline arguments
+* Affine and Vigenere attacks
+* One time pad (LsfrCipher?)
+* sqrt(a, n)
+* random_prime(bit_length)
+* number factoring with three methods
+* RSA (BigInt)
+* Quadratic Sieve factoring
+* Sieve of Sundaram
+* Wheel Factorization
+* Solovay–Strassen primality test
