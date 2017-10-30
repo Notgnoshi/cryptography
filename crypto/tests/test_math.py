@@ -180,6 +180,15 @@ class PrimalityTest(unittest.TestCase):
 
 
 class FactoringTest(unittest.TestCase):
+    def test_is_square(self):
+        self.assertTrue(is_square(16))
+        self.assertTrue(is_square(25))
+        self.assertTrue(is_square(1000000))
+
+        self.assertFalse(is_square(16 + 1))
+        self.assertFalse(is_square(25 + 1))
+        self.assertFalse(is_square(1000000 + 1))
+
     def test_factor(self):
         self.assertRaises(NotImplementedError, factor, 10, 'fermat')
         self.assertRaises(NotImplementedError, factor, 10, 'pollard-rho')

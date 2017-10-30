@@ -194,6 +194,13 @@ def factor(num, method):
     return methods[method](num)
 
 
+def is_square(num):
+    """
+        Checks if the given number is prime
+    """
+    return num == (int(math.sqrt(num) + 0.5)) ** 2
+
+
 def _fermat_factor(num):
     """
         Implements Fermat's factoring algorithm
