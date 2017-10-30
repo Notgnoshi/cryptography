@@ -1,5 +1,6 @@
 from crypto.math import *
-from crypto.utilities import nslice
+from crypto.utilities import nslice, product
+from collections import Counter
 import gmpy2
 import math
 import numpy as np
@@ -180,20 +181,35 @@ class PrimalityTest(unittest.TestCase):
 
 
 class FactoringTest(unittest.TestCase):
-    def test_is_square(self):
-        self.assertTrue(is_square(16))
-        self.assertTrue(is_square(25))
-        self.assertTrue(is_square(1000000))
-
-        self.assertFalse(is_square(16 + 1))
-        self.assertFalse(is_square(25 + 1))
-        self.assertFalse(is_square(1000000 + 1))
-
     def test_factor(self):
-        self.assertRaises(NotImplementedError, factor, 10, 'fermat')
         self.assertRaises(NotImplementedError, factor, 10, 'pollard-rho')
         self.assertRaises(NotImplementedError, factor, 10, 'pollard-p1')
         self.assertRaises(NotImplementedError, factor, 10, 'quadratic-sieve')
+
+    def test_trial_division_factor(self):
+        prime_factors = [13, 13, 19, 37, 113]
+        num = product(prime_factors)
+        found_factors = factor(num, 'trial-division')
+        self.assertEqual(Counter(prime_factors), Counter(found_factors))
+
+    def test_fermat_factor_1(self):
+        self.assertRaises(ValueError, factor, 10, 'fermat')
+        self.assertListEqual(factor(9, 'fermat'), [3, 3])
+        # Note that 9 is not prime, but is still a factor.
+        self.assertListEqual(factor(333, 'fermat'), [37, 9])
+
+    def test_fermat_factor_2(self):
+        prime_factors = [13, 19, 37]
+        num = product(prime_factors)
+        found_factors = factor(num, 'fermat')
+        self.assertEqual(num, product(found_factors))
+        self.assertListEqual(found_factors, [13 * 19, 37])
+
+        # A random composite number picked from nowhere.
+        num = 124987921
+        found_factors = factor(num, 'fermat')
+        self.assertEqual(num, product(found_factors))
+        self.assertListEqual(found_factors, [690541, 181])
 
 
 class SymbolFrequencyTest(unittest.TestCase):

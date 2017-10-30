@@ -184,28 +184,34 @@ def factor(num, method):
         'pollard-rho'
         'pollard-p1'
         'quadratic-sieve'
+        'trial-division'
 
         Example:
     """
     methods = {'fermat': _fermat_factor,
                'pollard-rho': _pollard_rho_factor,
                'pollard-p1': _pollard_p1_factor,
-               'quadratic-sieve': _quadratic_sieve_factor}
+               'quadratic-sieve': _quadratic_sieve_factor,
+               'trial-division': _trial_division_factors}
     return methods[method](num)
 
 
-def is_square(num):
-    """
-        Checks if the given number is prime
-    """
-    return num == (int(math.sqrt(num) + 0.5)) ** 2
-
-
 def _fermat_factor(num):
-    """
-        Implements Fermat's factoring algorithm
-    """
-    raise NotImplementedError
+    if num % 2 == 0:
+        raise ValueError('`n` must be odd')
+
+    a = gmpy2.isqrt(num)
+    b2 = gmpy2.square(a) - num
+
+    while not gmpy2.is_square(b2):
+        a += 1
+        b2 = gmpy2.square(a) - num
+
+    p = int(a + gmpy2.isqrt(b2))
+    q = int(a - gmpy2.isqrt(b2))
+
+    # Both p and q are factors of num, but neither are necessarily prime factors.
+    return [p, q]
 
 
 def _pollard_rho_factor(num):
@@ -227,3 +233,20 @@ def _quadratic_sieve_factor(num):
         Implements the Quadratic Sieve factoring algorithm
     """
     raise NotImplementedError
+
+
+def _trial_division_factors(num):
+    if num < 2:
+        return []
+    prime_factors = []
+    for p in primes(int(math.sqrt(num))):
+        if p * p > num:
+            break
+        while num % p == 0:
+            prime_factors.append(p)
+            num //= p
+    # Num may also be a factor
+    if num > 1:
+        prime_factors.append(num)
+
+    return prime_factors
