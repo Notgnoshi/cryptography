@@ -179,6 +179,14 @@ class PrimalityTest(unittest.TestCase):
             self.assertEqual(is_prime(i, 'fermat'), gmpy2.is_prime(i))
 
 
+class FactoringTest(unittest.TestCase):
+    def test_factor(self):
+        self.assertRaises(NotImplementedError, factor, 10, 'fermat')
+        self.assertRaises(NotImplementedError, factor, 10, 'pollard-rho')
+        self.assertRaises(NotImplementedError, factor, 10, 'pollard-p1')
+        self.assertRaises(NotImplementedError, factor, 10, 'quadratic-sieve')
+
+
 class SymbolFrequencyTest(unittest.TestCase):
     def test_counts(self):
         symbols = 'aaaabbbb'

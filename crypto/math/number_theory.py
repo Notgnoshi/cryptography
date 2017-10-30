@@ -67,7 +67,6 @@ def is_prime(x, method='miller-rabin'):
 
     methods = {'miller-rabin': _miller_rabin_prime_test,
                'fermat': _fermat_prime_test}
-    prime_test = methods[method]
 
     # Handle some easy edge cases up front
     if x == 2 or x == 3:
@@ -75,7 +74,7 @@ def is_prime(x, method='miller-rabin'):
     if x < 2 or x % 2 == 0:
         return False
 
-    return prime_test(x)
+    return methods[method](x)
 
 
 def _primes():
@@ -175,3 +174,49 @@ def _fermat_prime_test(x, attempts=25):
         if pow(a, x - 1, x) != 1:
             return False
     return True
+
+
+def factor(num, method):
+    """
+        Factor a number with the given method. Available methods are:
+
+        'fermat'
+        'pollard-rho'
+        'pollard-p1'
+        'quadratic-sieve'
+
+        Example:
+    """
+    methods = {'fermat': _fermat_factor,
+               'pollard-rho': _pollard_rho_factor,
+               'pollard-p1': _pollard_p1_factor,
+               'quadratic-sieve': _quadratic_sieve_factor}
+    return methods[method](num)
+
+
+def _fermat_factor(num):
+    """
+        Implements Fermat's factoring algorithm
+    """
+    raise NotImplementedError
+
+
+def _pollard_rho_factor(num):
+    """
+        Implements the Pollard Rho factoring algorithm
+    """
+    raise NotImplementedError
+
+
+def _pollard_p1_factor(num):
+    """
+        Implements the Pollard P-1 factoring algorithm
+    """
+    raise NotImplementedError
+
+
+def _quadratic_sieve_factor(num):
+    """
+        Implements the Quadratic Sieve factoring algorithm
+    """
+    raise NotImplementedError
