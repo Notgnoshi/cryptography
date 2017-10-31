@@ -259,7 +259,27 @@ def _pollard_p1_factor(num):
     """
         Implements the Pollard P-1 factoring algorithm
     """
-    raise NotImplementedError
+    def pollard_p1(num, bound):
+        """Implements one iteration of the Pollard P-1 factoring algorithm"""
+        # TODO: apparently 13 works well too
+        b = 2
+        for p in primes(bound):
+            pp = p
+            while pp < bound:
+                b = pow(b, p, num)
+                pp *= p
+        g = math.gcd(b - 1, num)
+        if 1 < g < num:
+            return g
+        return None
+
+    bound = 1
+    d = None
+    while d is None and bound < num:
+        d = pollard_p1(num, bound)
+        bound += 1
+
+    return [d]
 
 
 def _quadratic_sieve_factor(num):

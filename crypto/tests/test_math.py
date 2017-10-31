@@ -182,7 +182,6 @@ class PrimalityTest(unittest.TestCase):
 
 class FactoringTest(unittest.TestCase):
     def test_factor(self):
-        self.assertRaises(NotImplementedError, factor, 10, 'pollard-p1')
         self.assertRaises(NotImplementedError, factor, 10, 'quadratic-sieve')
 
     def test_trial_division_factor(self):
@@ -232,6 +231,12 @@ class FactoringTest(unittest.TestCase):
         # print(found_factors)
         self.assertEqual(num, product(found_factors))
         # self.assertCountEqual(found_factors, prime_factors)
+
+    def test_pollard_p1(self):
+        # Taken from Wikipedia
+        num = 8051
+        f = factor(num, 'pollard-p1')
+        self.assertCountEqual(f, [97, 83])
 
 
 class SymbolFrequencyTest(unittest.TestCase):
