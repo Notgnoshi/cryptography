@@ -214,11 +214,45 @@ def _fermat_factor(num):
     return [p, q]
 
 
-def _pollard_rho_factor(num):
+def _pollard_g(x, c, num):
+    """The function g(a) = a^2 + c (mod n) of the Pollard Rho algorithm"""
+    return int(gmpy2.square(x) + c) % num
+
+
+def _pollard_f(x, c, num):
+    """The function g(a) = a^2 - c (mod n) of the Pollard Rho algorithm"""
+    return int(gmpy2.square(x) - c) % num
+
+
+def _pollard_rho_factor(num, attempts=0):
     """
-        Implements the Pollard Rho factoring algorithm
+        Implements the Pollard Rho factorization algorithm
     """
-    raise NotImplementedError
+    # The max number of time to reattempt factoring a given number.
+    NUM_FAILURE_ATTEMPTS = 10
+    a = random.randint(1, num - 1)
+    c = random.randint(1, num - 1)
+    b = a
+    d = 1
+
+    while d == 1:
+        a = _pollard_g(a, c, num)
+        b = _pollard_g(_pollard_g(b, c, num), c, num)
+        d = math.gcd(abs(a - b), num)
+
+    # Assert num is prime only on a reated failure
+    if d == num and attempts == NUM_FAILURE_ATTEMPTS:
+        # either failure, or num is prime.
+        return [d]
+    # Otherwise keep trying and hope the random `a` and `c` fix the issue
+    elif d == num and attempts < NUM_FAILURE_ATTEMPTS:
+        return _pollard_rho_factor(num, attempts + 1)
+    # Finally, recurse to find *all* factors
+    else:
+        new_num = num // d
+        if new_num != 1:
+            return [d] + _pollard_rho_factor(new_num)
+        return [d]
 
 
 def _pollard_p1_factor(num):
