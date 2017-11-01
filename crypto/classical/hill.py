@@ -37,11 +37,6 @@ class HillCipher(object):
         """Decodes a numeric list such that 0:a, 1:b, 2:c, ..."""
         return ''.join(char_mapping(int(n)) for n in nums)
 
-    @staticmethod
-    def pad_message(message, block_size):
-        """Pads a message with enough 'x's to produce full blocks."""
-        return message + 'x' * ((block_size - len(message)) % block_size)
-
     def encrypt(self, message):
         """Encrypts a the given message using the Hill Cipher."""
         blocks = []

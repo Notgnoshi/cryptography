@@ -1,5 +1,6 @@
 from crypto.random import generate_alpha
 from crypto.utilities import *
+import itertools
 import random
 import unittest
 
@@ -135,3 +136,48 @@ class MiscTest(unittest.TestCase):
         expected = [5, 6, 1, 2, 3, 4]
         actual = wrap_around(seq, 2)
         self.assertListEqual(actual, expected)
+
+    def test_lazy_pad_1(self):
+        # a generator with an odd number of items
+        seq = (i for i in [1, 2, 3, 4, 5])
+        # chain the generators
+        seq = lazy_pad(seq, multiple=2, pad_values='x')
+        seq = list(seq)
+        # There are an even number of items
+        self.assertTrue(len(seq) % 2 == 0)
+        # Padded at the end by 'x'
+        self.assertListEqual(seq, [1, 2, 3, 4, 5, 'x'])
+
+        # make sure we don't unnecessarily pad
+        seq = 'abc'
+        seq = lazy_pad(seq, 3, 'xyz')
+        self.assertSequenceEqual(''.join(seq), 'abc')
+
+    def test_lazy_pad_2(self):
+        seq = 'abcdefg'
+        seq = ''.join(lazy_pad(seq, 10, 'X'))
+        self.assertSequenceEqual(seq, 'abcdefgXXX')
+
+        # A multiple of 5
+        seq = generate_alpha(45)
+        # pad the lowercase alphabetic string with numbers chosen at random
+        padded_seq = lazy_pad(seq, 7, string.digits)
+        for char, padded_char in zip(seq, padded_seq):
+            self.assertEqual(char, padded_char)
+        for remaining in padded_seq:
+            self.assertIn(remaining, string.digits)
+
+    def test_lazy_pad_3(self):
+        message = 'test'
+        block_size = 3
+        self.assertEqual('testxx', ''.join(lazy_pad(message, block_size, 'x')))
+        block_size = 4
+        self.assertEqual('test', ''.join(lazy_pad(message, block_size, 'x')))
+        block_size = 5
+        self.assertEqual('testx', ''.join(lazy_pad(message, block_size, 'x')))
+        block_size = 6
+        self.assertEqual('testxx', ''.join(lazy_pad(message, block_size, 'x')))
+        block_size = 7
+        self.assertEqual('testxxx', ''.join(lazy_pad(message, block_size, 'x')))
+        message = 'testxxxtest'
+        self.assertEqual('testxxxtestxxx', ''.join(lazy_pad(message, block_size, 'x')))

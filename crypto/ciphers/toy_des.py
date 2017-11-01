@@ -1,4 +1,5 @@
-from crypto.utilities import wrap_around, preprocess, TextBitstream
+import string
+from crypto.utilities import wrap_around, preprocess, TextBitstream, lazy_pad
 from crypto.utilities import bits_to_integer, xor_streams, bits_of
 from crypto.classical import HillCipher
 from .des import DesChunker
@@ -67,7 +68,7 @@ class ToyDesCipher(object):
     def encrypt(self, message):
         """Encrypts the given message with the DES cipher."""
         # Pad the message to ensure that there is the right number of bits in the message
-        message = HillCipher.pad_message(''.join(preprocess(message)), 3)
+        message = lazy_pad(message, 3, string.printable)
         # Convert the message to a bitstream.
         bitstream = TextBitstream(message)
         # Chunk the bitstream into 12 bit chunks --> a tuple (L, R) of 6 bit bitstrings.
@@ -93,8 +94,10 @@ class ToyDesCipher(object):
             yield self._decrypt_chunk(chunk)
 
     def decrypt(self, ciphertext):
-        """Decrypts the given message with the DES cipher."""
-        # Convert the message to a bitstream.
+        """Decrypts the given ciphertext with the DES cipher."""
+        # Pad the ciphertext to ensure that there is the right number of bits in the ciphertext
+        ciphertext = lazy_pad(ciphertext, 3, string.printable)
+        # Convert the ciphertext to a bitstream.
         bitstream = TextBitstream(ciphertext)
         # Chunk the bitstream into 12 bit chunks --> a tuple (L, R) of 6 bit bitstrings.
         chunker = DesChunker(bitstream, 6)

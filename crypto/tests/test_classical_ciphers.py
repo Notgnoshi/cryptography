@@ -45,21 +45,6 @@ class HillCipherTest(unittest.TestCase):
     def test_decode(self):
         self.assertEqual(string.ascii_lowercase, HillCipher.decode(list(range(0, 26))))
 
-    def test_pad_message(self):
-        message = 'test'
-        block_size = 3
-        self.assertEqual('testxx', HillCipher.pad_message(message, block_size))
-        block_size = 4
-        self.assertEqual('test', HillCipher.pad_message(message, block_size))
-        block_size = 5
-        self.assertEqual('testx', HillCipher.pad_message(message, block_size))
-        block_size = 6
-        self.assertEqual('testxx', HillCipher.pad_message(message, block_size))
-        block_size = 7
-        self.assertEqual('testxxx', HillCipher.pad_message(message, block_size))
-        message = 'testxxxtest'
-        self.assertEqual('testxxxtestxxx', HillCipher.pad_message(message, block_size))
-
     def test_generate_key_1(self):
         block_size = 7
         alphabet_size = 26

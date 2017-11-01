@@ -1,5 +1,6 @@
 import itertools
-from crypto.utilities import nslice, wrap_around, TextBitstream
+import string
+from crypto.utilities import nslice, wrap_around, TextBitstream, lazy_pad
 from crypto.utilities import bits_to_string, bits_of, bits_to_integer, xor_streams
 from crypto.classical import HillCipher
 
@@ -256,8 +257,8 @@ class DesCipher(object):
 
     def encrypt(self, message):
         """Encrypts the given message using the DES cipher"""
-        # Pad the message to be a multiple of 64 bits.
-        message = HillCipher.pad_message(message, 8)
+        # Pad the message with random characters to be a multiple of 64 bits.
+        message = lazy_pad(message, 8, string.printable)
         # Convert the message to a bitstream.
         bitstream = TextBitstream(message)
         # Chunk the bitstream into 64 bit chunks --> a tuple (L, R) of 32 bit bitstrings.
@@ -273,8 +274,8 @@ class DesCipher(object):
 
     def decrypt(self, ciphertext):
         """Decrypts the given ciphertext with the DES cipher."""
-        # Pad the ciphertext to be a multiple of 64 bits.
-        ciphertext = HillCipher.pad_message(ciphertext, 8)
+        # Pad the ciphertext with random characters to be a multiple of 64 bits.
+        ciphertext = lazy_pad(ciphertext, 8, string.printable)
         # Convert the ciphertext to a bitstream.
         bitstream = TextBitstream(ciphertext)
         # Chunk the bitstream into 64 bit chunks --> a tuple (L, R) of 32 bit bitstrings.

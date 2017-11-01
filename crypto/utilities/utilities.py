@@ -6,6 +6,7 @@ from collections import deque
 import itertools
 import functools
 import operator
+import random
 import string
 
 # Lookup tables for letters and numbers
@@ -31,6 +32,33 @@ def preprocess(text, use_ascii=True):
     if use_ascii:
         return filter(ALPHABET.__contains__, text.lower())
     return filter(str.isalpha, text.lower())
+
+
+def lazy_pad(iterable, multiple=8, pad_values=[0]):
+    """
+        Lazily pad an iterable to have a length a multiple of the given value, which defaults to 8.
+        Will pad with a random values taken from the list of padding values.
+
+        Examples:
+
+        >>> nums = [1, 2, 3, 4]
+        >>> list(lazy_pad(nums))
+        [1, 2, 3, 4, 0, 0, 0, 0]
+        >>> # Will pad randomly with characters 'x', 'y', and 'z', but the output will have length 6
+        >>> len(list(lazy_pad(nums, 3, 'xyz')))
+        6
+    """
+    # yield items from the iterable as usual, but count them.
+    length = 0
+    for i in iterable:
+        length += 1
+        yield i
+
+    # Once the iterable is exhausted, start yielding random items from `pad_values` until the number
+    # of items yielded is divisible by the given `multiple`.
+    while length % multiple != 0:
+        length += 1
+        yield random.choice(pad_values)
 
 
 def product(iterable):
