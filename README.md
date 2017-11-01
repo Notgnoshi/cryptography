@@ -66,3 +66,4 @@ Coursework for CSC 512, Cryptography.
 * Wheel Factorization
 * Solovay–Strassen primality test
 * Remove underscores from methods that should be private to allow serving documentation with `pydoc3`
+* GF(2^8) things...
