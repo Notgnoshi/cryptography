@@ -191,17 +191,16 @@ class FactoringTest(unittest.TestCase):
         self.assertCountEqual(prime_factors, found_factors)
 
     def test_fermat_factor_1(self):
-        self.assertRaises(ValueError, factor, 10, 'fermat')
+        self.assertCountEqual(factor(10, 'fermat'), [2, 5])
         self.assertCountEqual(factor(9, 'fermat'), [3, 3])
-        # Note that 9 is not prime, but is still a factor.
-        self.assertCountEqual(factor(333, 'fermat'), [37, 9])
+        self.assertCountEqual(factor(333, 'fermat'), [37, 3, 3])
 
     def test_fermat_factor_2(self):
         prime_factors = [13, 19, 37]
         num = product(prime_factors)
         found_factors = factor(num, 'fermat')
         self.assertEqual(num, product(found_factors))
-        self.assertCountEqual(found_factors, [13 * 19, 37])
+        self.assertCountEqual(found_factors, [13, 19, 37])
 
         # A random composite number picked from nowhere.
         num = 124987921
@@ -219,24 +218,29 @@ class FactoringTest(unittest.TestCase):
         num = product(prime_factors)
         found_factors = factor(num, 'pollard-rho')
         self.assertEqual(num, product(found_factors))
-        # Will not always factor into a unique prime factorization
-        # self.assertCountEqual(found_factors, [13, 19, 37])
+        self.assertCountEqual(found_factors, [13, 19, 37])
 
     def test_pollard_rho_2(self):
         p = list(primes(20))
         prime_factors = random.choices(p, k=5)
         num = product(prime_factors)
-        # print(num, prime_factors)
         found_factors = factor(num, 'pollard-rho')
-        # print(found_factors)
         self.assertEqual(num, product(found_factors))
-        # self.assertCountEqual(found_factors, prime_factors)
+        self.assertCountEqual(found_factors, prime_factors)
 
     def test_pollard_p1(self):
         # Taken from Wikipedia
         num = 8051
         f = factor(num, 'pollard-p1')
         self.assertCountEqual(f, [97, 83])
+
+    def test_pollard_p1_2(self):
+        p = list(primes(10))
+        prime_factors = random.choices(p, k=5)
+        num = product(prime_factors)
+        found_factors = factor(num, 'pollard-p1')
+        self.assertEqual(num, product(found_factors))
+        self.assertCountEqual(found_factors, prime_factors)
 
 
 class SymbolFrequencyTest(unittest.TestCase):
