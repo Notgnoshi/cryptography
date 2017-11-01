@@ -65,3 +65,4 @@ Coursework for CSC 512, Cryptography.
 * Sieve of Sundaram
 * Wheel Factorization
 * Solovay–Strassen primality test
+* Remove underscores from methods that should be private to allow serving documentation with `pydoc3`
