@@ -224,7 +224,7 @@ class DesCipher(object):
         C = list(itertools.chain.from_iterable(Ss))
         return self.permute(C, self._sbox_permutation)
 
-    def feistel_round(self, L, R, i):
+    def _feistel_round(self, L, R, i):
         """Runs one round of the Feistel System on the given chunk"""
         K = self.keys[i]
         return R, tuple(xor_streams(L, self._f(R, K)))
@@ -233,7 +233,7 @@ class DesCipher(object):
         """Runs the Feistel System rounds on a single (L, R) chunk to encrypt it."""
         L, R = chunk
         for i in range(1, self.number_of_rounds + 1):
-            L, R = self.feistel_round(L, R, i)
+            L, R = self._feistel_round(L, R, i)
         return R, L
 
     def _decrypt_chunk(self, chunk):
@@ -241,7 +241,7 @@ class DesCipher(object):
         L, R = chunk
         # Run the feistel rounds as in encryption, but with keys going from n..1
         for i in range(self.number_of_rounds, 0, -1):
-            L, R = self.feistel_round(L, R, i)
+            L, R = self._feistel_round(L, R, i)
         return R, L
 
     def _encrypt_chunks(self, chunker):
