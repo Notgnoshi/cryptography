@@ -272,8 +272,10 @@ class DesCipher(object):
         return DesChunker.chunks_to_string(permuter)
 
     def decrypt(self, ciphertext):
-        """Decrypts the given message with the DES cipher."""
-        # Convert the message to a bitstream.
+        """Decrypts the given ciphertext with the DES cipher."""
+        # Pad the ciphertext to be a multiple of 64 bits.
+        ciphertext = HillCipher.pad_message(ciphertext, 8)
+        # Convert the ciphertext to a bitstream.
         bitstream = TextBitstream(ciphertext)
         # Chunk the bitstream into 64 bit chunks --> a tuple (L, R) of 32 bit bitstrings.
         chunker = DesChunker(bitstream, 32)
