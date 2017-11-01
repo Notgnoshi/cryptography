@@ -68,6 +68,7 @@ def bits_of(value, bits=None):
         >>> list(bits_of(3, 4))  # 0b0011
         [1, 1, 0, 0]
     """
+    # TODO: Consider int.to_bytes
     bits = value.bit_length() if bits is None else bits
     for i in range(bits):
         yield (value >> i) & 1
