@@ -203,10 +203,10 @@ def _fermat_factor(num):
     """
     if num < 2:
         return []
-    elif gmpy2.is_prime(num):
-        return [num]
     elif num % 2 == 0:
         return [2] + _fermat_factor(num // 2)
+    elif gmpy2.is_prime(num):
+        return [num]
 
     a = gmpy2.isqrt(num)
     b2 = gmpy2.square(a) - num
