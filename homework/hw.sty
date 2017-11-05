@@ -24,3 +24,16 @@
 \newcommand{\Z}{\mathbb{Z}}
 \newtheorem*{defn}{Definition}
 \newtheorem*{thm}{Theorem}
+
+\newcommand{\cloud}[3]{
+    \raisebox{-0.4\height}{
+        \begin{tikzpicture}
+            \node [cloud,
+                   draw,
+                   cloud puffs=#1,
+                   cloud ignores aspect,
+                   minimum height=#1,
+                   minimum width=#3] {$\cdots$};
+        \end{tikzpicture}
+    }
+}
