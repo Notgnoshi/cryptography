@@ -9,14 +9,83 @@
 
 \section{} \textit{Naive Nelson uses RSA to receive a single ciphertext $c$, corresponding to the message $m$. His public modulus is $n$ and his public encryption exponent is $e$. Since he feels guilty that his system was used only once, he agrees to decrypt any ciphertext $t$ that someone sends him, as long as it is not $c$, and return the answer to that person.  Evil Eve sends him the ciphertext ${2^e}c \pmod{n}$. Show how this allows Eve to find $m$.}
 
+    Naive Nelson decrypts by raising the ciphertext to the $d$th power $\pmod{n}$, with $de \equiv 1 \pmod{n}$. Note also that $2^e c \equiv 2^e m^e \equiv {2m}^e \pmod{n}$. Thus, to decrypt Eve's ciphertext, Nelson does the following
+
+    $${(2^e c)}^d \equiv {(2m)}^{de} \equiv (2m)^1 \equiv 2m \pmod{n}$$
+
+    from which it is a trivial matter to recover $m$.
+
 \section{} \textit{In order to increase security, Bob chooses $n$ and two encryption exponents $e_1$, $e_2$. He asks Alice to encrypt her message $m$ to him by first computing $c_1 \equiv m^{e_1} \pmod{n}$, then encrypting $c_1$ to get $c_2 \equiv c_1^{e_1} \pmod{n}$. Alice  then sends $c_1$ to Bob.  Does this double encryption increase security over single encryption?  Why or why not?}
 
-\section{} \textit{Show that if $p$ is prime and $a$ and $b$ are integers not divisible by $p$ with $a^p \equiv b^b \pmod{p}$, then $a^p \equiv b^b \pmod{p^2}$}
+    One of the attacks on RSA deals with factoring $n$, which double encryption has no impact on.
 
-\section{} \textit{Your opponent uses RSA with $n = pq$ and encryption exponent $e$ and encrypts a message $m$. This yields the ciphertext $c \equiv m^e \pmod{n}$. A spy tells you that, for this message, $m^{12345} \equiv 1 \pmod{n}$. Describe how to determine $m$. Note that you do not know $p$, $q$, $\varphi(n)$, or the secret decryption exponent $d$. However, you should find a decryption exponent that works for this particular ciphertext. Moreover, explain carefully why your decryption works (your explanation must include how the spy’s information is used)}
+    Note also that this double encryption is equivalent to computing $c_2 = (m^{e_1})^{e_2} \equiv m^{e_1 e_2} \equiv m^e \pmod{n}$ for $e = e_1 e_2$. Then to decrypt, use the decryption exponent $d = d_1d_2$.
+
+\section{} \textit{Show that if $p$ is prime and $a$ and $b$ are integers not divisible by $p$ with $a^p \equiv b^b \pmod{p}$, then $a^p \equiv b^p \pmod{p^2}$}
+
+    By Fermat's Little Theorem we have $a^{p - 1} \equiv 1 \pmod{p}$ and $b^{p - 1} \equiv 1 \pmod{p}$, so then
+
+    \begin{align*}
+        a \cdot a ^ {p - 1} &\equiv a \cdot 1 &\pmod{p}\\
+        b \cdot b ^ {p - 1} &\equiv b \cdot 1 &\pmod{p}\\
+        a^p &\equiv a &\pmod{p}\\
+        b^p &\equiv b &\pmod{p}\\
+    \end{align*}
+
+    Thus $a \equiv b \pmod{p}$, or rather $a = b + pk$ for some integer $k$. But then
+
+    \begin{align*}
+        a &= b + pk\\
+        a^p &= (b + pk)^p\\
+            &= \sum_{j = 0}^{p} \binom{p}{j} (kp)^j b^{p - j} &\text{(binomial theorem)}\\
+            &= \binom{p}{0}b^p + \binom{p}{1}(kp)b^{p - 1} + \binom{p}{2}(kp)^2 b^{p - 2} \cdots + \binom{p}{p}(kp)^p\\
+            &= b^p + kp^2b^{p - 1} + (kp)^2 \frac{p(p - 1)}{2} b^{p - 2} + \cdots + (kp)^p\\
+            &= b^p + p^2 \cdot \left(\cloud{32.7}{2cm}{7cm}\right) &\text{(factor out $p^2$)}\\
+    \end{align*}
+
+    Thus $a^p$ may be written as $b^p + p^2 \left(\cloud{15.4}{1.5cm}{2cm}\right)$, where \cloud{15.4}{1.5cm}{2cm} is some integer whose value I don't care about. Therefore $a^p \equiv b^p \pmod{p}$.
+
+\section{} \textit{Your opponent uses RSA with $n = pq$ and encryption exponent $e$ and encrypts a message $m$. This yields the ciphertext $c \equiv m^e \pmod{n}$. A spy tells you that, for this message, $m^{12345} \equiv 1 \pmod{n}$. Describe how to determine $m$. Note that you do not know $p$, $q$, $\varphi(n)$, or the secret decryption exponent $d$. However, you should find a decryption exponent that works for this particular ciphertext. Moreover, explain carefully why your decryption works (your explanation must include how the spy's information is used)}
+
+    The book's prompt states to assume $\gcd(12345, e) = 1$. Thus we can use the extended Euclidean algorithm to find the multiplicative inverse of $d^{-1} = e \pmod{12345}$. Then write $e d^{-1} = 12345k + 1$ for some $k \in \Z$, which gives us $(m^e)^{d^{-1}} \equiv m^{12345k + 1} \equiv m \cdot m^{12345k} \equiv m \cdot (m^{12345})^k \equiv m 1^k \equiv m \pmod{n}$
 
 \section{}
-    \subsection{}\label{5a} \textit{Show that the last two decimal digits of a perfect square must be one of the following pairs: $\{00, e1, e4, 25, o6, e9\}$ where $e$ is any even digit and $o$ is any odd digit. (Hint: Show that $n^2$, ${(50 + n)}^2$, and ${(50 - n)}^2$ all have the same final decimal digits and then consider those integers $n$ with $0 \leq n \leq 25$)}
+    \subsection{} \textit{Show that the last two decimal digits of a perfect square must be one of the following pairs: $\{00, e1, e4, 25, o6, e9\}$ where $e$ is any even digit and $o$ is any odd digit. (Hint: Show that $n^2$, ${(50 + n)}^2$, and ${(50 - n)}^2$ all have the same final decimal digits and then consider those integers $n$ with $0 \leq n \leq 25$)}
 
-    \subsection{} \textit{Explain how the result of part~\ref{5a} can be used to speed up Fermat's factorization method.}
+    \begin{align*}
+        n^2 &= &n^2\\
+        (50 + n)^2 &= \underbrace{2500 + 100n}_{\text{cannot contribute to last two digits}} &+ n^2\\
+        (50 - n)^2 &= \underbrace{2500 - 100n}_{\text{cannot contribute to last two digits}} &+ n^2\\
+    \end{align*}
+
+    Thus in all three cases, the only value that can contribute to values in the last two digits is $n^2$.
+
+    The last equation shows that if we wish to know the last two digits of $n^2$, we may look at $(50 - n)^2$ for $0 \leq n \leq 25$ because for $n = 25$ $(50 - n)^2 = n^2$. This combined with the fact that $x^2 \pmod{100} \Longleftrightarrow (x \mod 100)^2 \pmod{100}$ and $x^2 \pmod{10} \Longleftrightarrow (x \mod 10)^2 \pmod{10}$ allows us to exhaustively prove this:
+
+    \begin{minted}{python}
+        [a**2 for a in range(0, 26)]
+    \end{minted}
+
+    gives the following:
+
+    \begin{minted}{python}
+        [0, 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144, 169, 196, 225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625]
+    \end{minted}
+
+    from which we can observe the $\{00, e1, e4, 25, o6, e9\}$ pattern.
+
+    \subsection{} \textit{Explain how the result of part \textup{a} can be used to speed up Fermat's factorization method.}
+
+    The Fermat factorization algorithm relies on the function \mintinline{python}{is_square(n)} function, which could be optimized by first checking if the input matches this pattern before computing an expensive square root. However, I'd warn against attempting to prematurely optimize \mintinline{python}{gmpy2.is_square}\ldots
+
+    \begin{minted}{python}
+        def _fermat_factor(num):
+            a = gmpy2.isqrt(num)
+            b2 = gmpy2.square(a) - num
+
+            while not gmpy2.is_square(b2):
+                a += 1
+                b2 = gmpy2.square(a) - num
+            return int(a + gmpy2.isqrt(b2)), int(a - gmpy2.isqrt(b2))
+    \end{minted}
 \end{document}
