@@ -5,6 +5,7 @@ import gmpy2
 import math
 import numpy as np
 import random
+import sys
 import unittest
 
 
@@ -220,6 +221,7 @@ class FactoringTest(unittest.TestCase):
         self.assertEqual(num, product(found_factors))
         self.assertCountEqual(found_factors, [13, 19, 37])
 
+    @unittest.skipIf(sys.version_info[1] < 6 or sys.version_info[0] < 3, 'random.choices new in 3.6')
     def test_pollard_rho_2(self):
         p = list(primes(20))
         prime_factors = random.choices(p, k=5)
@@ -233,7 +235,8 @@ class FactoringTest(unittest.TestCase):
         num = 8051
         f = factor(num, 'pollard-p1')
         self.assertCountEqual(f, [97, 83])
-
+    
+    @unittest.skipIf(sys.version_info[1] < 6 or sys.version_info[0] < 3, 'random.choices new in 3.6')
     def test_pollard_p1_2(self):
         p = list(primes(10))
         prime_factors = random.choices(p, k=5)
