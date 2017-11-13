@@ -1,7 +1,6 @@
 import string
-from crypto.utilities import wrap_around, preprocess, TextBitstream, lazy_pad
+from crypto.utilities import wrap_around, TextBitstream, lazy_pad
 from crypto.utilities import bits_to_integer, xor_streams, bits_of
-from crypto.classical import HillCipher
 from .des import DesChunker
 
 
@@ -18,7 +17,7 @@ class ToyDesCipher(object):
     S2 = [[(1, 0, 0), (0, 0, 0), (1, 1, 0), (1, 0, 1), (1, 1, 1), (0, 0, 1), (0, 1, 1), (0, 1, 0)],
           [(1, 0, 1), (0, 1, 1), (0, 0, 0), (1, 1, 1), (1, 1, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)]]
 
-    def __init__(self, key, number_of_rounds=3):
+    def __init__(self, key, number_of_rounds=4):
         """
             Takes the first 9 bits of the given `key` and runs `number_of_rounds` of the Feistel
             System on the messages to be encrypted.

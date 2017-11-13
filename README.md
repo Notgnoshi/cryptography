@@ -53,7 +53,6 @@ Coursework for CSC 512, Cryptography.
     - Pass in bytes, get bytes out
     - Unit test the example in the project assignment
 * Differential Cryptanalysis for three rounds
-* Change ToyDesCipher to four rounds
 * Create script to encrypt file with cipher determined by commandline arguments
 * Affine and Vigenere attacks
 * One time pad (LsfrCipher?)
