@@ -2,7 +2,6 @@ import itertools
 import string
 from crypto.utilities import nslice, wrap_around, TextBitstream, lazy_pad
 from crypto.utilities import bits_to_string, bits_of, bits_to_integer, xor_streams
-from crypto.classical import HillCipher
 
 
 class DesChunker(object):

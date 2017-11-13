@@ -38,6 +38,10 @@ class AffineAttackTest(unittest.TestCase):
 
 
 class VigenereAttackTest(unittest.TestCase):
-    @unittest.skip
     def test_vigenere(self):
-        raise NotImplementedError
+        self.assertRaises(NotImplementedError, VigenereAttack)
+
+
+class DesAttackTest(unittest.TestCase):
+    def test_des(self):
+        self.assertRaises(NotImplementedError, DesAttack)

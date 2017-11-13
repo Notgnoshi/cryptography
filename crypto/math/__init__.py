@@ -11,6 +11,8 @@ from crypto.tests import run_once
 from .frequencies import SymbolFrequencies
 from .number_theory import *
 from .continued_fractions import *
+from .factoring import *
+from .primality import *
 
 
 @run_once

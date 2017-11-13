@@ -8,6 +8,7 @@ from crypto.tests import run_once
 
 from .toy_des import ToyDesCipher
 from .des import DesCipher, DesChunker
+from .rsa import RsaCipher
 
 
 @run_once

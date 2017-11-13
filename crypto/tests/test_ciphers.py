@@ -133,3 +133,8 @@ class DesCipherTest(unittest.TestCase):
         plaintext = cipher.decrypt(ciphertext)
         # Compare against the text string with the trailing padding
         self.assertEqual(text, plaintext[:-7])
+
+
+class RsaCipherTest(unittest.TestCase):
+    def test_rsa(self):
+        self.assertRaises(NotImplementedError, RsaCipher)

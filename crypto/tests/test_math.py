@@ -38,17 +38,17 @@ class MathTest(unittest.TestCase):
 
     def test_extended_gcd(self):
         a, b = 297, 140
-        g, x, y = extended_gcd(a, b)
+        g, x, y = xgcd(a, b)
         self.assertEqual(g, math.gcd(a, b))
         self.assertEqual(g, a * x + b * y)
 
         a, b = 270, 192
-        g, x, y = extended_gcd(a, b)
+        g, x, y = xgcd(a, b)
         self.assertEqual(g, math.gcd(a, b))
         self.assertEqual(g, a * x + b * y)
 
         a, b = random.randint(100000, 100000000), random.randint(100000, 100000000)
-        g, x, y = extended_gcd(a, b)
+        g, x, y = xgcd(a, b)
         self.assertEqual(g, math.gcd(a, b))
         self.assertEqual(g, a * x + b * y)
 
@@ -181,10 +181,19 @@ class PrimalityTest(unittest.TestCase):
             self.assertEqual(is_prime(i, 'fermat'), gmpy2.is_prime(i))
 
 
-class FactoringTest(unittest.TestCase):
-    def test_factor(self):
-        self.assertRaises(NotImplementedError, factor, 10, 'quadratic-sieve')
+class NotImplementedTest(unittest.TestCase):
+    def test_not_implemented(self):
+        self.assertRaises(NotImplementedError, factor, None, 'quadratic-sieve')
+        self.assertRaises(NotImplementedError, is_prime, 13, 'solovay-strassen')
+        self.assertRaises(NotImplementedError, sqrt_mod, None, None)
+        self.assertRaises(NotImplementedError, gcd, None, None)
+        self.assertRaises(NotImplementedError, primitive_roots, None)
+        self.assertRaises(NotImplementedError, is_primitive_root, None, None)
+        self.assertRaises(NotImplementedError, wheel_factorization)
+        self.assertRaises(NotImplementedError, sundaram_sieve)
+        self.assertRaises(NotImplementedError, eratosthenes_sieve)
 
+class FactoringTest(unittest.TestCase):
     def test_trial_division_factor(self):
         prime_factors = [13, 13, 19, 37, 113]
         num = product(prime_factors)
@@ -235,7 +244,7 @@ class FactoringTest(unittest.TestCase):
         num = 8051
         f = factor(num, 'pollard-p1')
         self.assertCountEqual(f, [97, 83])
-    
+
     @unittest.skipIf(sys.version_info[1] < 6 or sys.version_info[0] < 3, 'random.choices new in 3.6')
     def test_pollard_p1_2(self):
         p = list(primes(10))
