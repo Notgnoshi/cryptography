@@ -77,8 +77,6 @@ def primes(limit=None):
         >>> list(p)
         [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
     """
-    if limit is None:
-        return _primes()
     return itertools.islice(_primes(), limit)
 
 
