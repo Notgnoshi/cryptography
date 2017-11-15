@@ -11,10 +11,10 @@ Coursework for CSC 512, Cryptography.
     - `numpy`
     - `concurrencytest` for running unittests in parallel. `runtests.py` will run tests in serial if the `concurrencytest` module is not installed
     - Tentatively `sympy`.
-    - Use `sudo -H pip install gmpy2 numpy sympy` to install
+    - Use `sudo -H pip install gmpy2 numpy sympy concurrencytest` to install
         * `gmpy2` requires: `sudo apt install libgmp3-dev libmpc-dev libmpfr-dev`
 
-    Example usage may be found in the course homework and in the unit tests.
+    Example usage may be found in the course homework and in the unit tests. Run `pydoc3 -b` and navigate to `crypto` link to view the crypto library documentation.
 
 * `homework/`
 
@@ -22,7 +22,7 @@ Coursework for CSC 512, Cryptography.
 
 * `tests/`
 
-    Unit tests for the `crypto` library. Run with `python3 tests/runtests.py`.
+    Unit tests for the `crypto` library. Run with `python3 tests/runtests.py`. Some tests will be skipped if not using Python 3.6+
 
 ---
 
@@ -34,7 +34,6 @@ Coursework for CSC 512, Cryptography.
 ---
 
 ## TODO
-* Make lower/upper case consistent
 * Allow for more than just `a-z` input?
 * Refactor Hill cipher to be less fragile
 * Classical Cipher Attacks
