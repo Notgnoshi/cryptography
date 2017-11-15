@@ -246,9 +246,9 @@ def is_prime(x, method='miller-rabin'):
         True
     """
 
-    methods = {'miller-rabin': _miller_rabin_prime_test,
-               'fermat': _fermat_prime_test,
-               'solovay-strassen': _solovay_strassen_prime_test,
+    methods = {'miller-rabin': miller_rabin_prime_test,
+               'fermat': fermat_prime_test,
+               'solovay-strassen': solovay_strassen_prime_test,
                }
 
     # TODO: Speed this up by using a prime sieve for small numbers
@@ -261,7 +261,7 @@ def is_prime(x, method='miller-rabin'):
     return methods[method](x)
 
 
-def _miller_rabin_decompose(n):
+def miller_rabin_decompose(n):
     """
         Decomposes the given even integer into some power of two and some remainder
     """
@@ -274,7 +274,7 @@ def _miller_rabin_decompose(n):
     return power, n
 
 
-def _miller_rabin_is_witness(potential_witness, n, power, remainder):
+def miller_rabin_is_witness(potential_witness, n, power, remainder):
     """
         Returns True if the given potential_witness is a Miller Rabin witness, and False otherwise.
         False implies that n is probably prime, and True implies the n is definitely not prime.
@@ -293,23 +293,23 @@ def _miller_rabin_is_witness(potential_witness, n, power, remainder):
     return True
 
 
-def _miller_rabin_prime_test(x, attempts=25):
+def miller_rabin_prime_test(x, attempts=25):
     """
         Implements the Miller Rabin primality test
     """
     # Find 2^s as the largest power of two that divides x-1
-    power, remainder = _miller_rabin_decompose(x - 1)
+    power, remainder = miller_rabin_decompose(x - 1)
     for _ in range(attempts):
         # Generate a random potential witness
         potential_witness = random.randint(2, x - 2)
-        if _miller_rabin_is_witness(potential_witness, x, power, remainder):
+        if miller_rabin_is_witness(potential_witness, x, power, remainder):
             # If we find a witness, the given number is definitely not prime
             return False
     # If we make it through the witness testing, the number is probably prime
     return True
 
 
-def _fermat_prime_test(x, attempts=25):
+def fermat_prime_test(x, attempts=25):
     """
         Implements the Fermat primality (compositeness) test
     """
@@ -320,7 +320,7 @@ def _fermat_prime_test(x, attempts=25):
     return True
 
 
-def _solovay_strassen_prime_test(n, attempts=25):
+def solovay_strassen_prime_test(n, attempts=25):
     """
         Implements the Solovay-Strassen primality test
     """
@@ -349,22 +349,22 @@ def factor(num, method):
 
         Example:
     """
-    methods = {'fermat': _fermat_factor,
-               'pollard-rho': _pollard_rho_factor,
-               'pollard-p1': _pollard_p1_factor,
-               'gnu-factor': _gnu_factor,
-               'trial-division': _trial_division_factors}
+    methods = {'fermat': fermat_factor,
+               'pollard-rho': pollard_rho_factor,
+               'pollard-p1': pollard_p1_factor,
+               'gnu-factor': gnu_factor,
+               'trial-division': trial_division_factors}
     return methods[method](num)
 
 
-def _fermat_factor(num):
+def fermat_factor(num):
     """
         Implements Fermat's Factoring Algorithm
     """
     if num < 2:
         return []
     elif num % 2 == 0:
-        return [2] + _fermat_factor(num // 2)
+        return [2] + fermat_factor(num // 2)
     elif gmpy2.is_prime(num):
         return [num]
 
@@ -380,20 +380,20 @@ def _fermat_factor(num):
 
     # Both p and q are factors of num, but neither are necessarily prime factors.
     # The case where p and q are prime is handled by the recursion base case.
-    return _fermat_factor(p) + _fermat_factor(q)
+    return fermat_factor(p) + fermat_factor(q)
 
 
-def _pollard_g(x, num):
+def pollard_g(x, num):
     """The function g(a) = a^2 + 1 (mod n) of the Pollard Rho algorithm"""
     return int(gmpy2.square(x) + 1) % num
 
 
-def _pollard_f(x, num):
+def pollard_f(x, num):
     """The function g(a) = a^2 - 1 (mod n) of the Pollard Rho algorithm"""
     return int(gmpy2.square(x) - 1) % num
 
 
-def _pollard_rho_factor(num, f=_pollard_g):
+def pollard_rho_factor(num, f=pollard_g):
     """
         Implements the Pollard Rho factorization algorithm. Passes in the function to use
         to make recursion easier.
@@ -402,7 +402,7 @@ def _pollard_rho_factor(num, f=_pollard_g):
     if num < 2:
         return []
     elif num % 2 == 0:
-        return [2] + _pollard_rho_factor(num // 2)
+        return [2] + pollard_rho_factor(num // 2)
     elif gmpy2.is_prime(num):
         return [num]
 
@@ -417,19 +417,19 @@ def _pollard_rho_factor(num, f=_pollard_g):
 
     # As with Pollard P-1, this case is handled by the base case.
     # # Assert num is prime only on a reated failure
-    # if d == num and f == _pollard_f:
+    # if d == num and f == pollard_f:
     #     # either failure, or num is prime.
     #     return [d]
     # # Otherwise keep trying and hope the random `a` and `c` fix the issue
 
     # If we fail using the better function g, try the less better function f.
-    if d == num and f == _pollard_g:
-        return _pollard_rho_factor(num, _pollard_f)
+    if d == num and f == pollard_g:
+        return pollard_rho_factor(num, pollard_f)
     # Finally, recurse to find *all* factors
-    return _pollard_rho_factor(d) + _pollard_rho_factor(num // d)
+    return pollard_rho_factor(d) + pollard_rho_factor(num // d)
 
 
-def _pollard_p1_factor(num, a=2):
+def pollard_p1_factor(num, a=2):
     """
         Implements the Pollard P-1 factoring algorithm. Passes in the value of a to use
         to make recursion easier.
@@ -438,7 +438,7 @@ def _pollard_p1_factor(num, a=2):
     if num < 2:
         return []
     elif num % 2 == 0:
-        return [2] + _pollard_p1_factor(num // 2)
+        return [2] + pollard_p1_factor(num // 2)
     # I would really rather not perform a primality test each iteration.
     elif gmpy2.is_prime(num):
         return [num]
@@ -465,13 +465,13 @@ def _pollard_p1_factor(num, a=2):
     #     return [d]
 
     if d is not None:
-        return _pollard_p1_factor(d) + _pollard_p1_factor(num // d)
+        return pollard_p1_factor(d) + pollard_p1_factor(num // d)
     # BUG: Occaisionally we get here and lose a factor or five.
     # FIX: Try again with a bigger a.
-    return _pollard_p1_factor(num, a + 1)
+    return pollard_p1_factor(num, a + 1)
 
 
-def _gnu_factor(num):
+def gnu_factor(num):
     """
         Calls the GNU factor command. To be considered more authoritative.
     """
@@ -481,7 +481,7 @@ def _gnu_factor(num):
     return list(map(int, output.strip().split()[1:]))
 
 
-def _trial_division_factors(num):
+def trial_division_factors(num):
     """
         Implements naive trial division to factor a given number.
     """

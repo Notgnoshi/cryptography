@@ -12,10 +12,10 @@ class DesChunker(object):
 
     def __init__(self, bitstream, chunk_size):
         """Creates a chunker, to return tuples (L, R) where L and R have the specified chunk size"""
-        self.chunker = self._chunker(bitstream, chunk_size)
+        self.stream_chunker = self.chunker(bitstream, chunk_size)
 
     @staticmethod
-    def _chunker(bitstream, chunk_size):
+    def chunker(bitstream, chunk_size):
         """
             Chunker implementation. Requires the bitstream to have a number of bits evenly
             divisible by 2 * `chunk_size`
@@ -26,11 +26,11 @@ class DesChunker(object):
 
     def __iter__(self):
         """Returns the chunker generator"""
-        return self.chunker
+        return self.stream_chunker
 
     def __next__(self):
         """Returns the next chunk in the chunker"""
-        return next(self.chunker)
+        return next(self.stream_chunker)
 
     @classmethod
     def chunks_to_bitstream(cls, chunker):
@@ -208,7 +208,7 @@ class DesCipher(object):
             chunk = cls.permute(chunk, cls._final_permutation)
             yield tuple(chunk[:32]), tuple(chunk[32:])
 
-    def _s_box(self, box, bits):
+    def s_box(self, box, bits):
         """Returns the `box`th S-box value of the given `bits`"""
         row = [bits[0], bits[5]]
         row = bits_to_integer(row)
@@ -216,43 +216,43 @@ class DesCipher(object):
         s_box_value = self._sbox[box][row][col]
         return tuple(bits_of(s_box_value, 4))
 
-    def _f(self, R, K):
+    def f(self, R, K):
         """The encryption function `f` in the DES algorithm"""
         bits = tuple(xor_streams(self.expand_bits(R), K))
         Bs = nslice(bits, 6)
-        Ss = [self._s_box(i, bits) for i, bits in enumerate(Bs)]
+        Ss = [self.s_box(i, bits) for i, bits in enumerate(Bs)]
         C = list(itertools.chain.from_iterable(Ss))
         return self.permute(C, self._sbox_permutation)
 
-    def _feistel_round(self, L, R, i):
+    def feistel_round(self, L, R, i):
         """Runs one round of the Feistel System on the given chunk"""
         K = self.keys[i]
-        return R, tuple(xor_streams(L, self._f(R, K)))
+        return R, tuple(xor_streams(L, self.f(R, K)))
 
-    def _encrypt_chunk(self, chunk):
+    def encrypt_chunk(self, chunk):
         """Runs the Feistel System rounds on a single (L, R) chunk to encrypt it."""
         L, R = chunk
         for i in range(1, self.number_of_rounds + 1):
-            L, R = self._feistel_round(L, R, i)
+            L, R = self.feistel_round(L, R, i)
         return R, L
 
-    def _decrypt_chunk(self, chunk):
+    def decrypt_chunk(self, chunk):
         """Runs the Feistel System rounds on a single (L, R) chunk to decrypt it."""
         L, R = chunk
         # Run the feistel rounds as in encryption, but with keys going from n..1
         for i in range(self.number_of_rounds, 0, -1):
-            L, R = self._feistel_round(L, R, i)
+            L, R = self.feistel_round(L, R, i)
         return R, L
 
-    def _encrypt_chunks(self, chunker):
+    def encrypt_chunks(self, chunker):
         """Given a chunker, yield encrypted chunk after encrypted chunk"""
         for chunk in chunker:
-            yield self._encrypt_chunk(chunk)
+            yield self.encrypt_chunk(chunk)
 
-    def _decrypt_chunks(self, chunker):
+    def decrypt_chunks(self, chunker):
         """Given a chunker, yield decrypted chunk after chunk"""
         for chunk in chunker:
-            yield self._decrypt_chunk(chunk)
+            yield self.decrypt_chunk(chunk)
 
     def encrypt(self, message):
         """Encrypts the given message using the DES cipher"""
@@ -265,7 +265,7 @@ class DesCipher(object):
         # Run each chunk through an initial permutation.
         permuter = self.initial_permuter(chunker)
         # Lazily encrypt chunk after chunk.
-        encrypter = self._encrypt_chunks(permuter)
+        encrypter = self.encrypt_chunks(permuter)
         # Unrun each chunk through the initial permutation.
         permuter = self.inverse_initial_permuter(encrypter)
         # Now convert the above generator into a string and return it.
@@ -282,7 +282,7 @@ class DesCipher(object):
         # Run each chunk through an initial permutation.
         permuter = self.initial_permuter(chunker)
         # Lazily decrypt chunk after chunk.
-        decrypter = self._decrypt_chunks(permuter)
+        decrypter = self.decrypt_chunks(permuter)
         # Unrun each chunk through the initial permutation.
         permuter = self.inverse_initial_permuter(decrypter)
         # Now convert the above generator into a string and return it.

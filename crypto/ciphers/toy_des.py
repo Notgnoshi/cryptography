@@ -12,10 +12,10 @@ class ToyDesCipher(object):
     """
 
     # The (in)famous S-boxes
-    S1 = [[(1, 0, 1), (0, 1, 0), (0, 0, 1), (1, 1, 0), (0, 1, 1), (1, 0, 0), (1, 1, 1), (0, 0, 0)],
-          [(0, 0, 1), (1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 0, 0), (1, 1, 1), (1, 0, 1), (0, 1, 1)]]
-    S2 = [[(1, 0, 0), (0, 0, 0), (1, 1, 0), (1, 0, 1), (1, 1, 1), (0, 0, 1), (0, 1, 1), (0, 1, 0)],
-          [(1, 0, 1), (0, 1, 1), (0, 0, 0), (1, 1, 1), (1, 1, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)]]
+    _S1 = [[(1, 0, 1), (0, 1, 0), (0, 0, 1), (1, 1, 0), (0, 1, 1), (1, 0, 0), (1, 1, 1), (0, 0, 0)],
+           [(0, 0, 1), (1, 0, 0), (1, 1, 0), (0, 1, 0), (0, 0, 0), (1, 1, 1), (1, 0, 1), (0, 1, 1)]]
+    _S2 = [[(1, 0, 0), (0, 0, 0), (1, 1, 0), (1, 0, 1), (1, 1, 1), (0, 0, 1), (0, 1, 1), (0, 1, 0)],
+           [(1, 0, 1), (0, 1, 1), (0, 0, 0), (1, 1, 1), (1, 1, 0), (0, 1, 0), (0, 0, 1), (1, 0, 0)]]
 
     def __init__(self, key, number_of_rounds=4):
         """
@@ -33,36 +33,36 @@ class ToyDesCipher(object):
         else:
             return [bitstring[i] for i in [0, 1, 3, 2, 3, 2, 4, 5]]
 
-    def _S1(self, bits):
+    def S1(self, bits):
         """Returns the S1-box value associated with the given bits"""
-        return self.S1[bits[0]][bits_to_integer(bits[1:])]
+        return self._S1[bits[0]][bits_to_integer(bits[1:])]
 
-    def _S2(self, bits):
+    def S2(self, bits):
         """Returns the S2-box value associated with the given bits"""
-        return self.S1[bits[0]][bits_to_integer(bits[1:])]
+        return self._S2[bits[0]][bits_to_integer(bits[1:])]
 
-    def _f(self, R, K):
+    def f(self, R, K):
         """The encryption function `f` in the DES algorithm"""
         bits = tuple(xor_streams(self.expand_bits(R), K))
         # Concatenate the output of the S-boxes.
-        return self._S1(bits[:4]) + self._S2(bits[4:])
+        return self.S1(bits[:4]) + self.S2(bits[4:])
 
-    def _feistel_round(self, L, R, i):
+    def feistel_round(self, L, R, i):
         """Runs one round of the Feistel System on the given chunk"""
         K = wrap_around(self.key, i)
-        return R, tuple(xor_streams(L, self._f(R, K)))
+        return R, tuple(xor_streams(L, self.f(R, K)))
 
-    def _encrypt_chunk(self, chunk):
+    def encrypt_chunk(self, chunk):
         """Runs the Feistel System rounds on a single (L, R) chunk to encrypt it."""
         L, R = chunk
         for i in range(1, self.number_of_rounds + 1):
-            L, R = self._feistel_round(L, R, i)
+            L, R = self.feistel_round(L, R, i)
         return L, R
 
-    def _encrypt_chunks(self, chunker):
+    def encrypt_chunks(self, chunker):
         """Given a chunker, yield encrypted chunk after encrypted chunk"""
         for chunk in chunker:
-            yield self._encrypt_chunk(chunk)
+            yield self.encrypt_chunk(chunk)
 
     def encrypt(self, message):
         """Encrypts the given message with the DES cipher."""
@@ -73,24 +73,24 @@ class ToyDesCipher(object):
         # Chunk the bitstream into 12 bit chunks --> a tuple (L, R) of 6 bit bitstrings.
         chunker = DesChunker(bitstream, 6)
         # Lazily encrypt chunk after chunk.
-        encrypter = self._encrypt_chunks(chunker)
+        encrypter = self.encrypt_chunks(chunker)
         # Now convert the above generator into a string and return it.
         return DesChunker.chunks_to_string(encrypter)
 
-    def _decrypt_chunk(self, chunk):
+    def decrypt_chunk(self, chunk):
         """Runs the Feistel System rounds on a single (L, R) chunk to decrypt it."""
         # Swap L and R
         R, L = chunk
         # Run the feistel rounds as in encryption, but with keys going from n..1
         for i in range(self.number_of_rounds, 0, -1):
-            L, R = self._feistel_round(L, R, i)
+            L, R = self.feistel_round(L, R, i)
         # Swap L and R
         return R, L
 
-    def _decrypt_chunks(self, chunker):
+    def decrypt_chunks(self, chunker):
         """Given a chunker, yield decrypted chunk after decrypted chunk"""
         for chunk in chunker:
-            yield self._decrypt_chunk(chunk)
+            yield self.decrypt_chunk(chunk)
 
     def decrypt(self, ciphertext):
         """Decrypts the given ciphertext with the DES cipher."""
@@ -101,6 +101,6 @@ class ToyDesCipher(object):
         # Chunk the bitstream into 12 bit chunks --> a tuple (L, R) of 6 bit bitstrings.
         chunker = DesChunker(bitstream, 6)
         # Lazily decrypt chunk after chunk
-        decrypter = self._decrypt_chunks(chunker)
+        decrypter = self.decrypt_chunks(chunker)
         # Now convert the above generator into a string and return it.
         return DesChunker.chunks_to_string(decrypter)
