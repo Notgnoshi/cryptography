@@ -193,13 +193,19 @@ def sundaram_sieve():
     raise NotImplementedError
 
 
-def eratosthenes_sieve():
+def eratosthenes_sieve(limit):
     """
-        Implements the Sieve of Eratosthenes to yield primes
+        Implements the Sieve of Eratosthenes to yield primes less than `limit`
 
         Example:
     """
-    raise NotImplementedError
+    # Use numpy for speed and memory
+    sieve = numpy.ones(limit // 2, dtype=numpy.bool)
+    for i in range(3, int(math.sqrt(limit)) + 1, 2):
+        if sieve[i // 2]:
+            sieve[i * i // 2::i] = [False]
+    # This fails to classify 2 as prime, so prepend [2]
+    return numpy.append([2], (2 * numpy.nonzero(sieve)[0][1::] + 1)).tolist()
 
 
 """

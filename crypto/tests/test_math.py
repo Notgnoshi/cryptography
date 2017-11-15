@@ -137,6 +137,10 @@ class MathTest(unittest.TestCase):
         b = a + n
         self.assertEqual(jacobi(a, n), jacobi(b, n))
 
+    def test_eratosthenes_sieve(self):
+        # compare the first 10 primes and the primes under 30
+        self.assertSequenceEqual(list(primes(10)), eratosthenes_sieve(30))
+
 
 class PrimalityTest(unittest.TestCase):
     def test_miller_rabin_edge_cases(self):
@@ -233,7 +237,6 @@ class NotImplementedTest(unittest.TestCase):
         self.assertRaises(NotImplementedError, is_primitive_root, None, None)
         self.assertRaises(NotImplementedError, wheel_factorization)
         self.assertRaises(NotImplementedError, sundaram_sieve)
-        self.assertRaises(NotImplementedError, eratosthenes_sieve)
 
 
 class FactoringTest(unittest.TestCase):
