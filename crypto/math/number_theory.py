@@ -31,6 +31,13 @@ def modular_matrix_inverse(matrix, modulus):
     return numpy.around(numpy.mod(det_inv * (det * m_inv), modulus))
 
 
+def mod_inverse(num, modulus):
+    """
+        Computes the modular multiplicative inverse of `num` mod `modulus`
+    """
+    raise NotImplementedError
+
+
 def coprimes(num):
     """
         Yields the numbers from 1 to `num` that are coprime with `num`.
@@ -157,22 +164,35 @@ def xgcd(a, b):
     return a, prevx, prevy
 
 
-def primitive_roots(p):
+def primitive_roots(n):
     """
-        Yields the primitive roots of `p`
+        Yields the primitive roots of the composite number `n`
 
         Example:
+
+        >>> list(primitive_roots(11))
+        [2, 6, 7, 8]
     """
-    raise NotImplementedError
+    # Wikipedia defines coprime for a composite number using the coprimes of that number,
+    # while our textbook uses all numbers up to a prime `p`. For generality prefer composite n.
+    cop = set(coprimes(n))
+    for a in cop:
+        if set(pow(a, x, n) for x in range(1, n)) == cop:
+            yield a
 
 
 def is_primitive_root(a, p):
     """
-        Determine if `a` is a primitive root mod `p`
+        Determine if `a` is a primitive root mod a prime number `p`
 
         Example:
+
+        >>> is_primitive_root(3, 13)
+        False
+        >>> is_primitive_root(2, 13)
+        True
     """
-    raise NotImplementedError
+    return set(pow(a, x, p) for x in range(1, p)) == set(range(1, p))
 
 
 def wheel_factorization():

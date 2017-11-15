@@ -47,8 +47,6 @@ Coursework for CSC 512, Cryptography.
     - Think about using Sphinx to generate documentation
 * GCD, extended GCD
 * modinverse
-* Continued fractions
-* Primitive roots (verification and finding)
 * Convert all ciphers to take in bytes.
 * DES
     - Pass in bytes, get bytes out
