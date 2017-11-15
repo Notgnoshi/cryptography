@@ -183,7 +183,6 @@ class PrimalityTest(unittest.TestCase):
 
 class NotImplementedTest(unittest.TestCase):
     def test_not_implemented(self):
-        self.assertRaises(NotImplementedError, factor, None, 'quadratic-sieve')
         self.assertRaises(NotImplementedError, is_prime, 13, 'solovay-strassen')
         self.assertRaises(NotImplementedError, sqrt_mod, None, None)
         self.assertRaises(NotImplementedError, gcd, None, None)
@@ -192,6 +191,7 @@ class NotImplementedTest(unittest.TestCase):
         self.assertRaises(NotImplementedError, wheel_factorization)
         self.assertRaises(NotImplementedError, sundaram_sieve)
         self.assertRaises(NotImplementedError, eratosthenes_sieve)
+
 
 class FactoringTest(unittest.TestCase):
     def test_trial_division_factor(self):
@@ -229,6 +229,14 @@ class FactoringTest(unittest.TestCase):
         found_factors = factor(num, 'pollard-rho')
         self.assertEqual(num, product(found_factors))
         self.assertCountEqual(found_factors, [13, 19, 37])
+
+    def test_gnu_factor(self):
+        # test the toolchain, not the algorithm...
+        # A random composite number picked from nowhere.
+        num = 124987921
+        found_factors = factor(num, 'gnu-factor')
+        self.assertEqual(num, product(found_factors))
+        self.assertCountEqual(found_factors, [690541, 181])
 
     @unittest.skipIf(sys.version_info[1] < 6 or sys.version_info[0] < 3, 'random.choices new in 3.6')
     def test_pollard_rho_2(self):

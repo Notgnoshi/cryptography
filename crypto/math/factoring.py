@@ -1,4 +1,6 @@
 import math
+import platform
+import subprocess
 import gmpy2
 from .primality import primes
 
@@ -10,7 +12,7 @@ def factor(num, method):
         'fermat'
         'pollard-rho'
         'pollard-p1'
-        'quadratic-sieve'
+        'gnu-factor'
         'trial-division'
 
         Example:
@@ -18,7 +20,7 @@ def factor(num, method):
     methods = {'fermat': _fermat_factor,
                'pollard-rho': _pollard_rho_factor,
                'pollard-p1': _pollard_p1_factor,
-               'quadratic-sieve': _quadratic_sieve_factor,
+               'gnu-factor': _gnu_factor,
                'trial-division': _trial_division_factors}
     return methods[method](num)
 
@@ -137,11 +139,14 @@ def _pollard_p1_factor(num, a=2):
     return _pollard_p1_factor(num, a + 1)
 
 
-def _quadratic_sieve_factor(num):
+def _gnu_factor(num):
     """
-        Implements the Quadratic Sieve factoring algorithm
+        Calls the GNU factor command. To be considered more authoritative.
     """
-    raise NotImplementedError
+    if platform.system() != 'Linux':
+        raise NotImplementedError('Cannot call GNU factor on non-Linux platform')
+    output = subprocess.run(['factor', str(num)], stdout=subprocess.PIPE).stdout.decode('ascii')
+    return list(map(int, output.strip().split()[1:]))
 
 
 def _trial_division_factors(num):

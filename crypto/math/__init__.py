@@ -10,9 +10,9 @@ from crypto.tests import run_once
 
 from .frequencies import SymbolFrequencies
 from .number_theory import *
-from .continued_fractions import *
-from .factoring import *
-from .primality import *
+from .continued_fractions import fraction_coeffs, fractions, approximate_decimal
+from .factoring import factor
+from .primality import is_prime, primes, random_prime
 
 
 @run_once
