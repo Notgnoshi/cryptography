@@ -111,6 +111,32 @@ class MathTest(unittest.TestCase):
         p, q = approximate_decimal(math.pi, 1e-18)
         self.assertEqual((p, q), (245850922, 78256779))
 
+    def test_legendre_properties(self):
+        p = 7
+        a = 4
+        # 11 = 4 (mod 7)
+        b = 11
+        self.assertEqual(legendre(a, p), legendre(b, p))
+
+        p = random_prime(100)
+        a = random.randint(p // 2, p - 1)
+        # an easy was of asserting $a \equiv b \pmod{p}$
+        b = a + p
+        self.assertEqual(legendre(a, p), legendre(b, p))
+
+        p = random_prime(100)
+        a = random.randint(p // 2, p - 1)
+        b = random.randint(p // 2, p - 1)
+        self.assertEqual(legendre(a * b, p), legendre(a, p) * legendre(b, p))
+
+    def test_jacobi_properties(self):
+        p = random_prime(3)
+        q = random_prime(3)
+        n = p * q
+        a = random.randint(p // 2, p - 1)
+        b = a + n
+        self.assertEqual(jacobi(a, n), jacobi(b, n))
+
 
 class PrimalityTest(unittest.TestCase):
     def test_miller_rabin_edge_cases(self):
@@ -180,10 +206,27 @@ class PrimalityTest(unittest.TestCase):
         for i in range(50000000000, 50000005000):
             self.assertEqual(is_prime(i, 'fermat'), gmpy2.is_prime(i))
 
+    def test_solovay_1(self):
+        n = 396736894567834589803
+        self.assertTrue(is_prime(n, 'solovay-strassen'))
+
+        # Test several psuedo primes and carmichael numbers
+        self.assertFalse(is_prime(9, 'solovay-strassen'))
+        self.assertFalse(is_prime(561, 'solovay-strassen'))
+        self.assertFalse(is_prime(1729, 'solovay-strassen'))
+        self.assertFalse(is_prime(2465, 'solovay-strassen'))
+        self.assertFalse(is_prime(52633, 'solovay-strassen'))
+
+    def test_solovay_2(self):
+        # This test is slow for large primes
+        p = random_prime(3)
+        self.assertTrue(is_prime(p, 'solovay-strassen'))
+        ps = list(primes(20))
+        self.assertTrue(all(is_prime(p, 'solovay-strassen') for p in ps))
+
 
 class NotImplementedTest(unittest.TestCase):
     def test_not_implemented(self):
-        self.assertRaises(NotImplementedError, is_prime, 13, 'solovay-strassen')
         self.assertRaises(NotImplementedError, sqrt_mod, None, None)
         self.assertRaises(NotImplementedError, gcd, None, None)
         self.assertRaises(NotImplementedError, primitive_roots, None)
