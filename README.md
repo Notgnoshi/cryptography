@@ -20,16 +20,9 @@ Coursework for CSC 512, Cryptography.
 
     Class homework.
 
-* `tests/`
+* `crypto/tests/`
 
     Unit tests for the `crypto` library. Run with `python3 tests/runtests.py`. Some tests will be skipped if not using Python 3.6+
-
----
-
-## Portfolio
-* Library: `crypto/`
-* Library unit tests: `tests/`
-* Library examples: `examples/`
 
 ---
 
@@ -58,8 +51,6 @@ Coursework for CSC 512, Cryptography.
 * random_prime(bit_length)
 * number factoring with three methods
 * RSA (BigInt)
-* Quadratic Sieve factoring
 * Sieve of Sundaram
 * Wheel Factorization
-* Remove underscores from methods that should be private to allow serving documentation with `pydoc3`
 * GF(2^8) things...
