@@ -33,9 +33,18 @@ def modular_matrix_inverse(matrix, modulus):
 
 def mod_inverse(num, modulus):
     """
-        Computes the modular multiplicative inverse of `num` mod `modulus`
+        Computes the modular multiplicative inverse of `num` mod `modulus` using the Extended
+        Euclidean Algorithm.
+
+        Example:
+
+        >>> mod_inverse(3, 11)
+        4
+        >>> mod_inverse(10, 17)
+        12
     """
-    raise NotImplementedError
+    _, x, _ = xgcd(num, modulus)
+    return x % modulus
 
 
 def coprimes(num):
@@ -83,7 +92,7 @@ def primes(limit=None):
 # TODO: convert this to take in a given number of bits...
 # TODO: There's got to be a better implementation than this...
 def random_prime(digits):
-    """Generates a random large prime number with `digits` digits"""
+    """Generates a random prime number with `digits` digits"""
     # Generate a random number with n digits
     num = random.randint(10**(digits - 1) + 1, 10**digits)
     # Find the next prime after the number - will *probably* have n digits.
@@ -121,17 +130,63 @@ def jacobi(a, n):
         >>> jacobi(107, 137)
         1
     """
-    factors = Counter(factor(n, 'gnu-factor'))
+    factors = Counter(factor(n, 'pollard-p1'))
     return product(legendre(a, f) ** b for f, b in factors.items())
 
 
-def sqrt_mod(a, n):
+def sqrt_mod(a, p):
     """
-        Computes the square root of `a` mod `n`
+        Computes the square root of `a` mod `p`. That is, it solves the congruence of the form:
+            x^2 = a (mod p)
+        Returns None if no solution was found. Note that `p` must be an odd prime.
 
         Example:
     """
-    raise NotImplementedError
+    if legendre(a, p) != 1:
+        return None
+    elif a == 0:
+        return None
+    elif p == 2:
+        return p
+    elif p % 4 == 3:
+        return pow(a, (p + 1) / 4, p)
+
+    # Factor all powers of 2 out of p-1
+    s = p - 1
+    e = 0
+    while s % 2 == 0:
+        s //= 2
+        e += 1
+
+    # Find some n who is a square mod p
+    n = 2
+    while legendre(n, p) != -1:
+        n += 1
+
+    # The Tonelli-Shanks algorithm.
+    # estimate is an iterative approximation
+    # fudge is a 'fudge' factor with estimate^2 = a * fudge (mod p)
+    estimate = pow(a, (s + 1) // 2, p)
+    fudge = pow(a, s, p)
+    g = pow(n, s, p)
+    r = e
+
+    while True:
+        f = fudge
+        m = 0
+        for m in range(r):
+            if f == 1:
+                break
+            f = pow(f, 2, p)
+
+        if m == 0:
+            return estimate
+
+        gs = pow(g, 2 ** (r - m - 1), p)
+        g = (gs * gs) % p
+        estimate = (estimate * gs) % p
+        fudge = (fudge * g) % p
+        r = m
 
 
 def gcd(a, b):
@@ -139,8 +194,14 @@ def gcd(a, b):
         Implements the Euclidea Algorithm to find the GCD of `a` and `b`.
 
         Example:
+
+        >>> gcd(23, 65)
+        1
+        >>> gcd(5, 65)
+        5
     """
-    raise NotImplementedError
+    g, _, _ = xgcd(a, b)
+    return g
 
 
 def xgcd(a, b):
@@ -149,6 +210,11 @@ def xgcd(a, b):
         ax + by = g = gcd(a, b)
 
         Example:
+
+        >>> xgcd(7, 65)
+        (1, 28, -3)
+        >>> assert 28 * 7 - 3 * 65 == 1
+
     """
     prevx, x = 1, 0
     prevy, y = 0, 1

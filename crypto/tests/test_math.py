@@ -147,6 +147,27 @@ class MathTest(unittest.TestCase):
         self.assertTrue(is_primitive_root(2, 11))
         self.assertFalse(is_primitive_root(3, 13))
 
+    def test_mod_inverse(self):
+        self.assertEqual(mod_inverse(3, 11), 4)
+        self.assertEqual(mod_inverse(10, 17), 12)
+
+        p = random_prime(3)
+        a = random.randint(1, p - 1)
+        a_inv = mod_inverse(a, p)
+        self.assertEqual(a * a_inv % p, 1)
+
+    def test_gcd(self):
+        self.assertEqual(gcd(54134, 123421), math.gcd(54134, 123421))
+        self.assertEqual(gcd(9879873, 89798352), math.gcd(9879873, 89798352))
+
+    def test_mod_sqrt(self):
+        self.assertEqual((sqrt_mod(12, 13) ** 2) % 13, 12)
+        # A prime % 4 != 3
+        p = 508037
+        a = 254020
+        self.assertEqual(legendre(a, p), 1)
+        self.assertEqual(sqrt_mod(a, p), 72452)
+        self.assertEqual(pow(72452, 2, p), a)
 
 class PrimalityTest(unittest.TestCase):
     def test_miller_rabin_edge_cases(self):
@@ -237,9 +258,6 @@ class PrimalityTest(unittest.TestCase):
 
 class NotImplementedTest(unittest.TestCase):
     def test_not_implemented(self):
-        self.assertRaises(NotImplementedError, mod_inverse, None, None)
-        self.assertRaises(NotImplementedError, sqrt_mod, None, None)
-        self.assertRaises(NotImplementedError, gcd, None, None)
         self.assertRaises(NotImplementedError, wheel_factorization)
         self.assertRaises(NotImplementedError, sundaram_sieve)
 
