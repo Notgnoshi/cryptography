@@ -47,7 +47,7 @@ def run_once(func):
     return wrapper
 
 
-def runtests(processes=4):
+def runtests(processes=8):
     """
         Run the crypto library's unit tests. Will run tests in parallel if the `concurrencytest`
         module is installed. Defaults to four processes.
