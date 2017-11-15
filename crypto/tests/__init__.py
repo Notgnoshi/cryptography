@@ -47,9 +47,10 @@ def run_once(func):
     return wrapper
 
 
-def runtests():
+def runtests(processes=4):
     """
-        Run the crypto library's unit tests
+        Run the crypto library's unit tests. Will run tests in parallel if the `concurrencytest`
+        module is installed. Defaults to four processes.
 
         Example:
 
@@ -61,8 +62,13 @@ def runtests():
     loader = unittest.TestLoader()
     # Discover all tests in the current directory that are prefixed with `test`. Also discovers
     # the doctests loaded by defining a load_tests(...) function in each submodule's __init__.py
-    tests = loader.discover('.', pattern='test*.py')
+    suite = loader.discover('.', pattern='test*.py')
     runner = unittest.runner.TextTestRunner()
-    runner.run(tests)
+    try:
+        from concurrencytest import ConcurrentTestSuite, fork_for_tests
+        concurrent_suite = ConcurrentTestSuite(suite, fork_for_tests(processes))
+        runner.run(concurrent_suite)
+    except ImportError:
+        runner.run(suite)
     # Prevent calling sys.exit() just in case the user is running the tests from an interpreter.
     unittest.main(exit=False)

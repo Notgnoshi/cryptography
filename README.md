@@ -9,6 +9,7 @@ Coursework for CSC 512, Cryptography.
     Dependencies:
     - `gmpy2`
     - `numpy`
+    - `concurrencytest` for running unittests in parallel. `runtests.py` will run tests in serial if the `concurrencytest` module is not installed
     - Tentatively `sympy`.
     - Use `sudo -H pip install gmpy2 numpy sympy` to install
         * `gmpy2` requires: `sudo apt install libgmp3-dev libmpc-dev libmpfr-dev`
@@ -63,6 +64,5 @@ Coursework for CSC 512, Cryptography.
 * Quadratic Sieve factoring
 * Sieve of Sundaram
 * Wheel Factorization
-* Solovay–Strassen primality test
 * Remove underscores from methods that should be private to allow serving documentation with `pydoc3`
 * GF(2^8) things...
