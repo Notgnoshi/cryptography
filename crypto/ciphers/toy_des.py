@@ -6,7 +6,7 @@ from .des import DesChunker
 
 class ToyDesCipher(object):
     """
-        Implements a toy version of the DES cipher.
+        Implements a toy version of the DES cipher as described in class and the textbook.
 
         On each round, L_i and R_i are 6 bits, while K is 8 bits.
     """

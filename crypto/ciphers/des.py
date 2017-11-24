@@ -1,13 +1,19 @@
 import itertools
-import string
 from crypto.utilities import nslice, rotate, TextBitstream, lazy_pad
 from crypto.utilities import bits_to_string, bits_of, bits_to_integer, xor_streams
 
 
 class DesChunker(object):
     """
-        A class to chunk a bitstream for the DES cipher into chunks (L, R) of a given
+        A utility class to chunk a bitstream for the DES cipher into chunks (L, R) of a given
         chunk size.
+
+        Example:
+
+        >>> bitstream = [1, 1, 1, 0, 0, 0]
+        >>> chunker = DesChunker(bitstream, 3)
+        >>> next(chunker)
+        ((1, 1, 1), (0, 0, 0))
     """
 
     def __init__(self, bitstream, chunk_size):
@@ -17,11 +23,11 @@ class DesChunker(object):
     @staticmethod
     def chunker(bitstream, chunk_size):
         """
-            Chunker implementation. Requires the bitstream to have a number of bits evenly
-            divisible by 2 * `chunk_size`
+            Chunker implementation. Will pad the given bitstream with 0s if it is not evenly
+            divisible by 2*chunk_size.
         """
 
-        for chunk in nslice(bitstream, 2 * chunk_size):
+        for chunk in nslice(lazy_pad(bitstream, 2 * chunk_size), 2 * chunk_size):
             yield chunk[:chunk_size], chunk[chunk_size:]
 
     def __iter__(self):
@@ -34,7 +40,15 @@ class DesChunker(object):
 
     @classmethod
     def chunks_to_bitstream(cls, chunker):
-        """Converts a sequence of (L, R) chunks into a bitstream"""
+        """
+            Converts a sequence of (L, R) chunks into a bitstream
+
+            Example:
+
+            >>> chunker = [((1, 1, 1), (0, 0, 0))]
+            >>> list(DesChunker.chunks_to_bitstream(chunker))
+            [1, 1, 1, 0, 0, 0]
+        """
         for L, R in chunker:
             # Yield the left bits
             for bit in L:
@@ -45,12 +59,34 @@ class DesChunker(object):
 
     @classmethod
     def chunks_to_string(cls, chunker):
-        """Converts a sequence of (L, R) chunks into a string"""
+        """
+            Converts a sequence of (L, R) chunks into a string
+
+            Example:
+
+            >>> from crypto.utilities import TextBitstream
+            >>> bitstream = TextBitstream('abcdef')
+            >>> chunker = DesChunker(bitstream, 6)
+            >>> DesChunker.chunks_to_string(chunker)
+            'abcdef'
+        """
         return bits_to_string(cls.chunks_to_bitstream(chunker))
 
 
 class DesCipher(object):
-    """Defines the DES cipher."""
+    """
+        Implements the DES cipher.
+
+        Note that this implementation makes heavy use of *ers: chunkers, permuters, encryptors, etc.
+        Each of these *ers accepts some generator, and returns a new generator. This means you can
+        track a single chunk through the process in a very straightforward manner.
+
+        >>> cipher = DesCipher(8762323746)
+        >>> # Make sure the input is a multiple of 8 for deterministic output
+        >>> ciphertext = cipher.encrypt('abcdefgh')
+        >>> cipher.decrypt(ciphertext)
+        'abcdefgh'
+    """
 
     # Initial permutation table
     _initial_permutation = [57, 49, 41, 33, 25, 17, 9, 1,
@@ -158,9 +194,17 @@ class DesCipher(object):
 
     def __init__(self, key):
         """
-            Takes the first 64 bits of the given `key` and runs 16 rounds of the Feistel
-            System on the messages to be encrypted. Every 8 bits of the given key are discarded as
-            parity bits.
+            Constructs a DesCipher object. Takes in the first 64 bits of the given `key` and
+            generates the subkeys in a 1-indexed array in `self.keys`. Note that the initial key
+            permutation discards the parity bits.
+
+            Example:
+
+            >>> key = 1476123957612341  # More than 64 bits. The cipher will use the first 64 bits.
+            >>> cipher = DesCipher(key)
+            >>> ciphertext = cipher.encrypt('messageX')
+            >>> cipher.decrypt(ciphertext)
+            'messageX'
         """
 
         def keys(key, num_rounds):
@@ -169,6 +213,7 @@ class DesCipher(object):
             # Rounds are 1-indexed, so shift array over by one
             left_shifts = [None, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1]
             for i in range(1, num_rounds + 1):
+                # Negate each rotation to rotate left.
                 C, D = rotate(C, -left_shifts[i]), rotate(D, -left_shifts[i])
                 yield self.permute(C + D, self._CD_permutation)
 
@@ -181,35 +226,58 @@ class DesCipher(object):
 
     @classmethod
     def expand_bits(cls, bits):
-        """Expand a 32 bit bitstring into a 48 bit bitstring"""
+        """
+            Expands a 32 bit bitstring into a 48 bit bitstring as indicated by the DES algorithm
+
+            Will only accept a precomputed bitstring, not a lazily evaluated one. This is because
+            the bitstring must be indexible by the permutation.
+
+            Example:
+
+            >>> bits = [0] * 32
+            >>> expanded = DesCipher.expand_bits(bits)
+            >>> expanded == [0] * 48
+            True
+        """
         if len(bits) != 32:
             raise ValueError('Can only expand 32 bit bitstrings')
         else:
             return cls.permute(bits, cls._expand_bits)
 
-    @classmethod
-    def permute(cls, seq, permutation):
-        """Runs `seq` through the given `permutation`"""
+    @staticmethod
+    def permute(seq, permutation):
+        """
+            Runs `seq` through the given `permutation`, where `permutation` is a list of indices.
+
+            >>> permutation = [0, 1, 3, 2]
+            >>> seq = ['a', 'b', 'c', 'd']
+            >>> DesCipher.permute(seq, permutation)
+            ['a', 'b', 'd', 'c']
+        """
         return [seq[i] for i in permutation]
 
     @classmethod
     def initial_permuter(cls, chunker):
-        """Yield permuted chunk after permuted chunk"""
+        """
+            Runs chunks through the Initial Permutation.
+        """
         for chunk in chunker:
+            # Collapse the chunk tuple into a single list
             chunk = list(itertools.chain.from_iterable(chunk))
             chunk = cls.permute(chunk, cls._initial_permutation)
             yield tuple(chunk[:32]), tuple(chunk[32:])
 
     @classmethod
     def inverse_initial_permuter(cls, chunker):
-        """Yield inverse permuted chunk after chunk"""
+        """Runs chunks through the Inverse Initial Permutation."""
         for chunk in chunker:
+            # Collapse the chunk tuple into a single list
             chunk = list(itertools.chain.from_iterable(chunk))
             chunk = cls.permute(chunk, cls._final_permutation)
             yield tuple(chunk[:32]), tuple(chunk[32:])
 
     def s_box(self, box, bits):
-        """Returns the `box`th S-box value of the given `bits`"""
+        """Returns the `box`th S-box value for the given `bits`"""
         row = [bits[0], bits[5]]
         row = bits_to_integer(row)
         col = bits_to_integer(bits[1:5])
@@ -225,19 +293,19 @@ class DesCipher(object):
         return self.permute(C, self._sbox_permutation)
 
     def feistel_round(self, L, R, i):
-        """Runs one round of the Feistel System on the given chunk"""
+        """Runs a single round of the Feistel System on the given chunk"""
         K = self.keys[i]
         return R, tuple(xor_streams(L, self.f(R, K)))
 
     def encrypt_chunk(self, chunk):
-        """Runs the Feistel System rounds on a single (L, R) chunk to encrypt it."""
+        """Runs the specified number of rounds on a single (L, R) chunk to encrypt it."""
         L, R = chunk
         for i in range(1, self.number_of_rounds + 1):
             L, R = self.feistel_round(L, R, i)
         return R, L
 
     def decrypt_chunk(self, chunk):
-        """Runs the Feistel System rounds on a single (L, R) chunk to decrypt it."""
+        """Runs the specified number of rounds on a single (L, R) chunk to decrypt it."""
         L, R = chunk
         # Run the feistel rounds as in encryption, but with keys going from n..1
         for i in range(self.number_of_rounds, 0, -1):
@@ -245,21 +313,30 @@ class DesCipher(object):
         return R, L
 
     def encrypt_chunks(self, chunker):
-        """Given a chunker, yield encrypted chunk after encrypted chunk"""
+        """Given a chunked bitstream, yield encrypted chunk after encrypted chunk"""
         for chunk in chunker:
             yield self.encrypt_chunk(chunk)
 
     def decrypt_chunks(self, chunker):
-        """Given a chunker, yield decrypted chunk after chunk"""
+        """Given a chunked bitstream, yield decrypted chunk after decrypted chunk"""
         for chunk in chunker:
             yield self.decrypt_chunk(chunk)
 
     def encrypt(self, message):
-        """Encrypts the given message using the DES cipher"""
-        # Pad the message with random characters to be a multiple of 64 bits.
-        message = lazy_pad(message, 8, string.printable)
-        # Convert the message to a bitstream.
-        bitstream = TextBitstream(message)
+        """
+            Encrypts the given message using the DES cipher.
+
+            Note that every operation done is lazy, returning generators rather than lists or tuples
+            to save memory.
+
+            Example:
+
+            >>> cipher = DesCipher(123456)
+            >>> cipher.encrypt('messageX')
+            'Òh*&BU¢¸'
+        """
+        # Pad the bitstream to be evenly divisible by 64 bit chunks. Randomly choose between 0 and 1
+        bitstream = lazy_pad(TextBitstream(message), 64, pad_values=[0, 1])
         # Chunk the bitstream into 64 bit chunks --> a tuple (L, R) of 32 bit bitstrings.
         chunker = DesChunker(bitstream, 32)
         # Run each chunk through an initial permutation.
@@ -272,11 +349,20 @@ class DesCipher(object):
         return DesChunker.chunks_to_string(permuter)
 
     def decrypt(self, ciphertext):
-        """Decrypts the given ciphertext with the DES cipher."""
-        # Pad the ciphertext with random characters to be a multiple of 64 bits.
-        ciphertext = lazy_pad(ciphertext, 8, string.printable)
-        # Convert the ciphertext to a bitstream.
-        bitstream = TextBitstream(ciphertext)
+        """
+            Decrypts the given ciphertext with the DES cipher.
+
+            Note that every operation done is lazy, returning generators rather than lists or tuples
+            to save memory.
+
+            Example:
+
+            >>> cipher = DesCipher(123456)
+            >>> cipher.decrypt('Òh*&BU¢¸')
+            'messageX'
+        """
+        # Pad the bitstream to be evenly divisible by 64 bit chunks. Randomly choose between 0 and 1
+        bitstream = lazy_pad(TextBitstream(ciphertext), 64, pad_values=[0, 1])
         # Chunk the bitstream into 64 bit chunks --> a tuple (L, R) of 32 bit bitstrings.
         chunker = DesChunker(bitstream, 32)
         # Run each chunk through an initial permutation.
