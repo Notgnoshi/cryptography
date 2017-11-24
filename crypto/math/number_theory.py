@@ -49,7 +49,8 @@ def mod_inverse(num, modulus):
 
 def coprimes(num):
     """
-        Yields the numbers from 1 to `num` that are coprime with `num`.
+        Yields the numbers from 1 to `num` that are coprime with `num` by checking the gcd of
+        every number between 0 and `num`.
 
         Example:
 
@@ -122,6 +123,9 @@ def legendre(a, p):
 def jacobi(a, n):
     """
         The Jacobi Symbol of `a` mod `n`
+
+        Implemented by factoring `a` and multiplying powers of each factor's Legendre symbol to get
+        the Jacobi Symbol of `a`.
 
         Example:
 
@@ -232,6 +236,9 @@ def primitive_roots(n):
     """
         Yields the primitive roots of the composite number `n`
 
+        Implemented by finding the set of coprimes of `n` and checking if the set of powers is
+        equal to the set of coprimes for each number a in 1..n
+
         Example:
 
         >>> list(primitive_roots(11))
@@ -282,6 +289,9 @@ def eratosthenes_sieve(limit):
         Implements the Sieve of Eratosthenes to yield primes less than `limit`
 
         Example:
+
+        >>> eratosthenes_sieve(10)
+        [2, 3, 5, 7]
     """
     # Use numpy for speed and memory
     sieve = numpy.ones(limit // 2, dtype=numpy.bool)
@@ -301,6 +311,7 @@ def is_prime(x, method='miller-rabin'):
     """
         Returns True if x is prime, False otherwise. Uses the given primality test, which defaults
         to Miller Rabin. The given method may be one of the following: 'fermat' or 'miller-rabin'
+        or 'solovay-strassen'.
 
         Example:
 
@@ -410,10 +421,20 @@ def factor(num, method):
         'fermat'
         'pollard-rho'
         'pollard-p1'
-        'gnu-factor'
+        'gnu-factor' -- must be using Linux with `factor` installed
         'trial-division'
 
+        Almost all methods are recursive and use a primality check as a base case. This may be
+        inefficient, but several of the methods factor a number n into two numbers p and q, of
+        which, while both are factors, only one will be prime. Recursion was also necessary to
+        completely factor numbers into their prime factors.
+
+        Note that these are probabilistic factorings, and will not always have the same ordering.
+
         Example:
+
+        >>> factor(10, 'trial-division')
+        [2, 5]
     """
     methods = {'fermat': fermat_factor,
                'pollard-rho': pollard_rho_factor,
@@ -481,13 +502,6 @@ def pollard_rho_factor(num, f=pollard_g):
         b = f(f(b, num), num)
         d = math.gcd(abs(a - b), num)
 
-    # As with Pollard P-1, this case is handled by the base case.
-    # # Assert num is prime only on a reated failure
-    # if d == num and f == pollard_f:
-    #     # either failure, or num is prime.
-    #     return [d]
-    # # Otherwise keep trying and hope the random `a` and `c` fix the issue
-
     # If we fail using the better function g, try the less better function f.
     if d == num and f == pollard_g:
         return pollard_rho_factor(num, pollard_f)
@@ -524,16 +538,8 @@ def pollard_p1_factor(num, a=2):
         d = pollard_p1(num, bound, a)
         bound += 1
 
-    # We should never arrive at this case, because primality is one of our base cases.
-    # if d == num:
-    #     # Assert d is prime and this isn't an error.
-    #     # Everything is fine. EVERYTHING IS FINE DAMMIT.
-    #     return [d]
-
     if d is not None:
         return pollard_p1_factor(d) + pollard_p1_factor(num // d)
-    # BUG: Occaisionally we get here and lose a factor or five.
-    # FIX: Try again with a bigger a.
     return pollard_p1_factor(num, a + 1)
 
 
@@ -542,7 +548,7 @@ def gnu_factor(num):
         Calls the GNU factor command. To be considered more authoritative.
     """
     if platform.system() != 'Linux':
-        raise NotImplementedError('Cannot call GNU factor on non-Linux platform')
+        raise OSError('Cannot call GNU factor on non-Linux platform')
     output = subprocess.run(['factor', str(num)], stdout=subprocess.PIPE).stdout.decode('ascii')
     return list(map(int, output.strip().split()[1:]))
 
