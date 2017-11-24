@@ -1,12 +1,11 @@
 import itertools
-import gmpy2 as mp
 
 
 def bbs(p, q, x0):
-    """An infinite Blum-Blum-Shub random number sequence generator"""
-    n = mp.mul(p, q)
+    """An infinite-length Blum-Blum-Shub random number sequence generator"""
+    n = p * q
     for _ in itertools.count():
-        x1 = mp.powmod(x0, 2, n)
+        x1 = pow(x0, 2, n)
         x0 = x1
         yield x1
 
