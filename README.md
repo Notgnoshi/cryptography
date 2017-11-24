@@ -2,52 +2,137 @@
 
 Coursework for CSC 512, Cryptography.
 
-* `crypto/`
-
-    A Python (version 3) module implementing various classical ciphers, number theory/linear algebra functions, etc.
-
-    Dependencies:
-    - `gmpy2`
-    - `numpy`
-    - `concurrencytest` for running unittests in parallel. `runtests.py` will run tests in serial if the `concurrencytest` module is not installed
-    - Tentatively `sympy`.
-    - Use `sudo -H pip install gmpy2 numpy sympy concurrencytest` to install
-        * `gmpy2` requires: `sudo apt install libgmp3-dev libmpc-dev libmpfr-dev`
-
-    Example usage may be found in the course homework and in the unit tests. Run `pydoc3 -b` and navigate to `crypto` link to view the crypto library documentation.
-
-* `homework/`
-
-    Class homework.
-
-* `crypto/tests/`
-
-    Unit tests for the `crypto` library. Run with `python3 tests/runtests.py`. Some tests will be skipped if not using Python 3.6+
-
 ---
 
-## TODO
+## About
+
+This repository consists of the coursework for my CSC 512 Cryptography class at SDSM&T. It is split into two pieces:
+
+* [`crypto/`](crypto)
+* [`homework/`](homework)
+
+The `homework/` folder is, unsurprisingly my homework for the course. The `crypto/` folder is my class portfolio of cryptography-related code. It is implemented as a Python module providing a number of different logical submodules.
+
+## Dependencies
+
+The `crypto` library has the following dependencies:
+
+* Python 3.6+
+* `gmpy2` which has its own dependencies:
+    - `libgmp3-dev`
+    - `libmpc-dev`
+    - `libmpfr-dev`
+* `numpy`
+* `concurrencytest`
+
+The dependencies may be installed on Ubuntu as follows:
+
+* Install `python3.6` and `pip`:
+    ```shell
+    # Add Python3.6 apt repository if using 16.04 LTS
+    sudo add-apt-repository ppa:jonathonf/python-3.6  # (only for 16.04 LTS)
+    sudo apt update
+    # Install Python 3.6
+    sudo apt install python3.6
+    sudo apt install python3.6-dev
+    sudo apt install python3.6-venv
+    # Install an up-to-date version of Pip
+    wget https://bootstrap.pypa.io/get-pip.py
+    sudo python3.6 get-pip.py
+
+    # Use Python 3.6 as the default Python3
+    sudo ln -s /usr/bin/python3.6 /usr/local/bin/python3
+    sudo ln -s /usr/local/bin/pip /usr/local/bin/pip3
+
+    # Verify installation
+    python --version
+    python3 --version
+    $(head -1 `which pip` | tail -c +3) --version
+    $(head -1 `which pip3` | tail -c +3) --version
+    ```
+* Install `gmpy2`
+    ```shell
+    # Install dependencies for pip to compile gmpy2
+    sudo apt install libgmp3-dev libmpc-dev libmpfr-dev
+    # Might have to use pip3 depending on the output of $(head -1 `which pip` | tail -c +3) --version
+    sudo -H pip install gmpy2
+    ```
+* Install other Python dependencies:
+    ```shell
+    sudo -H pip install --upgrade numpy sympy concurrencytest
+    ```
+
+## Documentation
+
+Example usage may be found in the course homework and in the unit tests. Run `pydoc3 -b` and navigate to the `crypto` link to view the `crypto` library documentation.
+
+## Unit tests
+
+The unit tests may be ran by:
+
+```shell
+python3 runtests.py
+```
+
+## Example usage
+Here's some examples of using the `crypto` module and submodules.
+
+* Running the unit tests with a given number of processes
+    ```python
+    from crypto.tests import runtests
+    # Requires the concurrencytest library installed. Will run in serial otherwise
+    runtests(processes=8)
+    ```
+* Some bitwise utilities
+    ```python
+    from crypto.utilities import Bitstream, lazy_pad, bits_to_string
+
+    # One of many forms a bytestream can take
+    bytestream = b'This is a test'
+    # Lazily pad the bytestream so that it's length is evenly divisible by 8
+    # The pad values will be randomly chosen from the given array
+    bytestream = lazy_pad(bytestream, multiple=8, pad_values=b'abcdefghijklmnopqrstuvwxyz')
+    # Construct a Bitstream
+    bitstream = Bitstream(bytestream)
+
+    # Hopefully unchanged
+    output = bits_to_string(bitstream)
+    print(output)
+    # Will be `This is a test` with two random characters appended
+    ```
+* Some classical ciphers
+    ```python
+    from crypto.classical import AffineCipher, LfsrCipher
+    import numpy
+
+    plaintext = 'affine'
+    cipher = AffineCipher(9, 2)
+    ciphertext = cipher.encrypt(plaintext)
+    assert ciphertext == 'cvvwpm'
+
+    # Values taken from HW 1 problem 6
+    initial_values = numpy.array([1, 0, 1, 0, 0, 1])
+    coeffs = numpy.array([1, 1, 0, 1, 1, 0])
+    cipher = LfsrCipher(initial_values, coeffs)
+
+    ciphertext = cipher.encrypt('zyxwvuts')
+    ciphertext = [ord(c) for c in ciphertext]
+    expected = [31, 90, 153, 215, 233, 255, 13, 164]
+    assert ciphertext == expected
+    ```
+---
+
+## TODO list
 * Allow for more than just `a-z` input?
-* Refactor Hill cipher to be less fragile
 * Classical Cipher Attacks
 * Portfolio writeup
-    - Documentation
     - Algorithm explanation
-    - Use `pydoc3` to generate the docstrings in HTML
     - Add code examples to class and module level docstrings
     - add more verbose docstrings
-    - Think about using Sphinx to generate documentation
-* GCD, extended GCD
-* modinverse
-* Convert all ciphers to take in bytes.
-* DES
-    - Pass in bytes, get bytes out
-    - Unit test the example in the project assignment
+* Convert all ciphers to take in bytes?
 * Differential Cryptanalysis for three rounds
-* Create script to encrypt file with cipher determined by commandline arguments
 * Affine and Vigenere attacks
 * One time pad (LsfrCipher?)
-* sqrt(a, n)
 * random_prime(bit_length)
 * number factoring with three methods
 * RSA (BigInt)
