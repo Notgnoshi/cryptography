@@ -131,10 +131,10 @@ class BitstreamTest(unittest.TestCase):
 
 
 class MiscTest(unittest.TestCase):
-    def test_wrap_around(self):
+    def test_rotate(self):
         seq = [1, 2, 3, 4, 5, 6]
         expected = [5, 6, 1, 2, 3, 4]
-        actual = wrap_around(seq, 2)
+        actual = rotate(seq, 2)
         self.assertListEqual(actual, expected)
 
     def test_lazy_pad_1(self):

@@ -146,16 +146,16 @@ def char_mapping(integer):
     return NUMBER_TABLE[integer]
 
 
-def wrap_around(seq, shift):
+def rotate(seq, shift):
     """
         Returns a wrapped-around version of list `l` starting at index `n`
 
         Example:
 
         >>> l = [1, 2, 3, 4]
-        >>> wrap_around(l, 1)  # A right rotation by one
+        >>> rotate(l, 1)  # A right rotation by one
         [4, 1, 2, 3]
-        >>> wrap_around(l, -1)  # A left rotation by one
+        >>> rotate(l, -1)  # A left rotation by one
         [2, 3, 4, 1]
     """
     queue = deque(seq)

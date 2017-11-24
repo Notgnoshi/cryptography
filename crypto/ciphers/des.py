@@ -1,6 +1,6 @@
 import itertools
 import string
-from crypto.utilities import nslice, wrap_around, TextBitstream, lazy_pad
+from crypto.utilities import nslice, rotate, TextBitstream, lazy_pad
 from crypto.utilities import bits_to_string, bits_of, bits_to_integer, xor_streams
 
 
@@ -169,7 +169,7 @@ class DesCipher(object):
             # Rounds are 1-indexed, so shift array over by one
             left_shifts = [None, 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1]
             for i in range(1, num_rounds + 1):
-                C, D = wrap_around(C, -left_shifts[i]), wrap_around(D, -left_shifts[i])
+                C, D = rotate(C, -left_shifts[i]), rotate(D, -left_shifts[i])
                 yield self.permute(C + D, self._CD_permutation)
 
         self.key = list(bits_of(key, 64))

@@ -1,5 +1,5 @@
 import string
-from crypto.utilities import wrap_around, TextBitstream, lazy_pad
+from crypto.utilities import rotate, TextBitstream, lazy_pad
 from crypto.utilities import bits_to_integer, xor_streams, bits_of
 from .des import DesChunker
 
@@ -49,7 +49,7 @@ class ToyDesCipher(object):
 
     def feistel_round(self, L, R, i):
         """Runs one round of the Feistel System on the given chunk"""
-        K = wrap_around(self.key, i)
+        K = rotate(self.key, i)
         return R, tuple(xor_streams(L, self.f(R, K)))
 
     def encrypt_chunk(self, chunk):
