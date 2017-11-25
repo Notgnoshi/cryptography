@@ -161,3 +161,18 @@ def rotate(seq, shift):
     queue = deque(seq)
     queue.rotate(shift)
     return list(queue)
+
+
+def max_pair(dictionary):
+    """
+        Returns the (key, value) pair with the maximum value of the given dict
+
+        Example:
+
+        >>> max_pair({1: 1, 2: 2, 3: 3})
+        (3, 3)
+        >>> max_pair({1: 3, 2: 2, 3: 1})
+        (1, 3)
+    """
+    key = max(dictionary.keys(), key=(lambda key: dictionary[key]))
+    return (key, dictionary[key])
