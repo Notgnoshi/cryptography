@@ -1,6 +1,7 @@
 from crypto.attacks import *
 from crypto.classical import *
 from crypto.math import coprimes
+from crypto.utilities import rotate
 import unittest
 
 # A rather well behaved excerpt from Bram Stoker's Dracula.
@@ -9,6 +10,8 @@ well_behaved_message = """Who more gladly than we throughout the Four Nations re
 well_behaved_plaintext = """whomoregladlythanwethroughoutthefournationsreceivedthebloodyswordoratitswarlikecallflockedquickertothestandardofthekingwhenwasredeemedthatgreatshameofmynationtheshameofcassovawhentheflagsofthewallachandthemagyarwentdownbeneaththecrescentwhowasitbutoneofmyownracewhoasvoivodecrossedthedanubeandbeattheturkonhisowngroundthiswasadraculaindeedwoewasitthathisownunworthybrotherwhenhehadfallensoldhispeopletotheturkandbroughttheshameofslaveryonthemwasitnotthisdraculaindeedwhoinspiredthatotherofhisracewhoinalaterageagainandagainbroughthisforcesoverthegreatriverintoturkeylandwhowhenhewasbeatenbackcameagainandagainandagainthoughhehadtocomealonefromthebloodyfieldwherehistroopswerebeingslaughteredsinceheknewthathealonecouldultimatelytriumphtheysaidthathethoughtonlyofhimself"""
 # Encrypted with AffineCipher(9, 18)
 affine_well_behaved_ciphertext = """idowopcunstnahdsfichdpoqudoqhhdcloqpfshmofypckcmzcthdcbnootayioptopshmhyispnmecksnnlnokectgqmkecphohdcyhsftsptolhdcemfuidcfisypctccwcthdshupcshydswcolwafshmofhdcydswcolksyyozsidcfhdclnsuyolhdcisnnskdsfthdcwsuaspicfhtoifbcfcshdhdckpcykcfhidoisymhbqhofcolwaoifpskcidosyzomzotckpoyycthdctsfqbcsftbcshhdchqpeofdmyoifupoqfthdmyisystpskqnsmftcctiocisymhhdshdmyoifqfiophdabpohdcpidcfdcdstlsnncfyontdmyxcoxnchohdchqpesftbpoqudhhdcydswcolynszcpaofhdcwisymhfohhdmytpskqnsmftcctidomfyxmpcthdshohdcpoldmypskcidomfsnshcpsucsusmfsftsusmfbpoqudhdmylopkcyozcphdcupcshpmzcpmfhohqpecansftidoidcfdcisybcshcfbskekswcsusmfsftsusmfsftsusmfhdoquddcdsthokowcsnofclpowhdcbnootalmcntidcpcdmyhpooxyicpcbcmfuynsqudhcpctymfkcdcefcihdshdcsnofckoqntqnhmwshcnahpmqwxdhdcaysmthdshdchdoqudhofnaoldmwycnl"""
+# Example Vigenere ciphertext from the book
+vigenere_ciphertext = """vvhqwvvrhmusgjgthkihtssejchlsfcbgvwcrlryqtfsvgahwkcuhwauglqhnslrljshbltspisprdxljsveeghlqwkasskuwepwqtwvspgoelkcqyfnsvwljsniqkgnrgybwlwgoviokhkazkqkxzgyhcecmeiujoqkwfwvefqhkijrclrlkbienqfrjljsdhgrhlsfqtwlauqrhwdmwlgusgikkflryvcwvspgpmlkassjvoqxeggveyggzmljcxxljsvpaivwikvrdrygfrjljslveggveyggeiapuuisfpbtgnwwmuczrvtwglrwugumnczvile"""
 
 
 class AffineAttackTest(unittest.TestCase):
@@ -38,8 +41,22 @@ class AffineAttackTest(unittest.TestCase):
 
 
 class VigenereAttackTest(unittest.TestCase):
-    def test_vigenere(self):
-        self.assertRaises(NotImplementedError, VigenereAttack)
+    def test_vigenere_coincidences(self):
+        coincidences = []
+        # The book says [14, 14, 16, 14, 24, 12]
+        actual_coincidences = [14, 14, 16, 15, 25, 12]
+        for r in range(1, 7):
+            coincidences.append(VigenereAttack.count_coincidences(vigenere_ciphertext, rotate(vigenere_ciphertext, -r)))
+
+        self.assertListEqual(coincidences, actual_coincidences)
+
+    def test_vigenere_key_length(self):
+        attack = VigenereAttack(vigenere_ciphertext)
+        self.assertEqual(attack.probable_key_length(), 5)
+
+    def test_vigenere_attack(self):
+        attack = VigenereAttack(vigenere_ciphertext)
+        attack.possible_key()
 
 
 class DesAttackTest(unittest.TestCase):
