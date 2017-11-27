@@ -137,4 +137,10 @@ class DesCipherTest(unittest.TestCase):
 
 class RsaCipherTest(unittest.TestCase):
     def test_rsa(self):
-        self.assertRaises(NotImplementedError, RsaCipher)
+        p = 885320963
+        q = 238855417
+        e = 9007
+        d = 116402471153538991
+        n = p * q
+        cipher = RsaCipher(n, e, d)
+        print(cipher.encrypt('cat'))
