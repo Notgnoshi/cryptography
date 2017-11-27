@@ -11,7 +11,7 @@ This repository consists of the coursework for my CSC 512 Cryptography class at 
 * [`crypto/`](crypto)
 * [`homework/`](homework)
 
-The `homework/` folder is, unsurprisingly my homework for the course. The `crypto/` folder is my class portfolio of cryptography-related code. It is implemented as a Python module providing a number of different logical submodules.
+The `homework/` folder is, unsurprisingly, my homework for the course. The `crypto/` folder is my class portfolio of cryptography-related code. It is implemented as a Python module providing a number of different logical submodules.
 
 ## Dependencies
 
