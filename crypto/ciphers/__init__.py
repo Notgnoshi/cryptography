@@ -8,7 +8,7 @@ from crypto.tests import run_once
 
 from .toy_des import ToyDesCipher
 from .des import DesCipher, DesChunker
-from .rsa import RsaCipher, RsaChunker
+from .rsa import BaseRsaCipher, RsaCipher, RsaChunker
 
 
 @run_once
@@ -19,4 +19,5 @@ def load_tests(loader, tests, ignore):
     # Add class level doctests.
     tests.addTests(doctest.DocTestSuite('crypto.ciphers.toy_des'))
     tests.addTests(doctest.DocTestSuite('crypto.ciphers.des'))
+    tests.addTests(doctest.DocTestSuite('crypto.ciphers.rsa'))
     return tests
