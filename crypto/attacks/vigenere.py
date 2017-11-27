@@ -42,9 +42,13 @@ class VigenereAttack(object):
         return sum(o == r for o, r in zip(original, rotation))
 
     @classmethod
-    def compare_rotations(cls, text):
+    def compare_rotations(cls, text, num_rotations=15):
         """
             Counts the coincidences of all rotations of the given text.
+
+            Takes in an optional tweaking parameter `num_rotations` that sets the number of
+            rotations to use when counting coincidences in order to determine the probable key
+            length. The num_rotations parameter should be bigger than the believed key length.
 
             Returns a dictionary of rotation : coincidences pairs
 
@@ -56,22 +60,30 @@ class VigenereAttack(object):
             {1: 4, 2: 2, 3: 0, 4: 2, 5: 4}
         """
 
-        return {r: cls.coincidences(text, rotate(text, -r)) for r in range(1, min(15, len(text)))}
+        return {r: cls.coincidences(text, rotate(text, -r)) for r in range(1, min(num_rotations, len(text)))}
 
-    def probable_key_length(self):
+    def probable_key_length(self, num_rotations=15):
         """
             Computes the probable key length by comparing rotations of the ciphertext to the
             original ciphertext and counting the coincidences. The maximum number of coincidences
             is the probable key length.
+
+            Takes in an optional tweaking parameter `num_rotations` that sets the number of
+            rotations to use when counting coincidences in order to determine the probable key
+            length. The num_rotations parameter should be bigger than the believed key length.
         """
-        max_coincidence, _ = max_pair(self.compare_rotations(self.ciphertext))
+        max_coincidence, _ = max_pair(self.compare_rotations(self.ciphertext, num_rotations))
         return max_coincidence
 
-    def probable_key(self):
+    def probable_key(self, num_rotations=15):
         """
             Attempts to find the key by performing a frequency analysis on every
             `probable_key_length`th character and performing the second method for finding the
             key as described in the textbook.
+
+            Takes in an optional tweaking parameter `num_rotations` that sets the number of
+            rotations to use when counting coincidences in order to determine the probable key
+            length. The num_rotations parameter should be bigger than the believed key length.
 
             Assume the key length is known to be n and A_0 is the known English Letter Frequenceies:
 
@@ -99,7 +111,7 @@ class VigenereAttack(object):
         # Convert ENGLISH_LETTER_FREQUENCIES.values() to an array rather than a dict.view() object
         A0 = numpy.array([SymbolFrequencies.ENGLISH_LETTER_FREQUENCIES[l] for l in string.ascii_lowercase])
 
-        key_length = self.probable_key_length()
+        key_length = self.probable_key_length(num_rotations)
         key = []
         for i in range(0, key_length):
             # Filter the ciphertext and calculate the symbol frequencies
