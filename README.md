@@ -124,18 +124,12 @@ Here's some examples of using the `crypto` module and submodules.
 
 ## TODO list
 * Allow for more than just `a-z` input?
-* Classical Cipher Attacks
 * Portfolio writeup
     - Algorithm explanation
     - Add code examples to class and module level docstrings
     - add more verbose docstrings
-* Convert all ciphers to take in bytes?
+* Convert all ciphers to take in bytes/files? -- Not going to get to this
 * Differential Cryptanalysis for three rounds
-* Affine and Vigenere attacks
-* One time pad (LsfrCipher?)
-* random_prime(bit_length)
-* number factoring with three methods
-* RSA (BigInt)
 * Sieve of Sundaram
 * Wheel Factorization
 * GF(2^8) things...
