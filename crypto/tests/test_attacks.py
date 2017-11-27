@@ -77,8 +77,8 @@ class VigenereAttackTest(unittest.TestCase):
         ciphertext = cipher.encrypt(well_behaved_message)
         attack = VigenereAttack(ciphertext)
         self.assertEqual(attack.probable_key_length(), len(key))
-        self.assertNotEqual(attack.probable_key(), key)
-        self.assertEqual(attack.probable_key(), 'thisiswkey')
+        self.assertEqual(attack.probable_key(), key)
+
 
 class DesAttackTest(unittest.TestCase):
     def test_des(self):

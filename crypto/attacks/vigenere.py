@@ -107,7 +107,7 @@ class VigenereAttack(object):
             W = proportion_vector(table.proportions)
             # numpy.roll is equivalent to crypto.utilities.rotate, but returns a numpy.array
             # Find the alphabet index associated with the maximum dot product
-            ki, _ = max_pair({j: numpy.dot(W, numpy.roll(A0, j)) for j in range(1, 26)})
+            ki, _ = max_pair({j: numpy.dot(W, numpy.roll(A0, j)) for j in range(0, 26)})
             key.append(ki)
 
         return ''.join(map(char_mapping, key))
