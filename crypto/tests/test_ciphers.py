@@ -155,14 +155,6 @@ class RsaCipherTest(unittest.TestCase):
         plaintext = cipher.num2str(cipher.decrypt_number(ciphertext))
         self.assertEqual(plaintext, 'cat')
 
-    @unittest.skip('TODO')
-    def test_num2str(self):
-        pass
-
-    @unittest.skip('TODO')
-    def test_str2num(self):
-        pass
-
     def test_large_message(self):
         # private
         p = 885320963
@@ -178,3 +170,46 @@ class RsaCipherTest(unittest.TestCase):
         ciphertext = cipher.encrypt(well_behaved_plaintext + 'zz')
         plaintext = cipher.decrypt(ciphertext)
         self.assertEqual(plaintext, well_behaved_plaintext + 'zz')
+
+    def test_rsa_keygen(self):
+        bits = 64
+        keygen = RsaKeyGenerator(bits)
+        n, e = keygen.public_key
+        d = keygen.private_key
+        self.assertEqual(e * d % keygen.limit, 1)
+        self.assertGreaterEqual(n.bit_length(), bits)
+
+        # Takes about 0.5 seconds to generate
+        bits = 256
+        keygen = RsaKeyGenerator(bits)
+        n, e = keygen.public_key
+        d = keygen.private_key
+        self.assertEqual(e * d % keygen.limit, 1)
+        self.assertGreaterEqual(n.bit_length(), bits)
+
+        # Takes about 0.8 seconds to generate
+        # bits = 512
+        # keygen = RsaKeyGenerator(bits)
+        # n, e = keygen.public_key
+        # d = keygen.private_key
+        # self.assertEqual(e * d % keygen.limit, 1)
+        # self.assertGreaterEqual(n.bit_length(), bits)
+
+        # Takes about 9 seconds to generate
+        # bits = 1024
+        # keygen = RsaKeyGenerator(bits)
+        # n, e = keygen.public_key
+        # d = keygen.private_key
+        # self.assertEqual(e * d % keygen.limit, 1)
+        # self.assertGreaterEqual(n.bit_length(), bits)
+
+    def test_rsa_random_key(self):
+        bits = 64
+        keygen = RsaKeyGenerator(bits)
+        n, e = keygen.public_key
+        d = keygen.private_key
+        cipher = RsaCipher(n, e, d)
+        ciphertext = cipher.encrypt(well_behaved_plaintext)
+        plaintext = cipher.decrypt(ciphertext)
+        # The cipher pads the text...
+        self.assertEqual(well_behaved_plaintext, plaintext[:769])

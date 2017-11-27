@@ -1,4 +1,8 @@
+import math
+import random
 import string
+import gmpy2
+from crypto.random import random_prime
 from crypto.utilities import nslice, lazy_pad, preprocess, int_mapping, char_mapping
 
 
@@ -164,3 +168,38 @@ class RsaCipher(BaseRsaCipher):
 
         # Takes an iterator of encrypted bytes() and joins the decrypted text
         return ''.join(self.decrypt_chunks(ciphertext))
+
+
+class RsaKeyGenerator(object):
+    """
+        Generates the public and corresponding private keys for RsaCipher
+    """
+    def __init__(self, bit_size):
+        """
+            Given the bit size of the RSA key, construct a RsaKeyGenerator
+        """
+        self.p = random_prime(bit_size)
+        self.q = random_prime(bit_size)
+        self.n = self.p * self.q
+        self.e = 0
+        self.d = 0
+        self.limit = (self.p - 1) * (self.q - 1)
+        self.public_key = self.gen_public_key()
+        self.private_key = self.gen_private_key()
+
+    def gen_public_key(self):
+        """
+            Generates the RSA public key (n, e)
+        """
+        while math.gcd(self.e, self.limit) != 1:
+            # Prefer large encryption exponents
+            self.e = random.randint(self.limit // 3, self.limit)
+
+        return self.n, self.e
+
+    def gen_private_key(self):
+        """
+            Generates the RSA private key (decryption exponent) d
+        """
+        self.d = int(gmpy2.invert(self.e, self.limit))
+        return self.d

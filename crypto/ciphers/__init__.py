@@ -8,7 +8,7 @@ from crypto.tests import run_once
 
 from .toy_des import ToyDesCipher
 from .des import DesCipher, DesChunker
-from .rsa import BaseRsaCipher, RsaCipher, RsaChunker
+from .rsa import BaseRsaCipher, RsaCipher, RsaChunker, RsaKeyGenerator
 
 
 @run_once
