@@ -2,31 +2,30 @@ import string
 from crypto.utilities import nslice, lazy_pad, preprocess, int_mapping, char_mapping
 
 
-# TODO: how to use this, if even necessary?
 class RsaChunker(object):
     """
         A utility class to chunk a message inputted to the RSA algorithm into blocks of size < n.
     """
 
-    def __init__(self, chunk_size):
+    def __init__(self, message, chunk_size):
         """Creates a chunker to yield piece ofter piece of the given message"""
-        self.chunk_size = chunk_size
+        self.stream_chunker = self.chunker(message, chunk_size)
 
-    def chunker(self, m):
+    @staticmethod
+    def chunker(m, chunk_size):
         """
             Chunker implementation.
         """
-
-        for c in nslice(lazy_pad(m, self.chunk_size, string.ascii_lowercase), self.chunk_size):
+        for c in nslice(lazy_pad(m, chunk_size, string.ascii_lowercase), chunk_size):
             yield BaseRsaCipher.str2num(''.join(c))
 
-    @staticmethod
-    def dechunker(chunker):
-        """
-            Converts sequence of integers into a sequence of strings
-        """
-        for num in chunker:
-            yield BaseRsaCipher.num2str(num)
+    def __iter__(self):
+        """Returns the chunker generator"""
+        return self.stream_chunker
+
+    def __next__(self):
+        """Returns the next chunk in the chunker"""
+        return next(self.stream_chunker)
 
 
 class BaseRsaCipher(object):
@@ -107,32 +106,61 @@ class RsaCipher(BaseRsaCipher):
             Note that ed = 1 mod (p-1)(q-1) where n = pq.
         """
         super().__init__(n, e, d)
-        self.chunk_size = 3
+        self.chunk_size = (n.bit_length() // 8) // 2
 
     def encrypt_chunks(self, chunker):
         """
-            Yields encrypted chunk after encrypted chunk.
+            Yields encrypted chunk after encrypted chunk. Each chunk will be a bytes() object.
         """
         for num in chunker:
-            yield self.encrypt_number(num)
+            e = self.encrypt_number(num)
+            b = e.to_bytes(e.bit_length() // 8 + 1, 'little')
+            yield b
 
     def decrypt_chunks(self, chunker):
         """
-            Yields decrypted chunk after decrypted chunk.
+            Yields decrypted chunk after decrypted chunk. The chunker must be an iterable of
+            encrypted bytes() objects.
         """
-        for num in chunker:
-            yield self.decrypt_number(num)
+        for b in chunker:
+            yield self.num2str(self.decrypt_number(int.from_bytes(b, 'little')))
 
-    # TODO: Output a number or string?
     def encrypt(self, message):
         """
-            Encrypts the given message
-        """
-        return self.encrypt_number(self.str2num(message))
+            Encrypts the given message. Returns an iterator of bytes() objects.
 
-    # TODO: Input a number or string?
+            Example:
+
+            >>> cipher = RsaCipher(885320963 * 238855417, 9007, 116402471153538991)
+            >>> ciphertext = cipher.encrypt('thisisatest')
+            >>> type(ciphertext)
+            <class 'generator'>
+            >>> encrypted_bytes = next(ciphertext)
+            >>> type(encrypted_bytes)
+            <class 'bytes'>
+            >>> encrypted_bytes
+            b'A\\x1f\\x93\\x81\\x9bs\\xf1\\x01'
+        """
+        # Yields chunked number after number
+        chunker = RsaChunker(preprocess(message), self.chunk_size)
+        # Yields encrypted bytes() after bytes()
+        return self.encrypt_chunks(chunker)
+
     def decrypt(self, ciphertext):
         """
-            Decrypts the given ciphertext
+            Decrypts the given ciphertext. Takes in an iterator of encrypted bytes() objects,
+            and returns a string of the decrypted plaintext.
+
+            Example:
+
+            >>> cipher = RsaCipher(885320963 * 238855417, 9007, 116402471153538991)
+            >>> ciphertext = cipher.encrypt('thisisatestx')
+            >>> plaintext = cipher.decrypt(ciphertext)
+            >>> type(plaintext)
+            <class 'str'>
+            >>> plaintext
+            'thisisatestx'
         """
-        return self.num2str(self.decrypt_number(ciphertext))
+
+        # Takes an iterator of encrypted bytes() and joins the decrypted text
+        return ''.join(self.decrypt_chunks(ciphertext))

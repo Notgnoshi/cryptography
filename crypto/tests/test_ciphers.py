@@ -6,6 +6,9 @@ import random
 import unittest
 
 
+well_behaved_plaintext = """whomoregladlythanwethroughoutthefournationsreceivedthebloodyswordoratitswarlikecallflockedquickertothestandardofthekingwhenwasredeemedthatgreatshameofmynationtheshameofcassovawhentheflagsofthewallachandthemagyarwentdownbeneaththecrescentwhowasitbutoneofmyownracewhoasvoivodecrossedthedanubeandbeattheturkonhisowngroundthiswasadraculaindeedwoewasitthathisownunworthybrotherwhenhehadfallensoldhispeopletotheturkandbroughttheshameofslaveryonthemwasitnotthisdraculaindeedwhoinspiredthatotherofhisracewhoinalaterageagainandagainbroughthisforcesoverthegreatriverintoturkeylandwhowhenhewasbeatenbackcameagainandagainandagainthoughhehadtocomealonefromthebloodyfieldwherehistroopswerebeingslaughteredsinceheknewthathealonecouldultimatelytriumphtheysaidthathethoughtonlyofhimself"""
+
+
 class ToyDesCipherTest(unittest.TestCase):
     def test_expander(self):
         bits = [1, 0, 0, 1, 1, 0]
@@ -160,6 +163,18 @@ class RsaCipherTest(unittest.TestCase):
     def test_str2num(self):
         pass
 
-    @unittest.skip('TODO')
     def test_large_message(self):
-        pass
+        # private
+        p = 885320963
+        q = 238855417
+        d = 116402471153538991
+
+        # public
+        e = 9007
+        n = p * q
+
+        cipher = RsaCipher(n, e, d)
+        # Pad the plaintext beforehand so it isn't padded with random text
+        ciphertext = cipher.encrypt(well_behaved_plaintext + 'zz')
+        plaintext = cipher.decrypt(ciphertext)
+        self.assertEqual(plaintext, well_behaved_plaintext + 'zz')
