@@ -13,6 +13,8 @@ affine_well_behaved_ciphertext = """idowopcunstnahdsfichdpoqudoqhhdcloqpfshmofyp
 # Example Vigenere ciphertext from the book
 vigenere_ciphertext = """vvhqwvvrhmusgjgthkihtssejchlsfcbgvwcrlryqtfsvgahwkcuhwauglqhnslrljshbltspisprdxljsveeghlqwkasskuwepwqtwvspgoelkcqyfnsvwljsniqkgnrgybwlwgoviokhkazkqkxzgyhcecmeiujoqkwfwvefqhkijrclrlkbienqfrjljsdhgrhlsfqtwlauqrhwdmwlgusgikkflryvcwvspgpmlkassjvoqxeggveyggzmljcxxljsvpaivwikvrdrygfrjljslveggveyggeiapuuisfpbtgnwwmuczrvtwglrwugumnczvile"""
 
+vigenere_plaintext = """themethodusedforthepreparationandreadingofcodemessagesissimpleintheextremeandatthesametimeimpossibleoftranslationunlessthekeyisknowntheeasewithwhichthekeymaybechangedisanotherpointinfavoroftheadoptionofthiscodebythosedesiringtotransmitimportantmessageswithouttheslightestdangeroftheirmessagesbeingreadbypoliticalorbusinessrivalsetc"""
+
 
 class AffineAttackTest(unittest.TestCase):
     def test_affine_naive(self):
@@ -46,7 +48,7 @@ class VigenereAttackTest(unittest.TestCase):
         # The book says [14, 14, 16, 14, 24, 12]
         actual_coincidences = [14, 14, 16, 15, 25, 12]
         for r in range(1, 7):
-            coincidences.append(VigenereAttack.count_coincidences(vigenere_ciphertext, rotate(vigenere_ciphertext, -r)))
+            coincidences.append(VigenereAttack.coincidences(vigenere_ciphertext, rotate(vigenere_ciphertext, -r)))
 
         self.assertListEqual(coincidences, actual_coincidences)
 
@@ -54,10 +56,29 @@ class VigenereAttackTest(unittest.TestCase):
         attack = VigenereAttack(vigenere_ciphertext)
         self.assertEqual(attack.probable_key_length(), 5)
 
-    def test_vigenere_attack(self):
+    def test_book_vigenere_attack(self):
         attack = VigenereAttack(vigenere_ciphertext)
-        attack.possible_key()
+        key = attack.probable_key()
+        self.assertEqual(key, 'codes')
+        cipher = VigenereCipher(key)
+        self.assertEqual(cipher.decrypt(vigenere_ciphertext), vigenere_plaintext)
 
+    def test_weak_key(self):
+        key = 'somekey'
+        cipher = VigenereCipher(key)
+        ciphertext = cipher.encrypt(well_behaved_message)
+        attack = VigenereAttack(ciphertext)
+        self.assertEqual(attack.probable_key_length(), len(key))
+        self.assertEqual(attack.probable_key(), key)
+
+    def test_stronger_key(self):
+        key = 'thisisakey'
+        cipher = VigenereCipher(key)
+        ciphertext = cipher.encrypt(well_behaved_message)
+        attack = VigenereAttack(ciphertext)
+        self.assertEqual(attack.probable_key_length(), len(key))
+        self.assertNotEqual(attack.probable_key(), key)
+        self.assertEqual(attack.probable_key(), 'thisiswkey')
 
 class DesAttackTest(unittest.TestCase):
     def test_des(self):
