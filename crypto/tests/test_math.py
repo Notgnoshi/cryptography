@@ -1,5 +1,6 @@
 from crypto.math import *
 from crypto.utilities import nslice, product
+from crypto.random import random_prime
 from collections import Counter
 import gmpy2
 import math
@@ -130,8 +131,8 @@ class MathTest(unittest.TestCase):
         self.assertEqual(legendre(a * b, p), legendre(a, p) * legendre(b, p))
 
     def test_jacobi_properties(self):
-        p = random_prime(3)
-        q = random_prime(3)
+        p = random_prime(5)
+        q = random_prime(5)
         n = p * q
         a = random.randint(p // 2, p - 1)
         b = a + n
@@ -190,7 +191,7 @@ class PrimalityTest(unittest.TestCase):
         self.assertTrue(is_prime(actual))
 
     def test_miller_rabin_random_large(self):
-        n = 200
+        n = 64
         actual = random_prime(n)
         self.assertEqual(len(str(actual)), n)
         self.assertTrue(is_prime(actual))
@@ -201,7 +202,7 @@ class PrimalityTest(unittest.TestCase):
         self.assertTrue(is_prime(prime))
 
     def test_miller_rabin_small_2(self):
-        n = 200
+        n = 64
         prime = random_prime(n)
         self.assertTrue(is_prime(prime))
 
@@ -250,7 +251,7 @@ class PrimalityTest(unittest.TestCase):
 
     def test_solovay_2(self):
         # This test is slow for large primes
-        p = random_prime(3)
+        p = random_prime(16)
         self.assertTrue(is_prime(p, 'solovay-strassen'))
         ps = list(primes(20))
         self.assertTrue(all(is_prime(p, 'solovay-strassen') for p in ps))

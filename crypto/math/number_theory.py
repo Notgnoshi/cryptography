@@ -90,16 +90,6 @@ def primes(limit=None):
     return itertools.islice(_primes(), limit)
 
 
-# TODO: convert this to take in a given number of bits...
-# TODO: There's got to be a better implementation than this...
-def random_prime(digits):
-    """Generates a random prime number with `digits` digits"""
-    # Generate a random number with n digits
-    num = random.randint(10**(digits - 1) + 1, 10**digits)
-    # Find the next prime after the number - will *probably* have n digits.
-    return int(gmpy2.next_prime(num))
-
-
 def legendre(a, p):
     """
         The Legendre Symbol of `a` mod `p`.

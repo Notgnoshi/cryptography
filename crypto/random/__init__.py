@@ -11,6 +11,7 @@ from crypto.tests import run_once
 from .blum_blum_shub import bbs, bbsn
 from .passwords import generate_alnum, generate_alpha, generate_phrase
 from .LFSR import LinearFeedbackShiftRegister
+from .primes import random_prime
 
 
 @run_once
@@ -22,4 +23,5 @@ def load_tests(loader, tests, ignore):
     tests.addTests(doctest.DocTestSuite('crypto.random.blum_blum_shub'))
     tests.addTests(doctest.DocTestSuite('crypto.random.passwords'))
     tests.addTests(doctest.DocTestSuite('crypto.random.LFSR'))
+    tests.addTests(doctest.DocTestSuite('crypto.random.primes'))
     return tests

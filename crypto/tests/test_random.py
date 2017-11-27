@@ -1,4 +1,4 @@
-from crypto.random import *
+from crypto.random import bbsn, LinearFeedbackShiftRegister
 import gmpy2 as gmp
 import itertools
 import numpy
