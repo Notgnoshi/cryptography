@@ -136,11 +136,30 @@ class DesCipherTest(unittest.TestCase):
 
 
 class RsaCipherTest(unittest.TestCase):
-    def test_rsa(self):
+    def test_small_message(self):
+        # Example taken from the book
+        # private
         p = 885320963
         q = 238855417
-        e = 9007
         d = 116402471153538991
+
+        # public
+        e = 9007
         n = p * q
-        cipher = RsaCipher(n, e, d)
-        print(cipher.encrypt('cat'))
+
+        cipher = BaseRsaCipher(n, e, d)
+        ciphertext = cipher.encrypt_number(cipher.str2num('cat'))
+        plaintext = cipher.num2str(cipher.decrypt_number(ciphertext))
+        self.assertEqual(plaintext, 'cat')
+
+    @unittest.skip('TODO')
+    def test_num2str(self):
+        pass
+
+    @unittest.skip('TODO')
+    def test_str2num(self):
+        pass
+
+    @unittest.skip('TODO')
+    def test_large_message(self):
+        pass
