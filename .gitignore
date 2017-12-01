@@ -148,7 +148,7 @@ _minted*
 *.pyg
 
 # morewrites
-*.mw
+#*.mw
 
 # nomencl
 *.nlo
