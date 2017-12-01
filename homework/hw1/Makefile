@@ -5,7 +5,7 @@ PROJECT_NAME=hw1
 all: $(PROJECT_NAME).pdf
 
 $(PROJECT_NAME).pdf: $(PROJECT_NAME).tex
-	latexmk -pdf -shell-escape -file-line-error -interaction=batchmode --synctex=1 $<
+	TEXINPUTS=:/opt/maple2015/etc latexmk -pdf -shell-escape -file-line-error -interaction=batchmode --synctex=1 $<
 
 clean:
 	latexmk -c
@@ -20,4 +20,3 @@ cleanall:
 
 view:
 	xdg-open $(PROJECT_NAME).pdf &
-

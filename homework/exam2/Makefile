@@ -4,8 +4,9 @@ PROJECT_NAME=exam2
 
 all: $(PROJECT_NAME).pdf
 
+# Adds the Maple stylesheets to the search path for LaTeX before running the command.
 $(PROJECT_NAME).pdf: $(PROJECT_NAME).tex
-	latexmk -pdf -shell-escape -file-line-error -interaction=batchmode --synctex=1 $<
+	TEXINPUTS=:/opt/maple2015/etc latexmk -pdf -shell-escape -file-line-error -interaction=batchmode --synctex=1 $<
 
 clean:
 	latexmk -c
@@ -19,5 +20,4 @@ cleanall:
 	rm -f *.synctex.gz
 
 view:
-	xdg-open $(PROJECT_NAME).pdf &
-
+	1>/dev/null 2>/dev/null xdg-open $(PROJECT_NAME).pdf &

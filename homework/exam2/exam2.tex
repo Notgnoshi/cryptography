@@ -8,5 +8,129 @@
 \maketitle
 
 
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{one := x\symbol{94}5 + x\symbol{94}4 + 1
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{one := x^5+x^4+1}{\[\displaystyle {\it one}\, := \,{x}^{5}+{x}^{4}+1\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{factor(one) mod 2
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{(x^2+x+1)*(x^3+x+1)}{\[\displaystyle  \left( {x}^{2}+x+1 \right)  \left( {x}^{3}+x+1 \right) \]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{two := x\symbol{94}5 + x\symbol{94}3 + 1
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{two := x^5+x^3+1}{\[\displaystyle {\it two}\, := \,{x}^{5}+{x}^{3}+1\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{three := x\symbol{94}5 + x\symbol{94}4 + x\symbol{94}2 + 1
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{three := x^5+x^4+x^2+1}{\[\displaystyle {\it three}\, := \,{x}^{5}+{x}^{4}+{x}^{2}+1\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{factor(two) mod 2
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{x^5+x^3+1}{\[\displaystyle {x}^{5}+{x}^{3}+1\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{factor(three) mod 2
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{x^5+x^4+x^2+1}{\[\displaystyle {x}^{5}+{x}^{4}+{x}^{2}+1\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{m := x\symbol{94}8 + x\symbol{94}4 + x\symbol{94}3 + x + 1
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{m := x^8+x^4+x^3+x+1}{\[\displaystyle m\, := \,{x}^{8}+{x}^{4}+{x}^{3}+x+1\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{Gcdex(x\symbol{94}5 + 1, m, x, 'a', 'b') mod 2
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{1}{\[\displaystyle 1\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{a
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{x^6+x^5+x^3+x^2+x}{\[\displaystyle {x}^{6}+{x}^{5}+{x}^{3}+{x}^{2}+x\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{b
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{x^3+x^2+1}{\[\displaystyle {x}^{3}+{x}^{2}+1\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{rem((x\symbol{94}4 + x\symbol{94}2) * (x\symbol{94}3 + x + 1), m, x) mod 2
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{x^7+x^4+x^3+x^2}{\[\displaystyle {x}^{7}+{x}^{4}+{x}^{3}+{x}^{2}\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{rem(a * (x\symbol{94}5 + 1), m, x) mod 2
+}{}
+\end{mapleinput}
+\mapleresult
+\begin{maplelatex}
+\mapleinline{inert}{2d}{1}{\[\displaystyle 1\]}
+\end{maplelatex}
+\end{maplegroup}
+\begin{maplegroup}
+\begin{mapleinput}
+\mapleinline{active}{1d}{}{}
+\end{mapleinput}
+\end{maplegroup}
 \end{document}
-
