@@ -31,6 +31,54 @@
 %% 1
 \section{} \textit{When we talk about attacks on RSA, we usually talk about factoring $n$ into $pq$. But no one has been able to prove that this is the only way to find $d$ and $e$ given $n$. For example we could try to find $\varphi(n) = (p-1)(q-1)$ without first finding $p$ and $q$. Show that finding $\varphi(n)$ is sufficient to factor $n$ and therefore enough to find $d$.}
 
+    Since $n = pq$, we have that $\varphi(n) = (p - 1)(q - 1)$:
+
+    \begin{align*}
+        \varphi(n) &= (p - 1)(q - 1)\\
+                   &= pq - p - q + 1\\
+                   &= n - p - q + 1\\
+                   &= (n + 1) - (p + q)\\
+        \varphi(n) - (n + 1) &= - (p + q)\\
+        (n + 1) - \varphi(n) &= p + q\\
+    \end{align*}
+
+    Giving that $q = (n + 1) - \varphi(n) - p$. But then we have
+
+    \begin{align*}
+        n &= pq\\
+        n &= p \cdot \left((n + 1) - \varphi(n) - p\right)\\
+    \end{align*}
+
+    But this is a quadratic in $p$, which is easily solvable:
+
+    \begin{align*}
+        n &= -p^2 + p(n + 1 - \varphi(n))\\
+        p^2 &- (n + 1 - \varphi(n))p + n = 0\\
+    \end{align*}
+
+    which may be solved using the quadratic formula with
+
+    \begin{align*}
+        a &= 1\\
+        b &= -(n + 1 - \varphi(n))\\
+        c &= n\\
+    \end{align*}
+
+    So then we have
+
+    $$p = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+
+    To test, we have
+
+    \inputminted{python}{prob_1.py}
+
+    which outputs
+
+    \begin{minted}{python}
+        (4811521585660301, 5473886613341039)
+        (5473886613341039.0, 4811521585660301.0)
+    \end{minted}
+
 \newpage
 
 %% 2 -- Unfortunately, even though Maple has the functionality to solve these easily, I must still
