@@ -184,6 +184,14 @@
 %% 5
 \section{} \textit{A common way of storing passwords on a computer is to use DES with a password as the key to encrypt a fixed plaintext (often just $000\dots0$). The ciphertext is then stored in a file. When someone log in, the procedure is repeated and the ciphertexts are compared. Why is this a better method than using the password as the plaintext and a fixed key?}
 
+    I assume that there is one file for each password, and that if the password is used as the plaintext, the key for each file is different.
+
+    If the key is fixed, and the password is stored as plaintext, then should the key be found, the security is compromised forever. Should the plaintext be fixed and the password used as the key, and the password is found, then security is compromised only as long as the password remains unchanged.
+
+    Further, access can be granted without the system software ever comparing the passwords. All that is needed is to input the password attempt as a potential key, then compare ciphertexts. This is desirable, as the actual and potential passwords are never compared.
+
+    In the other system, a user inputs a potential password, and the system decrypts the stored ciphertext with a key it knows, and compares the actual password and the potential password. This is extremely undesirable. It loads the actual password into memory, which is a risk in and of itself. Further, the comparison of the potential and actual password could be suceptible to timing and power attacks.
+
 \newpage
 
 %% 6
