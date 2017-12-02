@@ -8,6 +8,10 @@ all: $(PROJECT_NAME).pdf
 $(PROJECT_NAME).pdf: $(PROJECT_NAME).tex
 	TEXINPUTS=:/opt/maple2015/etc latexmk -pdf -shell-escape -file-line-error -interaction=batchmode --synctex=1 $<
 
+# A target to build with better error messages when latexmk craps itself.
+error:
+	TEXINPUTS=:/opt/maple2015/etc pdflatex -shell-escape -file-line-error $(PROJECT_NAME).tex
+
 clean:
 	latexmk -c
 	rm -rf _minted-*
