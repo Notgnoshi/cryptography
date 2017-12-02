@@ -5,7 +5,7 @@ PROJECT_NAME=hw4
 all: $(PROJECT_NAME).pdf
 
 $(PROJECT_NAME).pdf: $(PROJECT_NAME).tex
-	TEXINPUTS=:/opt/maple2015/etc latexmk -pdf -shell-escape -file-line-error -interaction=batchmode --synctex=1 $<
+	latexmk -pdf -shell-escape -file-line-error -interaction=batchmode --synctex=1 $<
 
 clean:
 	latexmk -c
