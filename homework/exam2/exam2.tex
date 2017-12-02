@@ -31,6 +31,8 @@
 %% 1
 \section{} \textit{When we talk about attacks on RSA, we usually talk about factoring $n$ into $pq$. But no one has been able to prove that this is the only way to find $d$ and $e$ given $n$. For example we could try to find $\varphi(n) = (p-1)(q-1)$ without first finding $p$ and $q$. Show that finding $\varphi(n)$ is sufficient to factor $n$ and therefore enough to find $d$.}
 
+\newpage
+
 %% 2 -- Unfortunately, even though Maple has the functionality to solve these easily, I must still
 %%      solve them by hand...
 \section{} \textit{Determine which of the following polynomials are irreducible over $\Z_2 [x]$.}
@@ -49,15 +51,22 @@
     %% x^7 + x^4 + x^3 + x^2
     \subsection{Compute $(x^4 + x^2) \times (x^3 + x + 1)$:}
 
+\newpage
 
 %% 3
 \section{} \textit{My brother is color-blind, and we used to play snooker, if the balls had moved from their original positions he could not distinguished between a red and the green ball, as it is only the color that makes them non-identical. He was often skeptical that I was actually potting the balls in the correct order. I like to be able to prove to him that the two balls are in fact differently-colored. At the same time, I do not want him to learn which is red and which is green. Device a zero-knowledge protocol that allow me to prove that he really has two different colored balls in front of him. He is allowed to hold, move and handle the balls, I am only allowed to look at them. }
 
+\newpage
+
 %% 4 -- quite hard
 \section{} \textit{Prove that an odd prime $p$ is expressible as a sum of two squares if and only if $p \equiv 1 \pmod{4}$.}
 
+\newpage
+
 %% 5
 \section{} \textit{A common way of storing passwords on a computer is to use DES with a password as the key to encrypt a fixed plaintext (often just $000\dots0$). The ciphertext is then stored in a file. When someone log in, the procedure is repeated and the ciphertexts are compared. Why is this a better method than using the password as the plaintext and a fixed key?}
+
+\newpage
 
 %% 6
 \section{} \textit{You have received the following message:}
@@ -87,12 +96,14 @@
 \textit{You also know that in order to translate the plaintext back into ordinary English text, you need to know how alphabetic characters were ``encoded'' as elements in $\Z_n$.  Each element of $\Z_n$ represent three alphabetic characters as in the following example:}
 
     \begin{align*}
-        \text{DOG} &\to 3 \times 26^2 + 14 \times 26 + 6 = 2398\\
-        \text{CAT} &\to 2 \times 26^2 + 0 \times 26 + 19 = 1371\\
+        \text{DOG} &\to 3  \times 26^2 + 14 \times 26 + 6  = 2398\\
+        \text{CAT} &\to 2  \times 26^2 + 0  \times 26 + 19 = 1371\\
         \text{ZZZ} &\to 25 \times 26^2 + 25 \times 26 + 25 = 17575\\
     \end{align*}
 
 \textit{Decrypt the message (who sent it?), also explain why it is good that the first element in each pair is not the same.}
+
+\newpage
 
 %% 7 -- also quite hard
 \section{} \textit{Find all primes $p$ such that}
@@ -100,6 +111,8 @@
     \subsection{$p \mid 2^p + 1$}
 
     \subsection{$p \mid 2^p - 1$}
+
+\newpage
 
 %% 8
 \section{} \textit{I have five nieces and nephews, and I want to share a secret $(M)$ with them, and when three of them are in agreement they should be able to `unlock' it. I pick a prime $(p)$ larger than number of nieces and nephews and the secret number, $p = 17$. I calculate five pairs $(x_i, y_i)$ where $y_i \equiv M + s_1 x_i + s_2 x_i ^ 2\pmod{p}$, and $s_1, s_2$ are integers that only I know, and $x_1, \dots, x_5$ are distinct integers greater than $0$. Note that $f(0) \equiv M \pmod{p}$. I keep the polynomial secret, but I share $p$ and give each of them a $(x_i, y_i)$ pair. Three of them finally got together and agreed to try to solve my secret Lauren, Cohen and Kirian: $(1, 8)$, $(3, 10)$, and $(5, 11)$. The trouble is they can't agree on the math, so they ask you for help to solve this. Calculate the Lagrange Interpolating Polynomial and identify the secret $(M)$.}
