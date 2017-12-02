@@ -11,6 +11,7 @@ from crypto.tests import run_once
 from .frequencies import SymbolFrequencies
 from .number_theory import *
 from .continued_fractions import fraction_coeffs, fractions, approximate_decimal
+from .polynomial import x, gf28_mod, reduce_gf28, coeffs2poly
 
 
 @run_once
@@ -22,4 +23,5 @@ def load_tests(loader, tests, ignore):
     tests.addTests(doctest.DocTestSuite('crypto.math.frequencies'))
     tests.addTests(doctest.DocTestSuite('crypto.math.number_theory'))
     tests.addTests(doctest.DocTestSuite('crypto.math.continued_fractions'))
+    tests.addTests(doctest.DocTestSuite('crypto.math.polynomial'))
     return tests
