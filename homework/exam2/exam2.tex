@@ -31,19 +31,29 @@
 %% 1
 \section{} \textit{When we talk about attacks on RSA, we usually talk about factoring $n$ into $pq$. But no one has been able to prove that this is the only way to find $d$ and $e$ given $n$. For example we could try to find $\varphi(n) = (p-1)(q-1)$ without first finding $p$ and $q$. Show that finding $\varphi(n)$ is sufficient to factor $n$ and therefore enough to find $d$.}
 
-%% 2
+%% 2 -- Unfortunately, even though Maple has the functionality to solve these easily, I must still
+%%      solve them by hand...
 \section{} \textit{Determine which of the following polynomials are irreducible over $\Z_2 [x]$.}
 
+    %% Factors into (x^2 + x + 1)(x^3 + x + 1)
     \subsection{$x^5 + x^4 + 1$:}
-
+    %% Irreducible
     \subsection{$x^5 + x^3 + 1$:}
-
+    %% Irreducible
     \subsection{$x^5 + x^4 + x^2 + 1$:}
+
+    \textit{The field $GF(2^8)$ can be constructed as $\Z_2[x] \pmod{x^8 + x^4 + x^3 + x + 1}$}
+
+    %% x^6 + x^5 + x^3 + x^2 + x
+    \subsection{Compute ${(x^5 + 1)}^{-1}$:}
+    %% x^7 + x^4 + x^3 + x^2
+    \subsection{Compute $(x^4 + x^2) \times (x^3 + x + 1)$:}
+
 
 %% 3
 \section{} \textit{My brother is color-blind, and we used to play snooker, if the balls had moved from their original positions he could not distinguished between a red and the green ball, as it is only the color that makes them non-identical. He was often skeptical that I was actually potting the balls in the correct order. I like to be able to prove to him that the two balls are in fact differently-colored. At the same time, I do not want him to learn which is red and which is green. Device a zero-knowledge protocol that allow me to prove that he really has two different colored balls in front of him. He is allowed to hold, move and handle the balls, I am only allowed to look at them. }
 
-%% 4
+%% 4 -- quite hard
 \section{} \textit{Prove that an odd prime $p$ is expressible as a sum of two squares if and only if $p \equiv 1 \pmod{4}$.}
 
 %% 5
@@ -84,7 +94,7 @@
 
 \textit{Decrypt the message (who sent it?), also explain why it is good that the first element in each pair is not the same.}
 
-%% 7
+%% 7 -- also quite hard
 \section{} \textit{Find all primes $p$ such that}
 
     \subsection{$p \mid 2^p + 1$}
