@@ -6,6 +6,11 @@
 
 \polyset{vars=x}
 
+\newcommand{\red}{{\color{red}red}}
+\newcommand{\green}{{\color{green}green}}
+\newcommand{\purple}{{\color{purple}purple}}
+\newcommand{\orange}{{\color{orange}orange}}
+
 % \usepackage{maplestd2e}
 %
 % \def\emptyline{\vspace{12pt}}
@@ -155,7 +160,19 @@
 \newpage
 
 %% 3
-\section{} \textit{My brother is color-blind, and we used to play snooker, if the balls had moved from their original positions he could not distinguished between a red and the green ball, as it is only the color that makes them non-identical. He was often skeptical that I was actually potting the balls in the correct order. I like to be able to prove to him that the two balls are in fact differently-colored. At the same time, I do not want him to learn which is red and which is green. Device a zero-knowledge protocol that allow me to prove that he really has two different colored balls in front of him. He is allowed to hold, move and handle the balls, I am only allowed to look at them. }
+\section{} \textit{My brother is color-blind, and we used to play snooker, if the balls had moved from their original positions he could not distinguished between a \red{} and the \green{} ball, as it is only the color that makes them non-identical. He was often skeptical that I was actually potting the balls in the correct order. I like to be able to prove to him that the two balls are in fact differently-colored. At the same time, I do not want him to learn which is \red{} and which is \green{}. Devise a zero-knowledge protocol that allow me to prove that he really has two different colored balls in front of him. He is allowed to hold, move and handle the balls, I am only allowed to look at them.}
+
+    Instruct your brother to hide the balls and repeatedly reveal them to you in random order. He will quiz you on which one is what color. You may tell the truth or not, but you must do so consistently.
+
+    Your brother will not know which one is \green{} and which one is \red{}, only that you consistently label the same ball with the same color. Over time this probabilistically shows that you can tell the difference between the two balls.
+
+    \begin{enumerate}
+        \item[\textbf{Case 1:}] Both balls are the same color. You will not be able to tell the difference between them, so when your brother shows them to you in random order, you cannot possibly correctly label one ball as \red{} and one ball as \green{} consistently.
+
+        \item[\textbf{Case 2:}] One ball is \red{} and one ball is \green{}. You are now able to differentiate between the \red{} and \green{} ball consistently when they are showed to you in random order, even if you choose to label them as {\color{red}green} and {\color{green}red}.
+
+        \item[\textbf{Case 3:}] One ball is \purple{} and one ball is \orange{}. You are still able to differentiate between the two balls consistently. This is still enough to convince a rational person that they are in fact differently colored.
+    \end{enumerate}
 
 \newpage
 
