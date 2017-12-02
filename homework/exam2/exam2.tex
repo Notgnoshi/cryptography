@@ -238,12 +238,40 @@
 
 \newpage
 
-%% 7 -- also quite hard
+%% 7
 \section{} \textit{Find all primes $p$ such that}
 
     \subsection{$p \mid 2^p + 1$}
 
+        \begin{align*}
+            p &\mid 2^p + 1\\
+            pk &= 2^p + 1 &\text{for some $k$}\\
+            2^p &= pk - 1\\
+            2^p &\equiv -1 \pmod{p}\\
+        \end{align*}
+
+        But by Fermat's Little Theorem, we have
+
+        \begin{align*}
+            a^{p - 1} &\equiv 1 \pmod{p}\\
+            a^p &\equiv a \pmod{p}\\
+            2^p &\equiv 2 \pmod{p}\\
+        \end{align*}
+
+        Thus $-1 \equiv 2 \pmod{p}$, giving that $-1 = pk + 2$, or $-pk = 3$, which only has integer solutions with $p$ prime of $p=3$ and $k=-1$
+
     \subsection{$p \mid 2^p - 1$}
+
+        Similarly,
+
+        \begin{align*}
+            p &\mid 2^p - 1\\
+            pk &= 2^p - 1 &\text{for some $k$}\\
+            2^p &= pk + 1\\
+            2^p &\equiv 1 \pmod{p}\\
+        \end{align*}
+
+        And again by Fermat's Little Theorem, we still have $2^p \equiv 2 \pmod{p}$. Thus $1 \equiv 2 \pmod{p}$, or $1 = pk + 2$ giving that $-1 = pk$ which has no integer solutions for a prime $p$.
 
 \newpage
 
