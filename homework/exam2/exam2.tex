@@ -1,6 +1,11 @@
 \documentclass[12pt]{article}
 \input{../hw.sty}
 
+\usepackage{polynom}
+\usepackage{textcomp}
+
+\polyset{vars=x}
+
 % \usepackage{maplestd2e}
 %
 % \def\emptyline{\vspace{12pt}}
@@ -70,7 +75,7 @@
 
     To test, we have
 
-    \inputminted{python}{prob_1.py}
+    \inputminted{python}{scripts/prob_1.py}
 
     which outputs
 
@@ -89,15 +94,54 @@
     \subsection{$x^5 + x^4 + 1$:}
     %% Irreducible
     \subsection{$x^5 + x^3 + 1$:}
-    %% Irreducible
+    %% Factors into (x + 1)(x^4 + x + 1)
     \subsection{$x^5 + x^4 + x^2 + 1$:}
+
+        Being far too much work to do by hand during this hellish time of year, the following Python script runs a brute force trial division test on each of the above polynomials in $\Z_2[x]$.
+
+        \inputminted{python}{scripts/prob_2abc.py}
+
+        and produces the following output
+
+        \begin{minted}{python}
+        Running trial division on: x**5 + x**4 + 1
+            Found divisors: Poly(x**2 + x + 1, x, modulus=2) Poly(x**3 + x + 1, x, modulus=2)
+            Found divisors: Poly(x**3 + x + 1, x, modulus=2) Poly(x**2 + x + 1, x, modulus=2)
+        Running trial division on: x**5 + x**3 + 1
+        Running trial division on: x**5 + x**4 + x**2 + 1
+            Found divisors: Poly(x + 1, x, modulus=2) Poly(x**4 + x + 1, x, modulus=2)
+        \end{minted}
+
+        Thus the first and last polynomials are reducible over $\Z_2[x]$, while the second polynomial is irreducible. Interesting note, Maple does not factor $x^5 + x^4 + x^2 + 1$, but my Python code above does.
 
     \textit{The field $GF(2^8)$ can be constructed as $\Z_2[x] \pmod{x^8 + x^4 + x^3 + x + 1}$}
 
     %% x^6 + x^5 + x^3 + x^2 + x
     \subsection{Compute ${(x^5 + 1)}^{-1}$:}
+
+        This can be done in multiple ways: I could run through the Extended Euclidean Algorithm, or I could brute force check all of the elements of $\Z_2[x] \pmod{x^8 + x^4 + x^3 + x + 1}$ to see which one(s) if any produce the multiplicative identity. Since $\Z_2[x] \pmod{x^8 + x^4 + x^3 + x + 1}$ has only $2^8$ elements, the latter approach is what I choose.
+
+        \inputminted{python}{scripts/prob_2d.py}
     %% x^7 + x^4 + x^3 + x^2
     \subsection{Compute $(x^4 + x^2) \times (x^3 + x + 1)$:}
+
+        Sadly, this problem was faster to do by hand:
+
+        $$(x^4 + x^2) \times (x^3 + x + 1)$$
+        $$x^7 + 2x^5 + x^4 + x^3 + x^2$$
+
+        But this is in $\Z_2[x]$, so we then have
+
+        $$x^7 + x^4 + x^3 + x^2$$
+
+        But now we are working $\pmod{x^8 + x^4 + x^3 + x + 1}$. Clearly\texttrademark{}, however, $x^7 + x^4 + x^3 + x^2 \equiv x^7 + x^4 + x^3 + x^2 \pmod{x^8 + x^4 + x^3 + x + 1}$. Reducing $\pmod{x^8 + x^4 + x^3 + x + 1}$ with the \texttt{crypto.math.reduce\textunderscore{}gf28} function I wrote confirms this.
+
+        \begin{minted}{python}
+            >>> from crypto.math import reduce_gf28
+            >>> f = (x **4 + x**2) * (x**3 + x + 1)
+            >>> reduce_gf28(f)
+            Poly(x**7 + x**4 + x**3 + x**2, x, modulus=2)
+        \end{minted}
 
 \newpage
 
