@@ -160,7 +160,7 @@
 \newpage
 
 %% 3
-\section{} \textit{My brother is color-blind, and we used to play snooker, if the balls had moved from their original positions he could not distinguished between a \red{} and the \green{} ball, as it is only the color that makes them non-identical. He was often skeptical that I was actually potting the balls in the correct order. I like to be able to prove to him that the two balls are in fact differently-colored. At the same time, I do not want him to learn which is \red{} and which is \green{}. Devise a zero-knowledge protocol that allow me to prove that he really has two different colored balls in front of him. He is allowed to hold, move and handle the balls, I am only allowed to look at them.}
+\section{} \textit{My brother is color-blind, and we used to play snooker, if the balls had moved from their original positions he could not distinguished between a \red{} and the \green{} ball, as it is only the color that makes them non-identical. He was often skeptical that I was actually potting the balls in the correct order. I like to be able to prove to him that the two balls are in fact differently-colored. At the same time, I do not want him to learn which is \red{} and which is \green{}. Devise a zero-knowledge protocol that allows me to prove that he really has two different colored balls in front of him. He is allowed to hold, move and handle the balls, I am only allowed to look at them.}
 
     Instruct your brother to hide the balls and repeatedly reveal them to you in random order. He will quiz you on which one is what color. You may tell the truth or not, but you must do so consistently.
 
@@ -199,35 +199,42 @@
 
     \begin{minted}[autogobble=false]{python}
         (949,   2750),  (8513,  28089), (5513,  8421),
-        (4769,  4261),  (18352, 12856), (17914, 28599),
-        (25231, 9196),  (3809,  5997),  (1477,  19626),
-        (19108, 22326), (24966, 631),   (3494,  5974),
-        (10256, 30308), (29093, 15082), (4223,  25106),
-        (3595,  18546), (11325, 3588),  (5632,  4912),
-        (18067, 13223), (21530, 3138),  (30949, 16065),
-        (29784, 7987),  (6385,  5955),  (27338, 10405),
-        (31715, 15969), (15815, 28055), (10462, 13371),
-        (4852,  28393), (1331,  30788), (18117, 28680),
-        (2472,  11786), (27548, 22909), (21980, 28433),
-        (2154,  3440),  (21504, 22036), (13651, 18061),
+        ...
         (10676, 26545), (30974, 23306), (14689, 8359)
     \end{minted}
 
-\textit{It is an ElGamal ciphertext with the following parameters:}
-    $$p = 31847$$
-    $$\alpha = 5$$
-    $$\beta = 18074$$
-\textit{and your private random integer was}
-    $$a = 7899$$
-\textit{You also know that in order to translate the plaintext back into ordinary English text, you need to know how alphabetic characters were ``encoded'' as elements in $\Z_n$.  Each element of $\Z_n$ represent three alphabetic characters as in the following example:}
+    \textit{It is an ElGamal ciphertext with the following parameters:}
+        $$p = 31847$$
+        $$\alpha = 5$$
+        $$\beta = 18074$$
+    \textit{and your private random integer was}
+        $$a = 7899$$
+    \textit{You also know that in order to translate the plaintext back into ordinary English text, you need to know how alphabetic characters were ``encoded'' as elements in $\Z_n$.  Each element of $\Z_n$ represent three alphabetic characters as in the following example:}
 
-    \begin{align*}
-        \text{DOG} &\to 3  \times 26^2 + 14 \times 26 + 6  = 2398\\
-        \text{CAT} &\to 2  \times 26^2 + 0  \times 26 + 19 = 1371\\
-        \text{ZZZ} &\to 25 \times 26^2 + 25 \times 26 + 25 = 17575\\
-    \end{align*}
+        \begin{align*}
+            \text{DOG} &\to 3  \times 26^2 + 14 \times 26 + 6  = 2398\\
+            \text{CAT} &\to 2  \times 26^2 + 0  \times 26 + 19 = 1371\\
+            \text{ZZZ} &\to 25 \times 26^2 + 25 \times 26 + 25 = 17575\\
+        \end{align*}
 
-\textit{Decrypt the message (who sent it?), also explain why it is good that the first element in each pair is not the same.}
+    \textit{Decrypt the message (who sent it?), also explain why it is good that the first element in each pair is not the same.}
+
+    The following Python script
+
+    \inputminted{python}{scripts/prob_6.py}
+
+    produces the following snippet of the Ring Verse from The Lord of the Rings
+
+    \begin{quote}
+        \centering
+        \textit{One Ring to rule them all, One Ring to find them,}\\
+        \textit{One Ring to bring them all, and in the darkness bind them,}\\
+        \textit{In the Land of Mordor where the Shadows lie.}\\
+    \end{quote}
+
+    The fact that the last line is not often quoted, and the fact that the message was transmitted as an ElGamal encrypted message leads me to believe that a nerd/geek/professor sent the message. Further, the message was likely transmitted in order to demonstrate nerdom and/or to test the recipient's capabilities. I propose that in light of these likelihoods, the transmitter be named Alice.
+
+    The first element in each pair is the number $r \equiv \alpha^k \pmod{p}$. If $r$ differs for each pair, then $k$, the secret random integer Alice generates also must differ for each pair. It is important ensure a different random $k$ is used for each message because an attacker would then have to solve a discrete logarithm problem for each message $m_i$ sent. This is untenable for large amounts of messages.
 
 \newpage
 
