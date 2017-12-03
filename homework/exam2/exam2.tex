@@ -1,16 +1,6 @@
 \documentclass[12pt]{article}
 \input{../hw.sty}
 
-\usepackage{polynom}
-\usepackage{textcomp}
-
-\polyset{vars=x}
-
-\newcommand{\red}{{\color{red}red}}
-\newcommand{\green}{{\color{green}green}}
-\newcommand{\purple}{{\color{purple}purple}}
-\newcommand{\orange}{{\color{orange}orange}}
-
 % \usepackage{maplestd2e}
 %
 % \def\emptyline{\vspace{12pt}}
@@ -178,6 +168,42 @@
 
 %% 4 -- quite hard
 \section{} \textit{Prove that an odd prime $p$ is expressible as a sum of two squares if and only if $p \equiv 1 \pmod{4}$.}
+
+    \begin{description}
+        \item[$(\Rightarrow)$]
+        \begin{proof}
+            Suppose $p = x^2 + y^2$ is prime. The elements of $\Z_4$ are $\{0, 1, 2, 3\}$. Thus the elements of $\{x^2 \mid x \in \Z_4\}$ are $\{0, 1, 4, 9\} = \{0, 1\}$. Thus $x^2 \pmod{4}$ can only take on the values $0$ or $1$. Thus if a prime $p = x^2 + y^2$, it must take on one of the values in $\{0 + 0, 0 + 1, 1 + 0, 1+ 1\} = \{0, 1, 2\}$
+
+            However, $p$ cannot be congruent to $0 \pmod{4}$ because it would not be prime, and likewise $p$ cannot be congruent to $2 \pmod{4}$ save for $p = 2$ for the same reason. Thus the only option left is for $p \equiv 1 \pmod{4}$.
+        \end{proof}
+
+        \item[$(\Leftarrow)$]
+        \begin{proof}
+            Suppose $p \equiv 1 \pmod{4}$ is prime. This direction however, isn't nearly as trivial, and relies on an intermediate result.
+
+            \begin{lemma}
+                If $p \equiv 1 \pmod{4}$ is prime, then there exists a solution $a$ to $a^2 \equiv -1 \pmod{p}$.
+            \end{lemma}
+
+            \begin{proof}
+                Consider the Legendre Symbol $\legendre{-1}{p} = {(-1)}^{\frac{p - 1}{2}} = {(-1)}^{2k} = 1$, indicating the presence of such a solution $a$ to $a^2 \equiv -1 \pmod{p}$.
+            \end{proof}
+
+            Let $a$ be a solution to $a^2 \equiv -1 \pmod{p}$, and let $k = \floor{\sqrt{p}}$. Note then that $k \leq \sqrt{p} \geq k + 1$. Now consider the numbers $r - sa$ for $r, s$ integers between $0$ and $k$ inclusive. From combinatorics, there are ${(k + 1)}^2$ combinations.
+
+            Since ${(k + 1)}^2 > p$, there must be at least two distinct such pairs $(r, s)$ and $(t, u)$ where $r - sa$ and $t - ua$ are congruent $\pmod{p}$.
+
+            $$r - sa \equiv t - ua \pmod{p}$$
+
+            Now define $x = r - s$ and $y = t - u$ and note that both $x$ and $y$ are not both $0$ with the following relations holding:
+
+            $$\vert x \vert \leq k$$
+            $$\vert y \vert \leq k$$
+            $$x \equiv ya \pmod{p}$$
+
+            Therefore $x^2 \equiv y^2 a^2 \equiv -y^2 \pmod{p}$, and thus $p$ divides $x^2 + y^2$. However, note that $0 < x^2 + y^2 \leq 2k^2 < 2p$, which forces $p = x^2 + y^2$.
+        \end{proof}
+    \end{description}
 
 \newpage
 
