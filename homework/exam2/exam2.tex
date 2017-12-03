@@ -79,8 +79,6 @@
         (5473886613341039.0, 4811521585660301.0)
     \end{minted}
 
-\newpage
-
 %% 2 -- Unfortunately, even though Maple has the functionality to solve these easily, I must still
 %%      solve them by hand...
 \section{} \textit{Determine which of the following polynomials are irreducible over $\Z_2 [x]$.}
@@ -147,8 +145,6 @@
         \item \texttt{poly\textunderscore{}trial\textunderscore{}inverse(poly)}
     \end{itemize}
 
-\newpage
-
 %% 3
 \section{} \textit{My brother is color-blind, and we used to play snooker, if the balls had moved from their original positions he could not distinguished between a \red{} and the \green{} ball, as it is only the color that makes them non-identical. He was often skeptical that I was actually potting the balls in the correct order. I like to be able to prove to him that the two balls are in fact differently-colored. At the same time, I do not want him to learn which is \red{} and which is \green{}. Devise a zero-knowledge protocol that allows me to prove that he really has two different colored balls in front of him. He is allowed to hold, move and handle the balls, I am only allowed to look at them.}
 
@@ -163,8 +159,6 @@
 
         \item[\textbf{Case 3:}] One ball is \purple{} and one ball is \orange{}. You are still able to differentiate between the two balls consistently. This is still enough to convince a rational person that they are in fact differently colored.
     \end{enumerate}
-
-\newpage
 
 %% 4 -- quite hard
 \section{} \textit{Prove that an odd prime $p$ is expressible as a sum of two squares if and only if $p \equiv 1 \pmod{4}$.}
@@ -205,8 +199,6 @@
         \end{proof}
     \end{description}
 
-\newpage
-
 %% 5
 \section{} \textit{A common way of storing passwords on a computer is to use DES with a password as the key to encrypt a fixed plaintext (often just $000\dots0$). The ciphertext is then stored in a file. When someone log in, the procedure is repeated and the ciphertexts are compared. Why is this a better method than using the password as the plaintext and a fixed key?}
 
@@ -217,8 +209,6 @@
     Further, access can be granted without the system software ever comparing the passwords. All that is needed is to input the password attempt as a potential key, then compare ciphertexts. This is desirable, as the actual and potential passwords are never compared.
 
     In the other system, a user inputs a potential password, and the system decrypts the stored ciphertext with a key it knows, and compares the actual password and the potential password. This is extremely undesirable. It loads the actual password into memory, which is a risk in and of itself. Further, the comparison of the potential and actual password could be suceptible to timing and power attacks.
-
-\newpage
 
 %% 6
 \section{} \textit{You have received the following message:}
@@ -262,8 +252,6 @@
 
     The first element in each pair is the number $r \equiv \alpha^k \pmod{p}$. If $r$ differs for each pair, then $k$, the secret random integer Alice generates also must differ for each pair. It is important ensure a different random $k$ is used for each message because an attacker would then have to solve a discrete logarithm problem for each message $m_i$ sent. This is untenable for large amounts of messages.
 
-\newpage
-
 %% 7
 \section{} \textit{Find all primes $p$ such that}
 
@@ -298,8 +286,6 @@
         \end{align*}
 
         And again by Fermat's Little Theorem, we still have $2^p \equiv 2 \pmod{p}$. Thus $1 \equiv 2 \pmod{p}$, or $1 = pk + 2$ giving that $-1 = pk$ which has no integer solutions for a prime $p$.
-
-\newpage
 
 %% 8
 \section{} \textit{I have five nieces and nephews, and I want to share a secret $(M)$ with them, and when three of them are in agreement they should be able to `unlock' it. I pick a prime $(p)$ larger than number of nieces and nephews and the secret number, $p = 17$. I calculate five pairs $(x_i, y_i)$ where $y_i \equiv M + s_1 x_i + s_2 x_i ^ 2\pmod{p}$, and $s_1, s_2$ are integers that only I know, and $x_1, \dots, x_5$ are distinct integers greater than $0$. Note that $f(0) \equiv M \pmod{p}$. I keep the polynomial secret, but I share $p$ and give each of them a $(x_i, y_i)$ pair. Three of them finally got together and agreed to try to solve my secret Lauren, Cohen and Kirian: (1, 8), (3, 10), and (5, 11). The trouble is they can't agree on the math, so they ask you for help to solve this. Calculate the Lagrange Interpolating Polynomial and identify the secret $(M)$.}
