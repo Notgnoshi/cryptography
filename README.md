@@ -123,13 +123,10 @@ Here's some examples of using the `crypto` module and submodules.
 ---
 
 ## TODO list
-* Allow for more than just `a-z` input?
 * Portfolio writeup
     - Algorithm explanation
     - Add code examples to class and module level docstrings
     - add more verbose docstrings
-* Convert all ciphers to take in bytes/files? -- Not going to get to this
 * Differential Cryptanalysis for three rounds
 * Sieve of Sundaram
 * Wheel Factorization
-* GF(2^8) things...
