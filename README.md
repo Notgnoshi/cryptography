@@ -23,7 +23,8 @@ The `crypto` library has the following dependencies:
     - `libmpc-dev`
     - `libmpfr-dev`
 * `numpy`
-* `concurrencytest`
+* `concurrencytest` (optional, but recommended)
+* `sympy`
 
 The dependencies may be installed on Ubuntu as follows:
 
@@ -55,7 +56,7 @@ The dependencies may be installed on Ubuntu as follows:
     # Install dependencies for pip to compile gmpy2
     sudo apt install libgmp3-dev libmpc-dev libmpfr-dev
     # Might have to use pip3 depending on the output of $(head -1 `which pip` | tail -c +3) --version
-    sudo -H pip install gmpy2
+    sudo -H pip install --upgrade gmpy2
     ```
 * Install other Python dependencies:
     ```shell
@@ -68,10 +69,12 @@ Example usage may be found in the course homework and in the unit tests. Run `py
 
 ## Unit tests
 
-The unit tests may be ran by:
+The unit tests may be ran by any of the following:
 
 ```shell
-python3 runtests.py
+$ python3 runtests.py
+$ ./runtests.py
+$ python3.6 runtests.py
 ```
 
 ## Example usage
@@ -79,12 +82,14 @@ Here's some examples of using the `crypto` module and submodules.
 
 * Running the unit tests with a given number of processes
     ```python
+    #!/usr/bin/env python3
     from crypto.tests import runtests
     # Requires the concurrencytest library installed. Will run in serial otherwise
     runtests(processes=8)
     ```
 * Some bitwise utilities
     ```python
+    #!/usr/bin/env python3
     from crypto.utilities import Bitstream, lazy_pad, bits_to_string
 
     # One of many forms a bytestream can take
@@ -102,6 +107,7 @@ Here's some examples of using the `crypto` module and submodules.
     ```
 * Some classical ciphers
     ```python
+    #!/usr/bin/env python3
     from crypto.classical import AffineCipher, LfsrCipher
     import numpy
 
