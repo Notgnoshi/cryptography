@@ -48,7 +48,8 @@ class VigenereAttackTest(unittest.TestCase):
         # The book says [14, 14, 16, 14, 24, 12]
         actual_coincidences = [14, 14, 16, 15, 25, 12]
         for r in range(1, 7):
-            coincidences.append(VigenereAttack.coincidences(vigenere_ciphertext, rotate(vigenere_ciphertext, -r)))
+            coincidences.append(VigenereAttack.coincidences(
+                vigenere_ciphertext, rotate(vigenere_ciphertext, -r)))
 
         self.assertListEqual(coincidences, actual_coincidences)
 
@@ -82,4 +83,4 @@ class VigenereAttackTest(unittest.TestCase):
 
 class DesAttackTest(unittest.TestCase):
     def test_des(self):
-        self.assertRaises(NotImplementedError, DesAttack)
+        self.assertRaises(NotImplementedError, ThreeRoundDifferentialCryptanalysis)

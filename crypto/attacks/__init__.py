@@ -8,7 +8,7 @@ from crypto.tests import run_once
 
 from .affine import AffineAttack
 from .vigenere import VigenereAttack
-from .des import DesAttack
+from .des import ThreeRoundDifferentialCryptanalysis
 
 
 @run_once
