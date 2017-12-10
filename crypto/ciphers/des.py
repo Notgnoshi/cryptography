@@ -276,21 +276,23 @@ class DesCipher(object):
             chunk = cls.permute(chunk, cls._final_permutation)
             yield tuple(chunk[:32]), tuple(chunk[32:])
 
-    def s_box(self, box, bits):
+    @classmethod
+    def s_box(cls, box, bits):
         """Returns the `box`th S-box value for the given `bits`"""
         row = [bits[0], bits[5]]
         row = bits_to_integer(row)
         col = bits_to_integer(bits[1:5])
-        s_box_value = self._sbox[box][row][col]
+        s_box_value = cls._sbox[box][row][col]
         return tuple(bits_of(s_box_value, 4))
 
-    def f(self, R, K):
+    @classmethod
+    def f(cls, R, K):
         """The encryption function `f` in the DES algorithm"""
-        bits = tuple(xor_streams(self.expand_bits(R), K))
+        bits = tuple(xor_streams(cls.expand_bits(R), K))
         Bs = nslice(bits, 6)
-        Ss = [self.s_box(i, bits) for i, bits in enumerate(Bs)]
+        Ss = [cls.s_box(i, bits) for i, bits in enumerate(Bs)]
         C = list(itertools.chain.from_iterable(Ss))
-        return self.permute(C, self._sbox_permutation)
+        return cls.permute(C, cls._sbox_permutation)
 
     def feistel_round(self, L, R, i):
         """Runs a single round of the Feistel System on the given chunk"""

@@ -1,5 +1,5 @@
 import string
-from crypto.utilities import rotate, TextBitstream, lazy_pad
+from crypto.utilities import TextBitstream, lazy_pad
 from crypto.utilities import bits_to_integer, xor_streams, bits_of
 from .des import DesChunker
 
@@ -33,23 +33,50 @@ class ToyDesCipher(object):
         else:
             return [bitstring[i] for i in [0, 1, 3, 2, 3, 2, 4, 5]]
 
-    def S1(self, bits):
+    @classmethod
+    def S1(cls, bits):
         """Returns the S1-box value associated with the given bits"""
-        return self._S1[bits[0]][bits_to_integer(bits[1:])]
+        return cls._S1[bits[0]][bits_to_integer(reversed(bits[1:]))]
 
-    def S2(self, bits):
+    @classmethod
+    def S2(cls, bits):
         """Returns the S2-box value associated with the given bits"""
-        return self._S2[bits[0]][bits_to_integer(bits[1:])]
+        return cls._S2[bits[0]][bits_to_integer(reversed(bits[1:]))]
 
-    def f(self, R, K):
-        """The encryption function `f` in the DES algorithm"""
-        bits = tuple(xor_streams(self.expand_bits(R), K))
+    @classmethod
+    def f(cls, R, K):
+        """
+            The encryption function `f` in the DES algorithm
+
+            Example:
+
+            >>> ToyDesCipher.f([1, 0, 0, 1, 1, 0], [0, 1, 1, 0, 0, 1, 0, 1])
+            (0, 0, 0, 1, 0, 0)
+        """
+        bits = tuple(xor_streams(cls.expand_bits(R), K))
         # Concatenate the output of the S-boxes.
-        return self.S1(bits[:4]) + self.S2(bits[4:])
+        return cls.S1(bits[:4]) + cls.S2(bits[4:])
+
+    @classmethod
+    def rotate(cls, key, i):
+        """
+            The ToyDesCipher key rotation function as defined in the book.
+
+            Example:
+
+            >>> ToyDesCipher.rotate([0, 1, 0, 0, 1, 1, 0, 0, 1], 4)
+            [0, 1, 1, 0, 0, 1, 0, 1]
+            >>> ToyDesCipher.rotate([0, 0, 1, 0, 0, 1, 1, 0, 1], 2)
+            [0, 1, 0, 0, 1, 1, 0, 1]
+        """
+        if i == 1:
+            return key[:-1]
+
+        return key[i - 1:] + key[:i - 2]
 
     def feistel_round(self, L, R, i):
         """Runs one round of the Feistel System on the given chunk"""
-        K = rotate(self.key, i)
+        K = self.rotate(self.key, i)
         return R, tuple(xor_streams(L, self.f(R, K)))
 
     def encrypt_chunk(self, chunk):
