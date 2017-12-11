@@ -77,6 +77,8 @@ $ ./runtests.py
 $ python3.6 runtests.py
 ```
 
+Note that sometimes the test script hangs while waiting for a lock to release due to the tests being run concurrently. If this happens, send a `KeyboardInterrupt` and try again.
+
 ## Example usage
 Here's some examples of using the `crypto` module and submodules.
 
