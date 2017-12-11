@@ -3,6 +3,16 @@ from crypto.utilities import xor_streams, bits_to_integer, bits_of
 
 
 class ThreeRoundDifferentialCryptanalysis(object):
+    """
+        Implements a three round differential cryptanalysis attack on the simplified DES version
+        given in the textbook.
+
+        This attack works by analyzing the differences in the outputs when the inputs are differed
+        by small amounts.
+
+        Since the S-boxes are known, we can precompute the pairs of numbers with a given XOR that
+        produce a certain S box output XOR.
+    """
     # The S-box XOR lookup table
     LOOKUP = [
         [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8),
@@ -39,65 +49,67 @@ class ThreeRoundDifferentialCryptanalysis(object):
          (8, 7), (9, 6), (10, 5), (11, 4), (12, 3), (13, 2), (14, 1), (15, 0)]
     ]
 
-    def __init__(self):
-        raise NotImplementedError
+    def __init__(self, cipher):
+        """
+            Initializes a chosen plaintext attack on a ToyDesCipher object.
 
+            Example:
 
-def analyze(cipher, input1, input2):
-    """
-        Analyze the differences in the outputs with respect to the given inputs, when ran through
-        the given cipher object.
-    """
-    L4, R4 = cipher.encrypt_chunk(input1, rounds=[2, 3, 4])
-    L4S, R4S = cipher.encrypt_chunk(input2, rounds=[2, 3, 4])
+            >>> key = 0b001001101
+            >>> cipher = ToyDesCipher(key, 3)
+            >>> attack = ThreeRoundDifferentialCryptanalysis(cipher)
+        """
+        self.cipher = cipher
 
-    E4 = cipher.expand_bits(L4)
-    E4S = cipher.expand_bits(L4S)
+    def analyze(self, input1, input2):
+        """
+            Analyze the differences in the outputs with respect to the given inputs, when ran
+            through the given cipher object.
 
-    # Ths S-boxe's input XOR, 4-bits each
-    difference = tuple(xor_streams(E4, E4S))
-    S1IX = bits_to_integer(difference[:4])
-    S2IX = bits_to_integer(difference[4:])
+            Example:
 
-    # The S-box output XOR, 6-bits
-    SOX = tuple(xor_streams(xor_streams(input1[0], input2[0]), xor_streams(R4, R4S)))
+            >>> key = 0b001001101
+            >>> cipher = ToyDesCipher(key, 3)
+            >>> attack = ThreeRoundDifferentialCryptanalysis(cipher)
+            >>> L1, R1 = (0, 0, 0, 1, 1, 1), (0, 1, 1, 0, 1, 1)
+            >>> L1S, R1S = (1, 0, 1, 1, 1, 0), (0, 1, 1, 0, 1, 1)
+            >>> attack.analyze((L1, R1), (L1S, R1S))
+            ({(1, 0, 0, 1), (0, 0, 1, 1)}, {(1, 1, 0, 0), (0, 1, 1, 1)})
+            >>> L1, R1 = (0, 1, 0, 1, 1, 1), (0, 1, 1, 0, 1, 1)
+            >>> L1S, R1S = (1, 0, 1, 1, 1, 0), (0, 1, 1, 0, 1, 1)
+            >>> attack.analyze((L1, R1), (L1S, R1S))
+            ({(1, 0, 0, 1), (0, 0, 1, 0)}, {(1, 1, 0, 0), (0, 0, 1, 1)})
+        """
 
-    poss1 = set()
-    poss2 = set()
-    # Iterate over all pairs a four bit numbers to compare the XOR of the S-box outputs
-    for left, right in ThreeRoundDifferentialCryptanalysis.LOOKUP[S1IX]:
-        left_bits = tuple(bits_of(left, 4))
-        right_bits = tuple(bits_of(right, 4))
-        if tuple(xor_streams(cipher.S1(left_bits), cipher.S1(right_bits))) == SOX[:3]:
-            poss1.add(left_bits)
+        # Fun fact: pylint thinks there are too many local variables here. I say it should have seen
+        # the implementation before I simplified it...
+        L4, R4 = self.cipher.encrypt_chunk(input1, rounds=[2, 3, 4])
+        L4S, R4S = self.cipher.encrypt_chunk(input2, rounds=[2, 3, 4])
 
-    for left, right in ThreeRoundDifferentialCryptanalysis.LOOKUP[S2IX]:
-        left_bits = tuple(bits_of(left, 4))
-        right_bits = tuple(bits_of(right, 4))
-        if tuple(xor_streams(cipher.S2(left_bits), cipher.S2(right_bits))) == SOX[3:]:
-            poss2.add(left_bits)
+        E4 = self.cipher.expand_bits(L4)
+        E4S = self.cipher.expand_bits(L4S)
 
-    return poss1, poss2
+        # Ths S-boxe's input XOR, 4-bits each
+        difference = tuple(xor_streams(E4, E4S))
+        S1IX = bits_to_integer(difference[:4])
+        S2IX = bits_to_integer(difference[4:])
 
+        # The S-box output XOR, 6-bits
+        SOX = tuple(xor_streams(xor_streams(input1[0], input2[0]), xor_streams(R4, R4S)))
 
-# key = 0b001001101
-# cipher = ToyDesCipher(key, 3)
-# L1, R1 = (0, 0, 0, 1, 1, 1), (0, 1, 1, 0, 1, 1)
-# L1S, R1S = (1, 0, 1, 1, 1, 0), (0, 1, 1, 0, 1, 1)
-# possibilities1, possibilities2 = analyze(
-#     cipher, (L1, R1), (L1S, R1S))
-#
-# # Correct
-# print('1: first four:', possibilities1)
-# # Correct
-# print('1: last four:', possibilities2)
-#
-# L1, R1 = (0, 1, 0, 1, 1, 1), (0, 1, 1, 0, 1, 1)
-# L1S, R1S = (1, 0, 1, 1, 1, 0), (0, 1, 1, 0, 1, 1)
-# possibilities3, possibilities4 = analyze(
-#     cipher, (L1, R1), (L1S, R1S))
-#
-# # Correct
-# print('2: first four:', possibilities3)
-# # Correct
-# print('2: last four:', possibilities4)
+        poss1 = set()
+        poss2 = set()
+        # Iterate over all pairs a four bit numbers to compare the XOR of the S-box outputs
+        for left, right in ThreeRoundDifferentialCryptanalysis.LOOKUP[S1IX]:
+            left_bits = tuple(bits_of(left, 4))
+            right_bits = tuple(bits_of(right, 4))
+            if tuple(xor_streams(self.cipher.S1(left_bits), self.cipher.S1(right_bits))) == SOX[:3]:
+                poss1.add(left_bits)
+
+        for left, right in ThreeRoundDifferentialCryptanalysis.LOOKUP[S2IX]:
+            left_bits = tuple(bits_of(left, 4))
+            right_bits = tuple(bits_of(right, 4))
+            if tuple(xor_streams(self.cipher.S2(left_bits), self.cipher.S2(right_bits))) == SOX[3:]:
+                poss2.add(left_bits)
+
+        return poss1, poss2

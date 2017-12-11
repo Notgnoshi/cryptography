@@ -8,6 +8,15 @@ class VigenereAttack(object):
     """
         Implements a strategy to attack a Vigenere Cipher by finding the key length and then
         the key using a method described in the textbook.
+
+        Example:
+
+        >>> from crypto.samples import vigenere_ciphertext
+        >>> attack = VigenereAttack(vigenere_ciphertext)
+        >>> attack.probable_key_length()
+        5
+        >>> attack.probable_key()
+        'codes'
     """
 
     def __init__(self, ciphertext):
@@ -71,6 +80,12 @@ class VigenereAttack(object):
             Takes in an optional tweaking parameter `num_rotations` that sets the number of
             rotations to use when counting coincidences in order to determine the probable key
             length. The num_rotations parameter should be bigger than the believed key length.
+
+            Example:
+            >>> from crypto.samples import vigenere_ciphertext
+            >>> attack = VigenereAttack(vigenere_ciphertext)
+            >>> attack.probable_key_length()
+            5
         """
         max_coincidence, _ = max_pair(self.compare_rotations(self.ciphertext, num_rotations))
         return max_coincidence
@@ -92,6 +107,11 @@ class VigenereAttack(object):
                 * for j in 1..25 compute W dot A_j where A_j is A_0 rotated right j positions
                 * k_i = the j associated with the maximum dot product in the previous step
             The key is then probably {k_1, ..., k_n}
+
+            >>> from crypto.samples import vigenere_ciphertext
+            >>> attack = VigenereAttack(vigenere_ciphertext)
+            >>> attack.probable_key()
+            'codes'
         """
 
         def proportion_vector(proportions):
@@ -109,7 +129,8 @@ class VigenereAttack(object):
             return numpy.array(vec)
 
         # Convert ENGLISH_LETTER_FREQUENCIES.values() to an array rather than a dict.view() object
-        A0 = numpy.array([SymbolFrequencies.ENGLISH_LETTER_FREQUENCIES[l] for l in string.ascii_lowercase])
+        A0 = numpy.array([SymbolFrequencies.ENGLISH_LETTER_FREQUENCIES[l]
+                          for l in string.ascii_lowercase])
 
         key_length = self.probable_key_length(num_rotations)
         key = []

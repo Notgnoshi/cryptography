@@ -3,6 +3,7 @@ Attacks submodule of crypto. Implements several attack methods of various cipher
 
 * affine: Implements attacks on an affine cipher
 * vigenere: Implements attacks on a vigenere cipher
+* des: Implements a differential cryptanalysis attack on the ToyDesCipher detailed in the textbook
 """
 from crypto.tests import run_once
 

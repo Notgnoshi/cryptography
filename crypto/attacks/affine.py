@@ -6,7 +6,14 @@ from crypto.utilities import int_mapping
 
 class AffineAttack(object):
     """
-        Implements a strategy to attack an Affine Cipher.
+        Implements two strategies to attack an Affine Cipher.
+
+        1. A naive frequency attack that assumes the top three most common letters are 'e', 'a', and
+           't' respectively. The attack then solve a linear system to find the key.
+
+        2. A Brute force attack that returns an iterator of decrypted potential plaintexts for the
+           user to manipulate. This ends up working quite well because there are only 312 possible
+           keys to use with the Affine Cipher.
     """
 
     def __init__(self, ciphertext):
@@ -39,7 +46,6 @@ class AffineAttack(object):
             'estdtdyzelepde'
             >>> # above not equal to 'thisisatest' because 't' is the most common character
         """
-        # TODO: Implement a less naive strategy?!
         # TODO: The doctest for this function randomly failed with the plaintext 'This is a test'.
         #       Occaisionally it would compute the (alpha, beta) pair as (20, 22), which is weird...
         most_common = self.frequencies.most_common(3)
@@ -47,6 +53,7 @@ class AffineAttack(object):
         # Pick `e` and `t` over `e` and `a` so that the matrix is invertible mod 26.
         b3 = int_mapping(most_common[2][0])
         b = numpy.matrix([[b1], [b3]])
+        # Hard code the matrix inverse. The word 'naive' *is* in the function name...
         m_inverse = numpy.matrix([[19, 7], [3, 24]])
         x = numpy.transpose(numpy.mod(m_inverse * b, 26)).tolist()[0]
         cipher = AffineCipher(*x)
@@ -55,7 +62,7 @@ class AffineAttack(object):
     def brute_force(self):
         """
             Yields the results of a brute force attack on all possible keys one by one. Yields
-            tuples of the form (a, b, decrypted text).
+            tuples of the form (decrypted text, a, b).
 
             Example:
 
