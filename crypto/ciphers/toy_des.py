@@ -21,6 +21,13 @@ class ToyDesCipher(object):
         """
             Takes the lowest 9 bits of the given `key` and runs `number_of_rounds` of the Feistel
             System on the messages to be encrypted.
+
+            Example:
+            >>> cipher = ToyDesCipher(0b101010110)
+            >>> cipher.encrypt('1237asdfHGFD')
+            '6Ü¬ÙÏ½æ@µ<3e'
+            >>> cipher.decrypt('6Ü¬ÙÏ½æ@µ<3e')
+            '1237asdfHGFD'
         """
         # bits_of yields bits LSBF, want to store MSBF to be consistent with the book
         self.key = tuple(bits_of(key, 9))[::-1]
@@ -137,12 +144,21 @@ class ToyDesCipher(object):
         return L, R
 
     def encrypt_chunks(self, chunker):
-        """Given a chunker, yield encrypted chunk after encrypted chunk"""
+        """
+            Given a chunker, yield encrypted chunk after encrypted chunk
+        """
         for chunk in chunker:
             yield self.encrypt_chunk(chunk)
 
     def encrypt(self, message):
-        """Encrypts the given message with the DES cipher."""
+        """
+            Encrypts the given message with the DES cipher.
+
+            Example:
+            >>> cipher = ToyDesCipher(0b001001101)
+            >>> cipher.encrypt('thisisatestx')
+            '=Í"¨\\x88¸\\x7fßX\\x185\\x0f'
+        """
         # Pad the message to ensure that there is the right number of bits in the message
         message = lazy_pad(message, 3, string.printable)
         # Convert the message to a bitstream.
@@ -155,7 +171,16 @@ class ToyDesCipher(object):
         return DesChunker.chunks_to_string(encrypter)
 
     def decrypt_chunk(self, chunk):
-        """Runs the Feistel System rounds on a single (L, R) chunk to decrypt it."""
+        """
+            Runs the Feistel System rounds on a single (L, R) chunk to decrypt it.
+
+            Example:
+            >>> cipher = ToyDesCipher(0b001001101)
+            >>> L1R1 = ((0, 0, 0, 1, 1, 1), (0, 1, 1, 0, 1, 1))
+            >>> encrypted_chunk = cipher.encrypt_chunk(L1R1)
+            >>> L1R1 == cipher.decrypt_chunk(encrypted_chunk)
+            True
+        """
         # Swap L and R
         R, L = chunk
         # Run the feistel rounds as in encryption, but with keys going from n..1
@@ -165,12 +190,21 @@ class ToyDesCipher(object):
         return R, L
 
     def decrypt_chunks(self, chunker):
-        """Given a chunker, yield decrypted chunk after decrypted chunk"""
+        """
+            Given a chunker, yield decrypted chunk after decrypted chunk
+        """
         for chunk in chunker:
             yield self.decrypt_chunk(chunk)
 
     def decrypt(self, ciphertext):
-        """Decrypts the given ciphertext with the DES cipher."""
+        """
+            Decrypts the given ciphertext with the DES cipher.
+
+            Example:
+            >>> cipher = ToyDesCipher(0b001001101)
+            >>> cipher.decrypt('=Í"¨\\x88¸\\x7fßX\\x185\\x0f')
+            'thisisatestx'
+        """
         # Pad the ciphertext to ensure that there is the right number of bits in the ciphertext
         ciphertext = lazy_pad(ciphertext, 3, string.printable)
         # Convert the ciphertext to a bitstream.

@@ -238,6 +238,9 @@ class DesCipher(object):
             >>> expanded = DesCipher.expand_bits(bits)
             >>> expanded == [0] * 48
             True
+            >>> bits = tuple(bits_of(0x123456789, 32))
+            >>> DesCipher.expand_bits(bits)
+            [0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1]
         """
         if len(bits) != 32:
             raise ValueError('Can only expand 32 bit bitstrings')
@@ -260,16 +263,35 @@ class DesCipher(object):
     def initial_permuter(cls, chunker):
         """
             Runs chunks through the Initial Permutation.
+
+            Example:
+            >>> bits = tuple(bits_of(0x8912387461283748625, 64))
+            >>> chunker = DesChunker(bits, 32)
+            >>> ip = DesCipher.initial_permuter(chunker)
+            >>> permuted = next(ip)
+            >>> permuted != (bits[:32], bits[32:])
+            True
         """
         for chunk in chunker:
             # Collapse the chunk tuple into a single list
-            chunk = list(itertools.chain.from_iterable(chunk))
+            chunk = tuple(itertools.chain.from_iterable(chunk))
             chunk = cls.permute(chunk, cls._initial_permutation)
             yield tuple(chunk[:32]), tuple(chunk[32:])
 
     @classmethod
     def inverse_initial_permuter(cls, chunker):
-        """Runs chunks through the Inverse Initial Permutation."""
+        """
+            Runs chunks through the Inverse Initial Permutation.
+
+            Example:
+            >>> bits = tuple(bits_of(0x8912387461283748625, 64))
+            >>> chunker = DesChunker(bits, 32)
+            >>> ip = DesCipher.initial_permuter(chunker)
+            >>> iip = DesCipher.inverse_initial_permuter(ip)
+            >>> unpermuted = next(iip)
+            >>> unpermuted == (bits[:32], bits[32:])
+            True
+        """
         for chunk in chunker:
             # Collapse the chunk tuple into a single list
             chunk = list(itertools.chain.from_iterable(chunk))
@@ -278,7 +300,13 @@ class DesCipher(object):
 
     @classmethod
     def s_box(cls, box, bits):
-        """Returns the `box`th S-box value for the given `bits`"""
+        """
+            Returns the `box`th S-box value for the given `bits`
+
+            Example:
+            >>> DesCipher.s_box(4, (0, 0, 0, 1, 1, 0))
+            (1, 0, 1, 1)
+        """
         row = [bits[0], bits[5]]
         row = bits_to_integer(row)
         col = bits_to_integer(bits[1:5])
@@ -287,7 +315,15 @@ class DesCipher(object):
 
     @classmethod
     def f(cls, R, K):
-        """The encryption function `f` in the DES algorithm"""
+        """
+            The encryption function `f` in the DES algorithm
+
+            Example:
+            >>> R = tuple(bits_of(0x978612348976, 32))
+            >>> K = tuple(bits_of(0x234626727892, 48))
+            >>> DesCipher.f(R, K)
+            [0, 0, 0, 1, 1, 1, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1]
+        """
         bits = tuple(xor_streams(cls.expand_bits(R), K))
         Bs = nslice(bits, 6)
         Ss = [cls.s_box(i, bits) for i, bits in enumerate(Bs)]
@@ -295,19 +331,43 @@ class DesCipher(object):
         return cls.permute(C, cls._sbox_permutation)
 
     def feistel_round(self, L, R, i):
-        """Runs a single round of the Feistel System on the given chunk"""
+        """
+            Runs the ith round of the Feistel System on the given chunk
+
+            Example:
+            >>> cipher = DesCipher(0x21347851283645)
+            >>> bits = tuple(bits_of(0x178263487126234, 64))
+            >>> cipher.feistel_round(bits[:32], bits[32:], 4)  # Run the fourth feitsel round
+            ((0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0), (1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1))
+        """
         K = self.keys[i]
         return R, tuple(xor_streams(L, self.f(R, K)))
 
     def encrypt_chunk(self, chunk):
-        """Runs the specified number of rounds on a single (L, R) chunk to encrypt it."""
+        """
+            Runs the specified number of rounds on a single (L, R) chunk to encrypt it
+
+            Example:
+            >>> cipher = DesCipher(0x21347851283645)
+            >>> bits = tuple(bits_of(0x178263487126234, 64))
+            >>> cipher.encrypt_chunk((bits[:32], bits[32:]))
+            ((0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1), (0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0))
+        """
         L, R = chunk
         for i in range(1, self.number_of_rounds + 1):
             L, R = self.feistel_round(L, R, i)
         return R, L
 
     def decrypt_chunk(self, chunk):
-        """Runs the specified number of rounds on a single (L, R) chunk to decrypt it."""
+        """
+            Runs the specified number of rounds on a single (L, R) chunk to decrypt it
+
+            Example:
+            >>> cipher = DesCipher(0x21347851283645)
+            >>> chunk = ((0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1, 1, 0, 1, 0, 0, 1, 1, 1, 1, 1), (0, 1, 1, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 0))
+            >>> cipher.decrypt_chunk(chunk)
+            ((0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 1), (0, 0, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0))
+        """
         L, R = chunk
         # Run the feistel rounds as in encryption, but with keys going from n..1
         for i in range(self.number_of_rounds, 0, -1):
@@ -315,12 +375,16 @@ class DesCipher(object):
         return R, L
 
     def encrypt_chunks(self, chunker):
-        """Given a chunked bitstream, yield encrypted chunk after encrypted chunk"""
+        """
+            Given a chunked bitstream, yield encrypted chunk after encrypted chunk
+        """
         for chunk in chunker:
             yield self.encrypt_chunk(chunk)
 
     def decrypt_chunks(self, chunker):
-        """Given a chunked bitstream, yield decrypted chunk after decrypted chunk"""
+        """
+            Given a chunked bitstream, yield decrypted chunk after decrypted chunk
+        """
         for chunk in chunker:
             yield self.decrypt_chunk(chunk)
 

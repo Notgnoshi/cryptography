@@ -18,7 +18,7 @@ class RsaChunker(object):
     @staticmethod
     def chunker(m, chunk_size):
         """
-            Chunker implementation.
+            Chunker implementation. Converts the message to a series of numbers.
         """
         for c in nslice(lazy_pad(m, chunk_size, string.ascii_lowercase), chunk_size):
             yield BaseRsaCipher.str2num(''.join(c))
@@ -36,6 +36,9 @@ class BaseRsaCipher(object):
     """
         A base RSA cipher that encrypts and decrypts numbers that are less than the encryption
         modulus n.
+
+        The BaseRsaCipher is necessary to simplify the implementation of the complete RsaCipher,
+        that encrypts and decrypts strings.
     """
 
     def __init__(self, n, e, d):
@@ -45,24 +48,29 @@ class BaseRsaCipher(object):
 
     def encrypt_number(self, number):
         """
-            Encrypts the given number that is less than n.
+            Encrypts the given number that is less than n. Implements RSA encryption on numbers.
+
+            Returns the given number raised to the encryption exponent, mod n.
         """
         assert number < self.n
         return pow(number, self.e, self.n)
 
     def decrypt_number(self, number):
         """
-            Decrypts the given numerical ciphertext.
+            Decrypts the given numerical ciphertext. Implements RSA decryption on numbers.
+
+            Returns the given number raised to the decryption exponent, mod n.
         """
         return pow(number, self.d, self.n)
 
     @staticmethod
     def str2num(s):
         """
-            Converts the given string to a numerical representation.
+            Converts the given string to a numerical representation. Each letter gets mapped to a
+            number, then each left-zero-padded number gets concatenated together to form a number
+            representation of the given string.
 
             Example:
-
             >>> BaseRsaCipher.str2num('cat')
             30120
             >>> BaseRsaCipher.str2num('C A t')
@@ -81,7 +89,11 @@ class BaseRsaCipher(object):
     @staticmethod
     def num2str(n):
         """
-            Converts the given number to a string.
+            Converts the given number to a string by taking the number two digits at a time,
+            starting from the least significant digits and working up, converting each chunk to a
+            letter.
+
+            Note that not every number corresponds to a string.
 
             Example:
 
@@ -100,12 +112,17 @@ class BaseRsaCipher(object):
 
 class RsaCipher(BaseRsaCipher):
     """
-        Implements the RSA encryption algorithm
+        Implements the RSA encryption algorithm. Works by chunking the given message into a series
+        of numbers, each of which is independently encrypted by the RSA algorithm before being
+        concatenated together to form the ciphertext.
     """
+
     def __init__(self, n, e, d):
         """
             Constructs an RsaCipher object given the modulus n, which must be a product of two
             primes, encryption exponent e, and decryption exponent d.
+
+            Note that n, e, and d must be known beforehand.
 
             Note that ed = 1 mod (p-1)(q-1) where n = pq.
         """
@@ -172,11 +189,15 @@ class RsaCipher(BaseRsaCipher):
 
 class RsaKeyGenerator(object):
     """
-        Generates the public and corresponding private keys for RsaCipher
+        Generates the public and corresponding private keys for RsaCipher. The key generator works
+        by generating two random primes of the given size, which guarantees that `n` will be at
+        least as big as the specified size.
     """
+
     def __init__(self, bit_size):
         """
-            Given the bit size of the RSA key, construct a RsaKeyGenerator
+            Given the bit size of the RSA key, construct a RsaKeyGenerator, which will generated a
+            key at least as big as the specified key size.
         """
         self.p = random_prime(bit_size)
         self.q = random_prime(bit_size)
@@ -189,7 +210,8 @@ class RsaKeyGenerator(object):
 
     def gen_public_key(self):
         """
-            Generates the RSA public key (n, e)
+            Generates the RSA public key (n, e) by generating random numbers until it finds one
+            that is relatively prime with (p - 1)(q - 1).
         """
         while math.gcd(self.e, self.limit) != 1:
             # Prefer large encryption exponents
@@ -199,7 +221,8 @@ class RsaKeyGenerator(object):
 
     def gen_private_key(self):
         """
-            Generates the RSA private key (decryption exponent) d
+            Generates the RSA private key (decryption exponent) d by computing the multiplicative
+            inverse of the encryption exponent modulo (p - 1)(q - 1).
         """
         self.d = int(gmpy2.invert(self.e, self.limit))
         return self.d

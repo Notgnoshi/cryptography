@@ -3,6 +3,7 @@ Cipher submodule of crypto. Defines several common ciphers.
 
 * des: Implements the DES cipher
 * toy_des: Implements a toy version of the DES cipher
+* rsa: Implements the RSA cipher
 """
 from crypto.tests import run_once
 
