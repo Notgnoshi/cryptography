@@ -8,6 +8,7 @@ Utility submodule of crypto. Defines useful utilities.
 
 from crypto.tests import run_once
 
+from .bitfield import Bitfield
 from .bitwise import *
 from .utilities import *
 from .delegates import Delegated
@@ -20,6 +21,7 @@ def load_tests(loader, tests, ignore):
     tests.addTests(doctest.DocTestSuite('crypto.utilities'))
     # Add class level doctests.
     tests.addTests(doctest.DocTestSuite('crypto.utilities.bitwise'))
+    tests.addTests(doctest.DocTestSuite('crypto.utilities.bitfield'))
     tests.addTests(doctest.DocTestSuite('crypto.utilities.utilities'))
     tests.addTests(doctest.DocTestSuite('crypto.utilities.delegates'))
     return tests
