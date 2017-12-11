@@ -1,0 +1,19 @@
+well_behaved_message = """Who more gladly than we throughout the Four Nations received the 'bloody sword,' or at its warlike call flocked quicker to the standard of the King? When was redeemed that great shame of my nation, the shame of Cassova, when the flags of the Wallach and the Magyar went down beneath the Crescent? Who was it but one of my own race who as Voivode crossed the Danube and beat the Turk on his own ground? This was a Dracula indeed! Woe was it that his own unworthy brother, when he had fallen, sold his people to the Turk and brought the shame of slavery on them! Was it not this Dracula, indeed, who inspired that other of his race who in a later age again and again brought his forces over the great river into Turkey-land; who, when he was beaten back, came again, and again, and again, though he had to come alone from the bloody field where his troops were being slaughtered, since he knew that he alone could ultimately triumph! They said that he thought only of himself."""
+
+well_behaved_plaintext = """whomoregladlythanwethroughoutthefournationsreceivedthebloodyswordoratitswarlikecallflockedquickertothestandardofthekingwhenwasredeemedthatgreatshameofmynationtheshameofcassovawhentheflagsofthewallachandthemagyarwentdownbeneaththecrescentwhowasitbutoneofmyownracewhoasvoivodecrossedthedanubeandbeattheturkonhisowngroundthiswasadraculaindeedwoewasitthathisownunworthybrotherwhenhehadfallensoldhispeopletotheturkandbroughttheshameofslaveryonthemwasitnotthisdraculaindeedwhoinspiredthatotherofhisracewhoinalaterageagainandagainbroughthisforcesoverthegreatriverintoturkeylandwhowhenhewasbeatenbackcameagainandagainandagainthoughhehadtocomealonefromthebloodyfieldwherehistroopswerebeingslaughteredsinceheknewthathealonecouldultimatelytriumphtheysaidthathethoughtonlyofhimself"""
+
+# Encrypted with AffineCipher(9, 18)
+affine_well_behaved_ciphertext = """idowopcunstnahdsfichdpoqudoqhhdcloqpfshmofypckcmzcthdcbnootayioptopshmhyispnmecksnnlnokectgqmkecphohdcyhsftsptolhdcemfuidcfisypctccwcthdshupcshydswcolwafshmofhdcydswcolksyyozsidcfhdclnsuyolhdcisnnskdsfthdcwsuaspicfhtoifbcfcshdhdckpcykcfhidoisymhbqhofcolwaoifpskcidosyzomzotckpoyycthdctsfqbcsftbcshhdchqpeofdmyoifupoqfthdmyisystpskqnsmftcctiocisymhhdshdmyoifqfiophdabpohdcpidcfdcdstlsnncfyontdmyxcoxnchohdchqpesftbpoqudhhdcydswcolynszcpaofhdcwisymhfohhdmytpskqnsmftcctidomfyxmpcthdshohdcpoldmypskcidomfsnshcpsucsusmfsftsusmfbpoqudhdmylopkcyozcphdcupcshpmzcpmfhohqpecansftidoidcfdcisybcshcfbskekswcsusmfsftsusmfsftsusmfhdoquddcdsthokowcsnofclpowhdcbnootalmcntidcpcdmyhpooxyicpcbcmfuynsqudhcpctymfkcdcefcihdshdcsnofckoqntqnhmwshcnahpmqwxdhdcaysmthdshdchdoqudhofnaoldmwycnl"""
+
+# Example Vigenere ciphertext from the book
+vigenere_ciphertext = """vvhqwvvrhmusgjgthkihtssejchlsfcbgvwcrlryqtfsvgahwkcuhwauglqhnslrljshbltspisprdxljsveeghlqwkasskuwepwqtwvspgoelkcqyfnsvwljsniqkgnrgybwlwgoviokhkazkqkxzgyhcecmeiujoqkwfwvefqhkijrclrlkbienqfrjljsdhgrhlsfqtwlauqrhwdmwlgusgikkflryvcwvspgpmlkassjvoqxeggveyggzmljcxxljsvpaivwikvrdrygfrjljslveggveyggeiapuuisfpbtgnwwmuczrvtwglrwugumnczvile"""
+
+vigenere_plaintext = """themethodusedforthepreparationandreadingofcodemessagesissimpleintheextremeandatthesametimeimpossibleoftranslationunlessthekeyisknowntheeasewithwhichthekeymaybechangedisanotherpointinfavoroftheadoptionofthiscodebythosedesiringtotransmitimportantmessageswithouttheslightestdangeroftheirmessagesbeingreadbypoliticalorbusinessrivalsetc"""
+
+frankenstein_text = """From Italy they visited Germany and France.  I, their eldest child, was
+born at Naples, and as an infant accompanied them in their rambles.  I
+remained for several years their only child.  Much as they were
+attached to each other, they seemed to draw inexhaustible stores of
+affection from a very mine of love to bestow them upon me.  My mother's
+tender caresses and my father's smile of benevolent pleasure while
+regarding me are my first recollections."""
