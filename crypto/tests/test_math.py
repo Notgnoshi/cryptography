@@ -142,6 +142,9 @@ class MathTest(unittest.TestCase):
         # compare the first 10 primes and the primes under 30
         self.assertSequenceEqual(list(primes(10)), eratosthenes_sieve(30))
 
+    def test_sundaram_sieve(self):
+        self.assertSequenceEqual(list(primes(10)), sundaram_sieve(30))
+
     def test_primitive_roots(self):
         self.assertListEqual(list(primitive_roots(11)), [2, 6, 7, 8])
         self.assertListEqual(list(primitive_roots(13)), [2, 6, 7, 11])
@@ -169,6 +172,7 @@ class MathTest(unittest.TestCase):
         self.assertEqual(legendre(a, p), 1)
         self.assertEqual(sqrt_mod(a, p), 72452)
         self.assertEqual(pow(72452, 2, p), a)
+
 
 class PrimalityTest(unittest.TestCase):
     def test_miller_rabin_edge_cases(self):
@@ -260,7 +264,6 @@ class PrimalityTest(unittest.TestCase):
 class NotImplementedTest(unittest.TestCase):
     def test_not_implemented(self):
         self.assertRaises(NotImplementedError, wheel_factorization)
-        self.assertRaises(NotImplementedError, sundaram_sieve)
 
 
 class FactoringTest(unittest.TestCase):

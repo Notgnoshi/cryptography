@@ -265,13 +265,27 @@ def wheel_factorization():
     raise NotImplementedError
 
 
-def sundaram_sieve():
+def sundaram_sieve(n):
     """
-        Implements the Sieve of Sundaram to yield primes
+        Implements the Sieve of Sundaram to yield primes smaller than the given `n`
 
         Example:
+
+        >>> sundaram_sieve(20)
+        [2, 3, 5, 7, 11, 13, 17, 19]
     """
-    raise NotImplementedError
+    limit = (n - 2) // 2
+    sieve = numpy.full(n, True, dtype=bool)
+    for i in range(1, limit // 2):
+        for j in range(i, limit // 2):
+            index = i + j + 2 * i * j
+            if index <= n:
+                sieve[index] = False
+            else:
+                break
+
+    # Primes have the form 2i + 1 where i is the index of the nonmarked numbers
+    return [2] + [2 * i + 1 for i in range(1, n // 2) if sieve[i]]
 
 
 def eratosthenes_sieve(limit):
@@ -322,7 +336,7 @@ def is_prime(x, method='miller-rabin'):
     # Handle some easy edge cases up front
     if x == 2 or x == 3:
         return True
-    if x < 2 or x % 2 == 0:
+    if x < 2 or x % 2 == 0 or x % 3 == 0:
         return False
 
     return methods[method](x)
