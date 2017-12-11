@@ -256,13 +256,47 @@ def is_primitive_root(a, p):
     return set(pow(a, x, p) for x in range(1, p)) == set(range(1, p))
 
 
+def wheel_sieve():
+    """
+        A recursive generator implementation of the wheel factorization sieve. This implementation
+        merges the wheel factorization algorithm with the sliding infinite sieve algorithm
+        presented at https://stackoverflow.com/a/19391111.
+    """
+    wheel_11 = [2, 4, 2, 4, 6, 2, 6, 4, 2, 4, 6, 6, 2, 6, 4, 2, 6, 4, 6, 8, 4, 2, 4, 2,
+                4, 8, 6, 4, 6, 2, 4, 6, 2, 6, 6, 4, 2, 4, 6, 2, 6, 4, 2, 4, 2, 10, 2, 10]
+    cycle_sieve = itertools.accumulate(itertools.chain([11], itertools.cycle(wheel_11)))
+    yield next(cycle_sieve)
+    prime_sieve = wheel_sieve()
+    prime = next(prime_sieve)
+    p2 = prime ** 2
+    d = dict(zip(itertools.accumulate(itertools.chain([0], wheel_11)), itertools.count(0)))
+    multiples = {}
+    for candidate in cycle_sieve:
+        if candidate in multiples:
+            wheel = multiples.pop(candidate)
+        elif candidate < p2:
+            yield candidate
+            continue
+        else:
+            i = d[(prime - 11) % 210]
+            wheel = itertools.accumulate(itertools.chain(
+                [p2], itertools.cycle([prime * j for j in wheel_11[i:] + wheel_11[:i]])))
+            next(wheel)
+            prime = next(prime_sieve)
+            p2 = prime ** 2
+        for m in wheel:
+            if m not in multiples:
+                break
+            multiples[m] = wheel
+
+
 def wheel_factorization():
     """
         Implements Wheel Factorization to yield primes
 
         Example:
     """
-    raise NotImplementedError
+    return itertools.chain((2, 3, 5, 7), wheel_sieve())
 
 
 def sundaram_sieve(n):

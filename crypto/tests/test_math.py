@@ -145,6 +145,10 @@ class MathTest(unittest.TestCase):
     def test_sundaram_sieve(self):
         self.assertSequenceEqual(list(primes(10)), sundaram_sieve(30))
 
+    def test_wheel_factorization(self):
+        self.assertSequenceEqual(list(itertools.islice(
+            wheel_factorization(), 30)), list(primes(30)))
+
     def test_primitive_roots(self):
         self.assertListEqual(list(primitive_roots(11)), [2, 6, 7, 8])
         self.assertListEqual(list(primitive_roots(13)), [2, 6, 7, 11])
@@ -259,11 +263,6 @@ class PrimalityTest(unittest.TestCase):
         self.assertTrue(is_prime(p, 'solovay-strassen'))
         ps = list(primes(20))
         self.assertTrue(all(is_prime(p, 'solovay-strassen') for p in ps))
-
-
-class NotImplementedTest(unittest.TestCase):
-    def test_not_implemented(self):
-        self.assertRaises(NotImplementedError, wheel_factorization)
 
 
 class FactoringTest(unittest.TestCase):

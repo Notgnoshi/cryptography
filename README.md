@@ -134,5 +134,3 @@ Here's some examples of using the `crypto` module and submodules.
     - Add code examples to class and module level docstrings
     - add more verbose docstrings
 * Differential Cryptanalysis for three rounds
-* Sieve of Sundaram
-* Wheel Factorization
