@@ -80,24 +80,24 @@ def analyze(cipher, input1, input2):
     return poss1, poss2
 
 
-key = 0b001001101
-cipher = ToyDesCipher(key, 3)
-L1, R1 = (0, 0, 0, 1, 1, 1), (0, 1, 1, 0, 1, 1)
-L1S, R1S = (1, 0, 1, 1, 1, 0), (0, 1, 1, 0, 1, 1)
-possibilities1, possibilities2 = analyze(
-    cipher, (L1, R1), (L1S, R1S))
-
-# Correct
-print('1: first four:', possibilities1)
-# Correct
-print('1: last four:', possibilities2)
-
-L1, R1 = (0, 1, 0, 1, 1, 1), (0, 1, 1, 0, 1, 1)
-L1S, R1S = (1, 0, 1, 1, 1, 0), (0, 1, 1, 0, 1, 1)
-possibilities3, possibilities4 = analyze(
-    cipher, (L1, R1), (L1S, R1S))
-
-# Correct
-print('2: first four:', possibilities3)
-# Correct
-print('2: last four:', possibilities4)
+# key = 0b001001101
+# cipher = ToyDesCipher(key, 3)
+# L1, R1 = (0, 0, 0, 1, 1, 1), (0, 1, 1, 0, 1, 1)
+# L1S, R1S = (1, 0, 1, 1, 1, 0), (0, 1, 1, 0, 1, 1)
+# possibilities1, possibilities2 = analyze(
+#     cipher, (L1, R1), (L1S, R1S))
+#
+# # Correct
+# print('1: first four:', possibilities1)
+# # Correct
+# print('1: last four:', possibilities2)
+#
+# L1, R1 = (0, 1, 0, 1, 1, 1), (0, 1, 1, 0, 1, 1)
+# L1S, R1S = (1, 0, 1, 1, 1, 0), (0, 1, 1, 0, 1, 1)
+# possibilities3, possibilities4 = analyze(
+#     cipher, (L1, R1), (L1S, R1S))
+#
+# # Correct
+# print('2: first four:', possibilities3)
+# # Correct
+# print('2: last four:', possibilities4)
