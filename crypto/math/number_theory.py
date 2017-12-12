@@ -18,7 +18,21 @@ Misc Number Theory
 
 
 def modular_matrix_inverse(matrix, modulus):
-    """Computes the modular inverse of an integer matrix."""
+    """
+        Computes the modular inverse of an integer matrix, by computing the regular matrix inverse,
+        then bultiplying by the determinant and the determinant's modular inverse before reducing
+        modulo the given modulus.
+
+        Example:
+        >>> m = numpy.matrix([[1, 2], [3, 4]])
+        >>> m_inv = modular_matrix_inverse(m, 5)
+        >>> m_inv
+        matrix([[ 3.,  1.],
+                [ 4.,  2.]])
+        >>> numpy.mod(numpy.matmul(m, m_inv), 5)
+        matrix([[ 1.,  0.],
+                [ 0.,  1.]])
+    """
 
     # If sympy import times are not an issue, the following works, and is probably more reliable
     # from sympy import Matrix
@@ -78,11 +92,12 @@ def _primes():
 
 def primes(limit=None):
     """
-        A generator that yields the first `limit` primes. Defaults to infinite primes.
-        Uses gmpy2.next_prime() to generate prime after prime.
+        A generator that yields the first `limit` primes. If `limit` is not specified, the generator
+        will yield infinitely many primes.
+
+        Implemented by using gmpy2.next_prime() to generate prime after prime.
 
         Example:
-
         >>> p = primes(10)
         >>> list(p)
         [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
@@ -92,10 +107,10 @@ def primes(limit=None):
 
 def legendre(a, p):
     """
-        The Legendre Symbol of `a` mod `p`.
+        The Legendre Symbol of `a` mod `p`. Implementing by raising `a` to the `(p - 1) / 2` power
+        mod `p`.
 
         Example:
-
         >>> legendre(6, 11)
         -1
         >>> legendre(7, 11)
@@ -118,7 +133,6 @@ def jacobi(a, n):
         the Jacobi Symbol of `a`.
 
         Example:
-
         >>> jacobi(4567, 12345)
         -1
         >>> jacobi(107, 137)
@@ -133,6 +147,8 @@ def sqrt_mod(a, p):
         Computes the square root of `a` mod `p`. That is, it solves the congruence of the form:
             x^2 = a (mod p)
         Returns None if no solution was found. Note that `p` must be an odd prime.
+
+        Implemented via the Tonelli-Shanks algorithm.
 
         Example:
     """
@@ -188,7 +204,6 @@ def gcd(a, b):
         Implements the Euclidea Algorithm to find the GCD of `a` and `b`.
 
         Example:
-
         >>> gcd(23, 65)
         1
         >>> gcd(5, 65)
@@ -204,11 +219,9 @@ def xgcd(a, b):
         ax + by = g = gcd(a, b)
 
         Example:
-
         >>> xgcd(7, 65)
         (1, 28, -3)
         >>> assert 28 * 7 - 3 * 65 == 1
-
     """
     prevx, x = 1, 0
     prevy, y = 0, 1
@@ -224,18 +237,22 @@ def xgcd(a, b):
 
 def primitive_roots(n):
     """
-        Yields the primitive roots of the composite number `n`
+        Yields the primitive roots of the composite number `n`. Note that our textbook only defines
+        primitive roots modulo some prime `p`. This implementation accepts the Wikipedia definition
+        that defines primitive roots for composite numbers as well.
+
+        Note that this definition is consistent with an implementation that only accepts prime
+        modulus's.
 
         Implemented by finding the set of coprimes of `n` and checking if the set of powers is
         equal to the set of coprimes for each number a in 1..n
 
         Example:
-
         >>> list(primitive_roots(11))
         [2, 6, 7, 8]
     """
     # Wikipedia defines coprime for a composite number using the coprimes of that number,
-    # while our textbook uses all numbers up to a prime `p`. For generality prefer composite n.
+    # while our textbook uses all numbers up to a prime `p`. For generality prefer composite `n`.
     cop = set(coprimes(n))
     for a in cop:
         if set(pow(a, x, n) for x in range(1, n)) == cop:
@@ -244,10 +261,10 @@ def primitive_roots(n):
 
 def is_primitive_root(a, p):
     """
-        Determine if `a` is a primitive root mod a prime number `p`
+        Determine if `a` is a primitive root mod a prime number `p` by brute force checking all of
+        the modular powers a^x (mod p) for x < p.
 
         Example:
-
         >>> is_primitive_root(3, 13)
         False
         >>> is_primitive_root(2, 13)
@@ -261,6 +278,13 @@ def wheel_sieve():
         A recursive generator implementation of the wheel factorization sieve. This implementation
         merges the wheel factorization algorithm with the sliding infinite sieve algorithm
         presented at https://stackoverflow.com/a/19391111.
+
+        Example:
+        >>> sieve = wheel_sieve()
+        >>> next(sieve)
+        11
+        >>> next(sieve)
+        13
     """
     wheel_11 = [2, 4, 2, 4, 6, 2, 6, 4, 2, 4, 6, 6, 2, 6, 4, 2, 6, 4, 6, 8, 4, 2, 4, 2,
                 4, 8, 6, 4, 6, 2, 4, 6, 2, 6, 6, 4, 2, 4, 6, 2, 6, 4, 2, 4, 2, 10, 2, 10]
@@ -295,6 +319,9 @@ def wheel_factorization():
         Implements Wheel Factorization to yield primes
 
         Example:
+        >>> primes = wheel_factorization()
+        >>> tuple(itertools.islice(primes, 10))
+        (2, 3, 5, 7, 11, 13, 17, 19, 23, 29)
     """
     return itertools.chain((2, 3, 5, 7), wheel_sieve())
 
@@ -304,7 +331,6 @@ def sundaram_sieve(n):
         Implements the Sieve of Sundaram to yield primes smaller than the given `n`
 
         Example:
-
         >>> sundaram_sieve(20)
         [2, 3, 5, 7, 11, 13, 17, 19]
     """
@@ -327,7 +353,6 @@ def eratosthenes_sieve(limit):
         Implements the Sieve of Eratosthenes to yield primes less than `limit`
 
         Example:
-
         >>> eratosthenes_sieve(10)
         [2, 3, 5, 7]
     """
@@ -367,6 +392,7 @@ def is_prime(x, method='miller-rabin'):
                }
 
     # TODO: Speed this up by using a prime sieve for small numbers
+
     # Handle some easy edge cases up front
     if x == 2 or x == 3:
         return True
@@ -379,6 +405,10 @@ def is_prime(x, method='miller-rabin'):
 def miller_rabin_decompose(n):
     """
         Decomposes the given even integer into some power of two and some remainder
+
+        Example:
+        >>> miller_rabin_decompose(18)  # (2 ^ 1) * 9 = 18
+        (1, 9)
     """
     power = 0
     # Repeatedly divide by two until the number disappears
@@ -410,7 +440,11 @@ def miller_rabin_is_witness(potential_witness, n, power, remainder):
 
 def miller_rabin_prime_test(x, attempts=25):
     """
-        Implements the Miller Rabin primality test
+        Implements the Miller Rabin primality test, using 25 attempts by default.
+
+        Example:
+        >>> miller_rabin_prime_test(1729)
+        False
     """
     # Find 2^s as the largest power of two that divides x-1
     power, remainder = miller_rabin_decompose(x - 1)
@@ -426,7 +460,13 @@ def miller_rabin_prime_test(x, attempts=25):
 
 def fermat_prime_test(x, attempts=25):
     """
-        Implements the Fermat primality (compositeness) test
+        Implements the Fermat primality (compositeness) test. Note that if this function returns
+        True, the number is *probably* prime, but if the function returns False, the number is
+        definitely composite.
+
+        Example:
+        >>> fermat_prime_test(1792)
+        False
     """
     for _ in range(attempts):
         a = random.randint(1, x - 1)
@@ -437,7 +477,12 @@ def fermat_prime_test(x, attempts=25):
 
 def solovay_strassen_prime_test(n, attempts=25):
     """
-        Implements the Solovay-Strassen primality test
+        Implements the Solovay-Strassen primality test. Works bu computing the Jacobi symbol of a
+        random number, and compares a modular power of the given number to the Jacobi symbol (mod n)
+
+        Example:
+        >>> solovay_strassen_prime_test(1729)
+        False
     """
     for _ in range(attempts):
         a = random.randint(2, n - 1)
@@ -473,6 +518,14 @@ def factor(num, method):
 
         >>> factor(10, 'trial-division')
         [2, 5]
+        >>> factor(1729, 'pollard-rho')
+        [7, 19, 13]
+        >>> factor(1729, 'pollard-p1')
+        [7, 13, 19]
+        >>> factor(1729, 'fermat')
+        [13, 7, 19]
+        >>> factor(123465762, 'gnu-factor')
+        [2, 3, 3, 3, 7, 19, 17191]
     """
     methods = {'fermat': fermat_factor,
                'pollard-rho': pollard_rho_factor,
@@ -484,7 +537,16 @@ def factor(num, method):
 
 def fermat_factor(num):
     """
-        Implements Fermat's Factoring Algorithm
+        Implements Fermat's Factoring Algorithm.
+
+        Implemented recursively because just one call will produce two factors, only one of which
+        is prime. Uses a primality test as one of the base cases.
+
+        Example:
+        >>> fermat_factor(1723)
+        [1723]
+        >>> fermat_factor(1729)
+        [13, 7, 19]
     """
     if num < 2:
         return []
@@ -522,6 +584,13 @@ def pollard_rho_factor(num, f=pollard_g):
     """
         Implements the Pollard Rho factorization algorithm. Passes in the function to use
         to make recursion easier.
+
+        Implemented recursively, because the pollard rho algorithm only splits a number into two
+        factors, only one of which is necessarily prime.
+
+        Example:
+        >>> pollard_rho_factor(1729)
+        [7, 19, 13]
     """
 
     if num < 2:
@@ -551,6 +620,12 @@ def pollard_p1_factor(num, a=2):
     """
         Implements the Pollard P-1 factoring algorithm. Passes in the value of a to use
         to make recursion easier.
+
+        Implemented recursively. If the previous attempt fails, try again with an incremented `a`.
+
+        Example:
+        >>> pollard_p1_factor(1729)
+        [7, 13, 19]
     """
     # Handle recursion base cases
     if num < 2:
@@ -583,7 +658,14 @@ def pollard_p1_factor(num, a=2):
 
 def gnu_factor(num):
     """
-        Calls the GNU factor command. To be considered more authoritative.
+        Calls the GNU factor command. To be considered more authoritative for small enough inputs.
+
+        While other implementations might work in theory for large inputs, the GNU factor
+        implementation will definitely work quite quickly for "small" inputs.
+
+        Example:
+        >>> gnu_factor(12346512786934827632345612323422)
+        [2, 3, 3, 3, 3, 7, 73, 28515367, 5230334088831978263]
     """
     if platform.system() != 'Linux':
         raise OSError('Cannot call GNU factor on non-Linux platform')
@@ -593,7 +675,12 @@ def gnu_factor(num):
 
 def trial_division_factors(num):
     """
-        Implements naive trial division to factor a given number.
+        Implements naive trial division to factor a given number. The simplest of the factorization
+        implementations, but also the slowest.
+
+        Example:
+        >>> trial_division_factors(23142)
+        [2, 3, 7, 19, 29]
     """
     if num < 2:
         return []

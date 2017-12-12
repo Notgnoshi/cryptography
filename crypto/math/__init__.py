@@ -5,6 +5,7 @@ useful to cryptography.
 * continued_fractions: Defines several functions for working with continued fractions
 * frequencies: Implements a symbol frequency calculator
 * number_theory: Implements several useful nuber theory functions
+* polynomial: Implements several GF(2^8) polynomial utility functions
 """
 from crypto.tests import run_once
 

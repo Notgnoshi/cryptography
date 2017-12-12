@@ -11,7 +11,6 @@ class SymbolFrequencies(Counter):
         Calculates a symbol frequency table from a given iterable
 
         Examples:
-
         >>> symbols = 'aabc'
         >>> table = SymbolFrequencies(symbols)
         >>> assert table == {'a': 2, 'b': 1, 'c': 1}
@@ -57,7 +56,6 @@ class SymbolFrequencies(Counter):
             Construct a SymbolFrequencies table from a given iterable
 
             Example:
-
             >>> # The following are all equivalent
             >>> symbols = 'aabc'
             >>> symbols = ['a', 'a', 'b', 'c']

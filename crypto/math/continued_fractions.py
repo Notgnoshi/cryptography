@@ -1,8 +1,8 @@
 """
-Implements several functions for working with continued fractions.
+Implements several functions for working with continued fractions. Functionality consists almost
+entirely of approximting irrationals by continued fractions.
 """
-
-from math import floor
+import math
 
 
 def fraction_coeffs(decimal):
@@ -19,7 +19,7 @@ def fraction_coeffs(decimal):
     x_k = decimal
 
     while True:
-        a_k = floor(x_k)
+        a_k = math.floor(x_k)
         r_k = x_k - a_k
         x_k = 1 / r_k
         yield a_k
@@ -27,10 +27,10 @@ def fraction_coeffs(decimal):
 
 def fractions(decimal):
     """
-        Yields an infinite sequence of (pk, qk) approximating the given decimal
+        Yields an infinite sequence of fractions (pk, qk) approximating the given decimal. Each
+        successive fraction will be a better and better approximation.
 
         Example:
-
         >>> from math import sqrt
         >>> from itertools import islice
         >>> pq = fractions(sqrt(2))
@@ -54,7 +54,6 @@ def approximate_decimal(decimal, tolerance):
         Returns a (num, denom) tuple.
 
         Example:
-
         >>> from math import pi
         >>> approximate_decimal(pi, 1e-5)
         (355, 113)
