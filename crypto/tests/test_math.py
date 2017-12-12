@@ -195,13 +195,13 @@ class PrimalityTest(unittest.TestCase):
     def test_miller_rabin_random_small(self):
         n = 10
         actual = random_prime(n)
-        self.assertEqual(len(str(actual)), n)
+        self.assertEqual(actual.bit_length(), n)
         self.assertTrue(is_prime(actual))
 
     def test_miller_rabin_random_large(self):
         n = 64
         actual = random_prime(n)
-        self.assertEqual(len(str(actual)), n)
+        self.assertEqual(actual.bit_length(), n)
         self.assertTrue(is_prime(actual))
 
     def test_miller_rabin_small_1(self):

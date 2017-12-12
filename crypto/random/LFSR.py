@@ -9,6 +9,17 @@ class LinearFeedbackShiftRegister(object):
     """
 
     def __init__(self, initial_values, coeffs, base=2):
+        """
+            Generates a LinearFeedbackShiftRegister object from a set of coefficients and initial
+            values.
+
+            Example:
+            >>> IV = numpy.array([0, 0, 1, 1, 0])
+            >>> coeffs = numpy.array([1, 1, 0, 0, 1])
+            >>> lfsr = LinearFeedbackShiftRegister(IV, coeffs)
+            >>> next(lfsr)
+            0
+        """
         self.initial_values = deque(initial_values)
         self.current_values = initial_values
         self.coeffs = coeffs

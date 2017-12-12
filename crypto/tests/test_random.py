@@ -8,9 +8,9 @@ import unittest
 class BlumBlumShubTest(unittest.TestCase):
     def test_bbsn(self):
         # Taken from textbook, page 43.
-        p = gmp.mpz(24672462467892469787)
-        q = gmp.mpz(396736894567834589803)
-        x0 = gmp.mpz(873245647888478349013)
+        p = 24672462467892469787
+        q = 396736894567834589803
+        x0 = 873245647888478349013
 
         expecteds = [8845298710478780097089917746010122863172,
                      7118894281131329522745962455498123822408,

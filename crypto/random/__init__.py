@@ -5,6 +5,7 @@ text.
 * blum_blum_shub: Implements a Blum-Blum-Shub random number generator
 * LFSR: Implements a Linear Feedback Shift Register
 * passwords: Defines several password generators
+* primes: generate random prime numbers
 """
 from crypto.tests import run_once
 
