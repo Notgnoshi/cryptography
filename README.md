@@ -79,53 +79,63 @@ $ python3.6 runtests.py
 
 Note that sometimes the test script hangs while waiting for a lock to release due to the tests being run concurrently. If this happens, send a `KeyboardInterrupt` and try again.
 
-## Example usage
-Here's some examples of using the `crypto` module and submodules.
-
-* Running the unit tests with a given number of processes
-    ```python
-    #!/usr/bin/env python3
-    from crypto.tests import runtests
-    # Requires the concurrencytest library installed. Will run in serial otherwise
-    runtests(processes=8)
-    ```
-* Some bitwise utilities
-    ```python
-    #!/usr/bin/env python3
-    from crypto.utilities import Bitstream, lazy_pad, bits_to_string
-
-    # One of many forms a bytestream can take
-    bytestream = b'This is a test'
-    # Lazily pad the bytestream so that it's length is evenly divisible by 8
-    # The pad values will be randomly chosen from the given array
-    bytestream = lazy_pad(bytestream, multiple=8, pad_values=b'abcdefghijklmnopqrstuvwxyz')
-    # Construct a Bitstream
-    bitstream = Bitstream(bytestream)
-
-    # Hopefully unchanged
-    output = bits_to_string(bitstream)
-    print(output)
-    # Will be `This is a test` with two random characters appended
-    ```
-* Some classical ciphers
-    ```python
-    #!/usr/bin/env python3
-    from crypto.classical import AffineCipher, LfsrCipher
-    import numpy
-
-    plaintext = 'affine'
-    cipher = AffineCipher(9, 2)
-    ciphertext = cipher.encrypt(plaintext)
-    assert ciphertext == 'cvvwpm'
-
-    # Values taken from HW 1 problem 6
-    initial_values = numpy.array([1, 0, 1, 0, 0, 1])
-    coeffs = numpy.array([1, 1, 0, 1, 1, 0])
-    cipher = LfsrCipher(initial_values, coeffs)
-
-    ciphertext = cipher.encrypt('zyxwvuts')
-    ciphertext = [ord(c) for c in ciphertext]
-    expected = [31, 90, 153, 215, 233, 255, 13, 164]
-    assert ciphertext == expected
-    ```
 ---
+
+## Usage:
+
+* Download the repository and create a `test.py` script to test code in:
+
+    ```shell
+    ~ $ git clone https://github.com/Notgnoshi/cryptography.git
+    ~ $ cd cryptography
+    ~/cryptography/ $ echo '#!/usr/bin/env python3' >> test.py
+    ~/cryptography/ $ chmod +x test.py
+    ```
+* Inside `test.py` the `crypto` library may be used like so:
+
+    * Running the unit tests with a given number of processes
+        ```python
+        #!/usr/bin/env python3
+        from crypto.tests import runtests
+        # Requires the concurrencytest library installed. Will run in serial otherwise
+        runtests(processes=8)
+        ```
+    * Some bitwise utilities
+        ```python
+        #!/usr/bin/env python3
+        from crypto.utilities import Bitstream, lazy_pad, bits_to_string
+
+        # One of many forms a bytestream can take
+        bytestream = b'This is a test'
+        # Lazily pad the bytestream so that it's length is evenly divisible by 8
+        # The pad values will be randomly chosen from the given array
+        bytestream = lazy_pad(bytestream, multiple=8, pad_values=b'abcdefghijklmnopqrstuvwxyz')
+        # Construct a Bitstream
+        bitstream = Bitstream(bytestream)
+
+        # Hopefully unchanged
+        output = bits_to_string(bitstream)
+        print(output)
+        # Will be `This is a test` with two random characters appended
+        ```
+    * Some classical ciphers
+        ```python
+        #!/usr/bin/env python3
+        from crypto.classical import AffineCipher, LfsrCipher
+        import numpy
+
+        plaintext = 'affine'
+        cipher = AffineCipher(9, 2)
+        ciphertext = cipher.encrypt(plaintext)
+        assert ciphertext == 'cvvwpm'
+
+        # Values taken from HW 1 problem 6
+        initial_values = numpy.array([1, 0, 1, 0, 0, 1])
+        coeffs = numpy.array([1, 1, 0, 1, 1, 0])
+        cipher = LfsrCipher(initial_values, coeffs)
+
+        ciphertext = cipher.encrypt('zyxwvuts')
+        ciphertext = [ord(c) for c in ciphertext]
+        expected = [31, 90, 153, 215, 233, 255, 13, 164]
+        assert ciphertext == expected
+        ```
