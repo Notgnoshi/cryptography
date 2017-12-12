@@ -40,7 +40,6 @@ def lazy_pad(iterable, multiple=8, pad_values=[0]):
         Will pad with a random values taken from the list of padding values.
 
         Examples:
-
         >>> nums = [1, 2, 3, 4]
         >>> list(lazy_pad(nums))
         [1, 2, 3, 4, 0, 0, 0, 0]
@@ -71,7 +70,6 @@ def product(iterable):
         >>> it = [1, 2, 3]
         >>> product(it)
         6
-
         >>> it = range(1, 5)
         >>> product(it)
         24
@@ -104,7 +102,6 @@ def chunker(text, chunk_size=5, fill_value=None):
         each output of crypto.utilities.nslice.
 
         Example:
-
         >>> s = 'abcdefg'
         >>> c = chunker(s, 3, 'x')
         >>> next(c)
@@ -123,7 +120,6 @@ def int_mapping(character):
         Maps a given character (a-z) to an integer (0-25)
 
         Example:
-
         >>> int_mapping('a')
         0
         >>> int_mapping('z')
@@ -137,7 +133,6 @@ def char_mapping(integer):
         Maps a given integer (0-25) to a character (a-z)
 
         Example:
-
         >>> char_mapping(0)
         'a'
         >>> char_mapping(25)
@@ -151,7 +146,6 @@ def rotate(seq, shift):
         Returns a wrapped-around version of list `l` starting at index `n`
 
         Example:
-
         >>> l = [1, 2, 3, 4]
         >>> rotate(l, 1)  # A right rotation by one
         [4, 1, 2, 3]
@@ -168,7 +162,6 @@ def max_pair(dictionary):
         Returns the (key, value) pair with the maximum value of the given dict
 
         Example:
-
         >>> max_pair({1: 1, 2: 2, 3: 3})
         (3, 3)
         >>> max_pair({1: 3, 2: 2, 3: 1})

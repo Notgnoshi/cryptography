@@ -12,7 +12,6 @@ def set_ith_bit(num, index, value):
         Sets the ith bit of num to the given value
 
         Example:
-
         >>> set_ith_bit(1, 1, 1)
         3
     """
@@ -26,7 +25,6 @@ def set_bit(num, bit):
         Sets to ith bit of num to 1
 
         Example:
-
         >>> set_bit(1, 1)
         3
     """
@@ -49,7 +47,6 @@ def get_bit(num, bit):
         Gets the value of the ith bit of num
 
         Example:
-
         >>> get_bit(3, 1)
         1
         >>> get_bit(1, 1)
@@ -64,7 +61,6 @@ def bits_of(value, bits=None):
         significant bit to the most significant bit.
 
         Example:
-
         >>> list(bits_of(3, 4))  # 0b0011
         [1, 1, 0, 0]
     """
@@ -79,11 +75,10 @@ def binary_string(string):
         Returns the binary representation of a string, lsbf
 
         Example:
-
         >>> binary_string('a')
         '10000110'
     """
-    return ''.join('{0:08b}'.format(ord(x), 'b')[::-1] for x in string)
+    return ''.join('{0:08b}'.format(ord(x))[::-1] for x in string)
 
 
 def bits_to_integer(seq):
@@ -91,7 +86,6 @@ def bits_to_integer(seq):
         Converts a sequence of bits into a integer
 
         Example:
-
         >>> bits_to_integer([1, 1, 0, 0])
         3
     """
@@ -108,7 +102,6 @@ def bits_to_bytes(bitstream):
         be known) to be a multiple of 8.
 
         Examples:
-
         >>> bits = [1, 1, 1, 1, 0, 0, 0, 0]  # 0b00001111 = 15
         >>> bytes = bits_to_bytes(bits)
         >>> next(bytes)
@@ -135,7 +128,6 @@ def bytes_to_string(bytestream):
         Converts a bytestream to a string
 
         Example:
-
         >>> string = b'abcd'
         >>> bytes_to_string(string)
         'abcd'
@@ -149,7 +141,6 @@ def bits_to_string(bitstream):
         problem related to bitstream length being divisible by 8 as bits_to_bytes has.
 
         Example:
-
         >>> bits = [1, 0, 0, 0, 0, 1, 1, 0]
         >>> bits_to_string(bits)
         'a'
@@ -166,7 +157,6 @@ def xor_streams(bitstream1, bitstream2):
         Bitwise XORs two bitstreams
 
         Example:
-
         >>> a = [1, 0, 1, 1]
         >>> b = [0, 0, 1, 1]
         >>> list(xor_streams(a, b))
@@ -180,11 +170,9 @@ class Bitstream(object):
         Turns an iterable of bytes into a bit-by-bit bitstream of its lsbf binary representation.
 
         Example:
-
         >>> bitstream = Bitstream(b'abc')
         >>> list(bitstream)
         [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0]
-
         >>> bitstream = Bitstream(ord(c) for c in 'abc')
         >>> list(bitstream)
         [1, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0, 0, 1, 1, 0]
@@ -219,7 +207,6 @@ class Bitstream(object):
             Returns the bitstream generator to iterate over.
 
             Example:
-
             >>> bitstream = Bitstream(b'abc')
             >>> sum = 0
             >>> for bit in bitstream:
@@ -234,7 +221,6 @@ class Bitstream(object):
             Get the next bit of the bitstream
 
             Example:
-
             >>> bitstream = Bitstream(b'abc')
             >>> next(bitstream)
             1
@@ -251,7 +237,6 @@ class TextBitstream(Bitstream):
         string or array defined all at once.
 
         Example:
-
         >>> # The following are all equivalent
         >>> text = 'abc'
         >>> text = ['a', 'b', 'c']

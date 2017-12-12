@@ -4,6 +4,8 @@ Utility submodule of crypto. Defines useful utilities.
 * bitwise: Defines several useful functions and classes for working with binary data in Python
 * delegates: Unused as of yet, but defines classes implementing the delegate design pattern
 * utilities: Miscellaneous utilities primarily dealing with iteration and working with text
+* bitfield: An unused, but much better implementation of bitfields than the Bitstream defined in
+            bitwise.py.
 """
 
 from crypto.tests import run_once
