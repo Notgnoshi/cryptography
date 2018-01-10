@@ -27,11 +27,11 @@ def modular_matrix_inverse(matrix, modulus):
         >>> m = numpy.matrix([[1, 2], [3, 4]])
         >>> m_inv = modular_matrix_inverse(m, 5)
         >>> m_inv
-        matrix([[ 3.,  1.],
-                [ 4.,  2.]])
+        matrix([[3., 1.],
+                [4., 2.]])
         >>> numpy.mod(numpy.matmul(m, m_inv), 5)
-        matrix([[ 1.,  0.],
-                [ 0.,  1.]])
+        matrix([[1., 0.],
+                [0., 1.]])
     """
 
     # If sympy import times are not an issue, the following works, and is probably more reliable
